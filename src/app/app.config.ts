@@ -11,6 +11,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AuthService } from './core/services/auth.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,10 +21,13 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(), */
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient(
-      withInterceptors([authInterceptor])
-    ),
+    provideHttpClient(withInterceptors([authInterceptor])),
     AuthService,
     importProvidersFrom(MatSnackBarModule),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+      },
+    }),
   ],
 };

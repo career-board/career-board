@@ -1,62 +1,86 @@
-# CareerBoardServiceFrontend
+# Career Board
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.7.
+Welcome to the **Career Board** project! This is an Angular application designed to help users manage career-related content.
 
-## Development server
+## Prerequisites
 
-To start a local development server, run:
+Before running the project, make sure you have the following installed:
 
-```bash
-ng serve
-```
+- [Docker](https://www.docker.com/get-started) (for running with Docker)
+- [Node.js](https://nodejs.org/en/) (for running locally without Docker)
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Running Locally (without Docker)
 
-## Code scaffolding
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/career-board/career-board.git
+   cd career-board
+   ```
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
 
-```bash
-ng generate component component-name
-```
+3. Run the application:
+   ```bash
+   npm start
+   ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+4. Access the app at [http://localhost:4200](http://localhost:4200).
 
-```bash
-ng generate --help
-```
+## Running with Docker
 
-## Building
+If you'd like to run the application using Docker, follow these steps:
 
-To build the project run:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/career-board/career-board.git
+   cd career-board
+   ```
 
-```bash
-ng build
-```
+2. Build the Docker image:
+   ```bash
+   docker build -t career-board .
+   ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+3. Run the application in a Docker container:
+   ```bash
+   docker run -p 4200:80 --name career-board-container career-board
+   ```
 
-## Running unit tests
+4. Access the app at [http://localhost:4200](http://localhost:4200).
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Re-running the Application with Docker (after changes)
 
-```bash
-ng test
-```
+If you make changes to the project and want to rerun the application with Docker, follow these steps:
 
-## Running end-to-end tests
+1. Stop and remove the existing container:
+   ```bash
+   docker stop career-board-container
+   docker rm career-board-container
+   ```
 
-For end-to-end (e2e) testing, run:
+2. Remove the existing Docker image:
+   ```bash
+   docker rmi career-board
+   ```
 
-```bash
-ng e2e
-```
+3. Rebuild the Docker image:
+   ```bash
+   docker build -t career-board .
+   ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+4. Rerun the application:
+   ```bash
+   docker run -p 4200:80 --name career-board-container career-board
+   ```
 
-## Additional Resources
+5. Access the app at [http://localhost:4200](http://localhost:4200).
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
 ## Project structure

@@ -1,0 +1,36 @@
+@if (loading) {
+  <div class="profile-container">
+    <mat-card class="profile-card loading">
+      <p>Loading profile...</p>
+    </mat-card>
+  </div>
+} @else if (error) {
+  <div class="profile-container">
+    <mat-card class="profile-card error">
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
+} @else if (user) {
+  <div class="profile-container">
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <div class="profile-avatar" [class.initials]="true">
+          {{ getInitials(user.firstName, user.lastName) }}
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="profile-info">
+          <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+          <p class="username"> {{ user.username }}</p>
+          <p class="role">{{ user.role }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+} @else {
+  <div class="profile-container">
+    <mat-card class="profile-card error">
+      <p>No profile data available</p>
+    </mat-card>
+  </div>
+}

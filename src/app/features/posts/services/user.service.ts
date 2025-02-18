@@ -16,6 +16,10 @@ export class UserService {
     return this.http.get<User[]>(`${this.API_URL}/users`);
   }
 
+  getUser(userId: number): Observable<User> {
+    return this.http.get<User>(`${this.API_URL}/user/${userId}`);
+  }
+
   deleteUser(userId: number): Observable<string> {
     return this.http.delete(`${this.API_URL}/users/${userId}`, { responseType: 'text' });
   }

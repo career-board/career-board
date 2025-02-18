@@ -18,6 +18,13 @@ export const routes: Routes = [
     component: UnauthorizedComponent,
   },
   {
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/users/profile/profile.component').then(
+        (m) => m.ProfileComponent
+      ),
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./core/components/layout/layout.component').then(
@@ -28,17 +35,17 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./features/posts/components/all-posts/all-posts.component').then(
-            (m) => m.AllPostsComponent
-          ),
+          import(
+            './features/posts/components/all-posts/all-posts.component'
+          ).then((m) => m.AllPostsComponent),
         canActivate: [authGuard],
       },
       {
         path: 'my-posts',
         loadComponent: () =>
-          import('./features/posts/components/user-post-list/user-post-list.component').then(
-            (m) => m.UserPostListComponent
-          ),
+          import(
+            './features/posts/components/user-post-list/user-post-list.component'
+          ).then((m) => m.UserPostListComponent),
       },
       {
         path: 'admin',
@@ -61,16 +68,16 @@ export const routes: Routes = [
       {
         path: 'post/:id',
         loadComponent: () =>
-          import('./features/posts/components/details/post-details.component').then(
-            (m) => m.PostDetailsComponent
-          ),
+          import(
+            './features/posts/components/details/post-details.component'
+          ).then((m) => m.PostDetailsComponent),
       },
       {
         path: 'post/edit/:id',
         loadComponent: () =>
-          import('./features/posts/components/manage/manage-create.component').then(
-            (m) => m.PostCreateComponent
-          ),
+          import(
+            './features/posts/components/manage/manage-create.component'
+          ).then((m) => m.PostCreateComponent),
         canActivate: [authGuard],
       },
       {
@@ -87,11 +94,11 @@ export const routes: Routes = [
       {
         path: 'manage-post',
         loadComponent: () =>
-          import('./features/posts/components/manage/manage-create.component').then(
-            (m) => m.PostCreateComponent
-          ),
+          import(
+            './features/posts/components/manage/manage-create.component'
+          ).then((m) => m.PostCreateComponent),
         canActivate: [authGuard],
-      }
+      },
     ],
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },

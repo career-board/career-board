@@ -1,124 +1,60 @@
 <div class="register-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Register</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
+  <p-card>
+    <div class="register-form">
+      <h2>Register</h2>
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Username</mat-label>
-          <input
-            matInput
-            formControlName="username"
-            placeholder="Enter your username"
-          />
-          @if (isUsernameInValid) {
-          <mat-error> Username is required </mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>First Name</mat-label>
-          <input
-            matInput
-            formControlName="firstName"
-            placeholder="Enter your first name"
-          />
-          @if (isFirstNameInValid) {
-          <mat-error> First name is required </mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Last Name</mat-label>
-          <input
-            matInput
-            formControlName="lastName"
-            placeholder="Enter your last name"
-          />
-          @if (isLastNameInValid) {
-          <mat-error> Last name is required </mat-error>
-          }
-        </mat-form-field>
-
-        <div
-          formGroupName="passwords"
-          [class.passwords-mismatch]="isPasswordsMatch"
-        >
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Password</mat-label>
-            <input
-              matInput
-              [type]="hidePassword ? 'password' : 'text'"
-              formControlName="password"
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              (click)="hidePassword = !hidePassword"
-              type="button"
-            >
-              <mat-icon>{{
-                hidePassword ? "visibility_off" : "visibility"
-              }}</mat-icon>
-            </button>
-            @if (isPasswordInValid) {
-            <mat-error> Password is required </mat-error>
-            } @if (isPasswordLengthInValid) {
-            <mat-error>
-              Password must be at least 8 characters and at most 64 characters
-            </mat-error>
-            }
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Confirm Password</mat-label>
-            <input
-              matInput
-              [type]="hideConfirmPassword ? 'password' : 'text'"
-              formControlName="confirmPassword"
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              (click)="hideConfirmPassword = !hideConfirmPassword"
-              type="button"
-            >
-              <mat-icon>{{
-                hideConfirmPassword ? "visibility_off" : "visibility"
-              }}</mat-icon>
-            </button>
-            @if (isConfirmPasswordInValid) {
-            <mat-error> Password is required </mat-error>
-            } @if (isConfirmPasswordLengthInValid) {
-            <mat-error>
-              Password must be at least 8 characters and at most 64 characters
-            </mat-error>
-            }
-          </mat-form-field>
-
-          <mat-error *ngIf="isPasswordsMatch">
-            Passwords do not match
-          </mat-error>
+        <div class="form-field">
+          <label for="username">Username</label>
+          <input id="username" type="text" pInputText formControlName="username" />
+          <small class="error-message" *ngIf="isUsernameInValid">Username is required</small>
         </div>
 
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          class="full-width"
-          [disabled]="registerForm.invalid"
-        >
-          Register
-        </button>
-      </form>
-    </mat-card-content>
+        <div class="form-field">
+          <label for="currentCompany">Current Company</label>
+          <input id="currentCompany" type="text" pInputText formControlName="currentCompany" />
+          <small class="error-message" *ngIf="isCurrentCompanyInValid">Current company is required</small>
+        </div>
 
-    <mat-card-footer>
-      <p class="login-link">
-        Already have an account? <a routerLink="/login">Login here</a>
-      </p>
-    </mat-card-footer>
-  </mat-card>
+        <div formGroupName="passwords" [class.passwords-mismatch]="isPasswordsMatch">
+          <div class="form-field">
+            <label for="password">Password</label>
+            <p-inputGroup>
+              <input 
+                id="password" 
+                [type]="hidePassword ? 'password' : 'text'" 
+                pInputText 
+                formControlName="password"
+              />
+              <button type="button" pButton [icon]="hidePassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hidePassword = !hidePassword"></button>
+            </p-inputGroup>
+            <small class="error-message" *ngIf="isPasswordInValid">Password is required</small>
+            <small class="error-message" *ngIf="isPasswordLengthInValid">Password must be at least 8 characters and at most 64 characters</small>
+          </div>
+
+          <div class="form-field">
+            <label for="confirmPassword">Confirm Password</label>
+            <p-inputGroup>
+              <input 
+                id="confirmPassword" 
+                [type]="hideConfirmPassword ? 'password' : 'text'" 
+                pInputText 
+                formControlName="confirmPassword"
+              />
+              <button type="button" pButton [icon]="hideConfirmPassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hideConfirmPassword = !hideConfirmPassword"></button>
+            </p-inputGroup>
+            <small class="error-message" *ngIf="isConfirmPasswordInValid">Password is required</small>
+            <small class="error-message" *ngIf="isConfirmPasswordLengthInValid">Password must be at least 8 characters and at most 64 characters</small>
+          </div>
+
+          <small class="error-message" *ngIf="isPasswordsMatch">Passwords do not match</small>
+        </div>
+
+        <button pButton type="submit" label="Register" raised="true" rounded="true" [disabled]="registerForm.invalid" class="register-button"></button>
+
+        <div class="login-link">
+          Already have an account? <a routerLink="/login">Login here</a>
+        </div>
+      </form>
+    </div>
+  </p-card>
 </div>

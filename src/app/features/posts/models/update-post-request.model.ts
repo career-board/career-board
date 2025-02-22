@@ -1,10 +1,10 @@
 import { postImage } from "./post-image.model";
 
 
-export interface UpdatePostRequest {
-  postId: number;
+export interface UpdateInterviewRequest {
+  interviewId: number;
   userId: number;
-  title: string;
+  description: string;
   content: string;
   images: postImage[];
   status: string;

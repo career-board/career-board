@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../models/post.model';
-import { CreatePostRequest } from '../models/create-post-request.model';
-import { UpdatePostRequest } from '../models/update-post-request.model';
+import { CreateInterviewRequest } from '../models/create-post-request.model';
+import { UpdateInterviewRequest } from '../models/update-post-request.model';
 import { environment } from '../../../../environments/environment';
 
 export type CreatePostResponse = Post | string;
@@ -32,7 +32,7 @@ export class PostService {
     });
   }
 
-  createPost(postData: CreatePostRequest): Observable<CreatePostResponse> {
+  createPost(postData: CreateInterviewRequest): Observable<CreatePostResponse> {
     return this.http.post<CreatePostResponse>(`${this.baseUrl}/post`, postData);
   }
 
@@ -40,7 +40,7 @@ export class PostService {
     return this.http.get<Post>(`${this.baseUrl}/post/${postId}`);
   }
 
-  updatePost(postData: UpdatePostRequest): Observable<Post> {
+  updatePost(postData: UpdateInterviewRequest): Observable<Post> {
     return this.http.put<Post>(`${this.baseUrl}/post`, postData);
   }
 }

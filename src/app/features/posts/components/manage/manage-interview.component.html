@@ -1,10 +1,10 @@
 <div class="post-create-container">
-  <h2>{{ isEditMode ? 'Edit Post' : 'Create New Post' }}</h2>
-  
+  <h2>{{ isEditMode ? 'Edit Post' : 'Create New Interview' }}</h2>
+
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Title</mat-label>
-      <input matInput formControlName="title" placeholder="Enter post title" />
+      <input matInput formControlName="title" placeholder="Enter intevirew title" />
       <mat-error *ngIf="postForm.get('title')?.hasError('required')">
         Title is required
       </mat-error>
@@ -15,7 +15,7 @@
       <textarea
         matInput
         formControlName="content"
-        placeholder="Enter post content"
+        placeholder="Enter intevirew content"
         rows="10"
       ></textarea>
       <mat-error *ngIf="postForm.get('content')?.hasError('required')">
@@ -32,12 +32,12 @@
         accept="image/*"
         style="display: none"
       >
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="button" 
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
         (click)="fileInput.click()"
-        class="upload-button"
+        class="upload-button mat-elevation-z2"
       >
         <mat-icon>add_photo_alternate</mat-icon>
         Select Images
@@ -52,10 +52,10 @@
       <div class="preview-item" *ngFor="let preview of imagePreviews; let i = index">
         <div class="preview-image-container">
           <img [src]="preview.url" [alt]="preview.file.name" class="preview-image">
-          <button 
-            mat-icon-button 
-            color="warn" 
-            class="remove-button"
+          <button
+            mat-icon-button
+            color="warn"
+            class="remove-button mat-elevation-z2"
             type="button"
             (click)="removeImage(i)"
           >
@@ -94,13 +94,14 @@
     </div>
 
     <div class="button-container">
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="submit" 
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
         [disabled]="!postForm.valid || isUploading"
+        class="mat-elevation-z2"
       >
-        {{ isEditMode ? 'Update Post' : 'Create Post' }}
+        {{ isEditMode ? 'Update Interview' : 'Create Interview' }}
       </button>
     </div>
   </form>

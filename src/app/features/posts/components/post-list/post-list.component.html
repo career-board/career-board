@@ -1,6 +1,6 @@
 <div class="posts-container">
   @if (posts && posts.length) {
-    @for (post of posts; track post?.postId) {
+    @for (post of posts; track post?.interviewId) {
       <app-post [post]="post"></app-post>
     }
   } @else {

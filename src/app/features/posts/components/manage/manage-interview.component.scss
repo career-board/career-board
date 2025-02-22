@@ -1,3 +1,10 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow-y: auto;
+  padding-bottom: 2rem;
+}
+
 .post-create-container {
   max-width: 800px;
   margin: 2rem auto;
@@ -86,9 +93,14 @@
 }
 
 .button-container {
-  margin-top: 1rem;
+  margin: 2rem 0;
   display: flex;
   justify-content: flex-end;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 1rem 0;
+  z-index: 1;
 
   button {
     min-width: 120px;

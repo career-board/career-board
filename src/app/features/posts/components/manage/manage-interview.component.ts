@@ -17,9 +17,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../../../../core/services/auth.service';
-import { CreatePostRequest } from '../../models/create-post-request.model';
+import { CreateInterviewRequest } from '../../models/create-post-request.model';
 import { PresignImageResponse } from '../../models/presign-image-response.model';
-import { UpdatePostRequest } from '../../models/update-post-request.model';
+import { UpdateInterviewRequest } from '../../models/update-post-request.model';
 import { ImageService } from '../../services/image.service';
 import { PostService } from '../../services/post.service';
 import { postImage } from '../../models/post-image.model';
@@ -31,7 +31,7 @@ interface ImagePreview {
 }
 
 @Component({
-  selector: 'app-post-manage',
+  selector: 'app-manage-interview',
   standalone: true,
   imports: [
     CommonModule,
@@ -43,10 +43,10 @@ interface ImagePreview {
     MatProgressBarModule,
     MatIconModule,
   ],
-  templateUrl: './manage-create.component.html',
-  styleUrls: ['./manage-create.component.scss'],
+  templateUrl: './manage-interview.component.html',
+  styleUrls: ['./manage-interview.component.scss'],
 })
-export class PostCreateComponent implements OnInit {
+export class ManageInterviewComponent implements OnInit {
   postForm: FormGroup;
   selectedFiles: File[] = [];
   uploadProgress: number = 0;
@@ -79,13 +79,13 @@ export class PostCreateComponent implements OnInit {
   ngOnInit() {
     const state = window.history.state as { post: Post } | undefined;
     console.log('State:', state);
-    
+
     if (state?.post) {
       // Use the post data from router state
       this.isEditMode = true;
-      this.postId = state.post.postId?.toString() || null;
+      this.postId = state.post.interviewId?.toString() || null;
       this.currentPost = state.post;
-      
+
       // Check if user has permission to edit
       const userId = this.authService.getUserId();
       if (state.post.userId.toString() != userId && !this.canModerate) {
@@ -101,7 +101,7 @@ export class PostCreateComponent implements OnInit {
       }
 
       this.postForm.patchValue({
-        title: state.post.title,
+        title: state.post.description,
         content: state.post.content,
         status: state.post.status,
         moderatorComment: state.post.moderatorComment
@@ -152,7 +152,7 @@ export class PostCreateComponent implements OnInit {
               }
 
               this.postForm.patchValue({
-                title: post.title,
+                title: post.description,
                 content: post.content,
                 status: post.status,
                 moderatorComment: post.moderatorComment
@@ -276,10 +276,10 @@ export class PostCreateComponent implements OnInit {
 
         if (this.isEditMode && this.postId) {
           console.log('Update Post');
-          const postData: UpdatePostRequest = {
-            postId: Number(this.postId), // Convert string to number
+          const interviewData: UpdateInterviewRequest = {
+            interviewId: Number(this.postId),
             userId: this.currentPost!.userId,
-            title: this.postForm!.get('title')!.value,
+            description: this.postForm!.get('title')!.value,
             content: this.postForm.get('content')!.value,
             images: this.mergeImageLists(
               uploadedImages,
@@ -288,9 +288,9 @@ export class PostCreateComponent implements OnInit {
             status: this.postForm.get('status')!.value,
             moderatorComment: moderatorComment,
           };
-          this.postService.updatePost(postData as UpdatePostRequest).subscribe({
+          this.postService.updatePost(interviewData as UpdateInterviewRequest).subscribe({
             next: (response) => {
-              this.snackBar.open('Post updated successfully!', 'Close', {
+              this.snackBar.open('Interview updated successfully!', 'Close', {
                 duration: 3000,
               });
               this.router.navigate(['/dashboard/post', this.postId]);
@@ -307,32 +307,25 @@ export class PostCreateComponent implements OnInit {
           });
         } else {
           console.log('Create Post');
-          const postData: {
-            title: string;
-            content: string;
-            imageNames: string[];
-            status: string;
-            moderatorComment?: string;
-            userId: number;
-            postId?: number;
-          } = {
-            title: this.postForm.get('title')?.value,
+          const postData: CreateInterviewRequest = {
+            description: this.postForm.get('title')?.value,
             content: this.postForm.get('content')?.value,
             imageNames: uploadedImages,
             status: this.postForm.get('status')?.value,
             userId: Number(this.authService.getUserId()),
+            moderatorComment: moderatorComment,
           };
-          this.postService.createPost(postData as CreatePostRequest).subscribe({
+          this.postService.createPost(postData).subscribe({
             next: (response) => {
               if (typeof response === 'string') {
                 this.snackBar.open(response, 'Close', {
                   duration: 3000,
                 });
               } else {
-                this.snackBar.open('Post created successfully!', 'Close', {
+                this.snackBar.open('Interview created successfully!', 'Close', {
                   duration: 3000,
                 });
-                this.router.navigate(['/dashboard/post', response.postId]);
+                this.router.navigate(['/dashboard/post', response.interviewId]);
               }
             },
             error: (error) => {

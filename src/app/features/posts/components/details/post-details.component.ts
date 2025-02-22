@@ -66,18 +66,18 @@ export class PostDetailsComponent implements OnInit {
     console.log(this.post);
     const userId = this.authService.getUserId();
     const userRole = this.authService.getUserRole();
-    
+
     console.log(this.post.userId, userId);
     // User can edit if they are the author or if they are a moderator/admin
-    this.canEdit = 
+    this.canEdit =
       this.post.userId?.toString() == userId ||
-      userRole === 'MODERATOR' || 
+      userRole === 'MODERATOR' ||
       userRole === 'ADMIN';
   }
 
   onEditClick() {
     if (this.post) {
-      this.router.navigate(['/dashboard/post/edit', this.post.postId], {
+      this.router.navigate(['/dashboard/post/edit', this.post.interviewId], {
         state: { post: this.post },
         skipLocationChange: false
       });

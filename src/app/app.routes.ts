@@ -76,8 +76,8 @@ export const routes: Routes = [
         path: 'post/edit/:id',
         loadComponent: () =>
           import(
-            './features/posts/components/manage/manage-create.component'
-          ).then((m) => m.PostCreateComponent),
+            './features/posts/components/manage/manage-interview.component'
+          ).then((m) => m.ManageInterviewComponent),
         canActivate: [authGuard],
       },
       {
@@ -95,8 +95,8 @@ export const routes: Routes = [
         path: 'manage-post',
         loadComponent: () =>
           import(
-            './features/posts/components/manage/manage-create.component'
-          ).then((m) => m.PostCreateComponent),
+            './features/posts/components/manage/manage-interview.component'
+          ).then((m) => m.ManageInterviewComponent),
         canActivate: [authGuard],
       },
     ],

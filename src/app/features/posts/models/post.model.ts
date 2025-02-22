@@ -1,8 +1,8 @@
 import { postImage } from "./post-image.model";
 
 export interface Post {
-  postId: number;
-  title: string;
+  interviewId: number;
+  description: string;
   content: string;
   createdAt: string;
   userId: number;

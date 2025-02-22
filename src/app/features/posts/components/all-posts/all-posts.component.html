@@ -1,7 +1,7 @@
 <div class="all-posts-container">
   <div class="content-wrapper">
     <div class="posts-grid">
-      @for (post of posts; track post.postId) {
+      @for (post of posts; track post.interviewId) {
         <app-post [post]="post"></app-post>
       }
     </div>

@@ -5,4 +5,5 @@ export interface CreateInterviewRequest {
     imageNames: string[];
     status: "DRAFT" | "PUBLISHED";
     moderatorComment?: string;
+    typeId?: number;
 }

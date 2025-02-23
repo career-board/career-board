@@ -66,7 +66,7 @@ export class ManageInterviewComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
-      title: ['', [Validators.required]],
+      description: ['', [Validators.required]],
       content: ['', [Validators.required]],
       status: ['DRAFT', [Validators.required]],
       moderatorComment: [''],
@@ -101,7 +101,7 @@ export class ManageInterviewComponent implements OnInit {
       }
 
       this.postForm.patchValue({
-        title: state.post.description,
+        description: state.post.description,
         content: state.post.content,
         status: state.post.status,
         moderatorComment: state.post.moderatorComment
@@ -152,7 +152,7 @@ export class ManageInterviewComponent implements OnInit {
               }
 
               this.postForm.patchValue({
-                title: post.description,
+                description: post.description,
                 content: post.content,
                 status: post.status,
                 moderatorComment: post.moderatorComment
@@ -279,7 +279,7 @@ export class ManageInterviewComponent implements OnInit {
           const interviewData: UpdateInterviewRequest = {
             interviewId: Number(this.postId),
             userId: this.currentPost!.userId,
-            description: this.postForm!.get('title')!.value,
+            description: this.postForm!.get('description')!.value,
             content: this.postForm.get('content')!.value,
             images: this.mergeImageLists(
               uploadedImages,
@@ -287,6 +287,7 @@ export class ManageInterviewComponent implements OnInit {
             ),
             status: this.postForm.get('status')!.value,
             moderatorComment: moderatorComment,
+            typeId: 2,
           };
           this.postService.updatePost(interviewData as UpdateInterviewRequest).subscribe({
             next: (response) => {
@@ -308,12 +309,13 @@ export class ManageInterviewComponent implements OnInit {
         } else {
           console.log('Create Post');
           const postData: CreateInterviewRequest = {
-            description: this.postForm.get('title')?.value,
+            description: this.postForm.get('description')?.value,
             content: this.postForm.get('content')?.value,
             imageNames: uploadedImages,
             status: this.postForm.get('status')?.value,
             userId: Number(this.authService.getUserId()),
             moderatorComment: moderatorComment,
+            typeId: 2,
           };
           this.postService.createPost(postData).subscribe({
             next: (response) => {

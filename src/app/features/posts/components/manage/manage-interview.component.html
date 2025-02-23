@@ -3,10 +3,10 @@
 
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" placeholder="Enter intevirew title" />
-      <mat-error *ngIf="postForm.get('title')?.hasError('required')">
-        Title is required
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" placeholder="Enter intevirew Description" />
+      <mat-error *ngIf="postForm.get('description')?.hasError('required')">
+        Description is required
       </mat-error>
     </mat-form-field>
 

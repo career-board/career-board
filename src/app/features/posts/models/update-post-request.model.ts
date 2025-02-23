@@ -9,4 +9,5 @@ export interface UpdateInterviewRequest {
   images: postImage[];
   status: string;
   moderatorComment?: string;
+  typeId?: number;
 }

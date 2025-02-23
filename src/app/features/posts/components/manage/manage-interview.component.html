@@ -1,10 +1,14 @@
 <div class="post-create-container">
-  <h2>{{ isEditMode ? 'Edit Post' : 'Create New Interview' }}</h2>
+  <h2>{{ isEditMode ? "Edit Post" : "Create New Interview" }}</h2>
 
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Description</mat-label>
-      <input matInput formControlName="description" placeholder="Enter intevirew Description" />
+      <input
+        matInput
+        formControlName="description"
+        placeholder="Enter intevirew Description"
+      />
       <mat-error *ngIf="postForm.get('description')?.hasError('required')">
         Description is required
       </mat-error>
@@ -18,8 +22,35 @@
         optionLabel="name"
         optionValue="typeId"
         placeholder="Select Interview Type"
-        [style]="{'width': '100%'}"
+        [style]="{ width: '100%' }"
       ></p-dropdown>
+    </div>
+
+    <div class="form-row">
+      <div class="form-col">
+        <label class="form-label">Company</label>
+        <span class="p-fluid">
+          <input
+            type="text"
+            pInputText
+            formControlName="company"
+            placeholder="Enter company name"
+            [style]="{ width: '100%' }"
+          />
+        </span>
+      </div>
+
+      <div class="form-col">
+        <label class="form-label">Interview Date</label>
+        <p-calendar
+          formControlName="interviewDate"
+          [showTime]="false"
+          [showIcon]="true"
+          [style]="{ width: '100%' }"
+          dateFormat="yy-mm-dd"
+          placeholder="Select interview date"
+        ></p-calendar>
+      </div>
     </div>
 
     <mat-form-field appearance="fill" class="full-width">
@@ -43,7 +74,7 @@
         multiple
         accept="image/*"
         style="display: none"
-      >
+      />
       <button
         mat-raised-button
         color="primary"
@@ -61,9 +92,16 @@
 
     <!-- Image Previews -->
     <div class="image-previews" *ngIf="imagePreviews.length > 0">
-      <div class="preview-item" *ngFor="let preview of imagePreviews; let i = index">
+      <div
+        class="preview-item"
+        *ngFor="let preview of imagePreviews; let i = index"
+      >
         <div class="preview-image-container">
-          <img [src]="preview.url" [alt]="preview.file.name" class="preview-image">
+          <img
+            [src]="preview.url"
+            [alt]="preview.file.name"
+            class="preview-image"
+          />
           <button
             mat-icon-button
             color="warn"
@@ -113,7 +151,7 @@
         [disabled]="!postForm.valid || isUploading"
         class="mat-elevation-z2"
       >
-        {{ isEditMode ? 'Update Interview' : 'Create Interview' }}
+        {{ isEditMode ? "Update Interview" : "Create Interview" }}
       </button>
     </div>
   </form>

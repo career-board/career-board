@@ -13,4 +13,6 @@ export interface Post {
   moderatorComment?: string;
   images: postImage[];
   typeId: number;
+  company: string;
+  interviewDate: string;
 }

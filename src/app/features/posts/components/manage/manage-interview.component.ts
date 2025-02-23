@@ -10,6 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { CalendarModule } from 'primeng/calendar';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CreateInterviewRequest } from '../../models/create-post-request.model';
 import { UpdateInterviewRequest } from '../../models/update-post-request.model';
@@ -21,7 +23,7 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
-import {PresignImageResponse} from '../../models/presign-image-response.model';
+import { PresignImageResponse } from '../../models/presign-image-response.model';
 
 interface ImagePreview {
   file: File;
@@ -42,7 +44,9 @@ interface ImagePreview {
     MatSelectModule,
     MatProgressBarModule,
     MatIconModule,
-    DropdownModule
+    DropdownModule,
+    InputTextModule,
+    CalendarModule
   ]
 })
 export class ManageInterviewComponent implements OnInit {
@@ -56,6 +60,7 @@ export class ManageInterviewComponent implements OnInit {
   currentPost: Post | null = null;
   canModerate: boolean = false;
   interviewTypes: any[] = [];
+  existingImages: postImage[] = [];
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
@@ -72,6 +77,8 @@ export class ManageInterviewComponent implements OnInit {
       status: ['DRAFT', [Validators.required]],
       moderatorComment: [''],
       typeId: [null, [Validators.required]],
+      company: ['', [Validators.required]],
+      interviewDate: [null, [Validators.required]],
     });
 
     const userRole = this.authService.getUserRole();
@@ -84,7 +91,6 @@ export class ManageInterviewComponent implements OnInit {
     console.log('State:', state);
 
     if (state?.post) {
-      // Use the post data from router state
       this.isEditMode = true;
       this.postId = state.post.interviewId?.toString() || null;
       this.currentPost = state.post;
@@ -109,10 +115,13 @@ export class ManageInterviewComponent implements OnInit {
         status: state.post.status,
         moderatorComment: state.post.moderatorComment,
         typeId: state.post.typeId,
+        company: state.post.company,
+        interviewDate: new Date(state.post.interviewDate),
       });
 
       // Load existing images
       if (state.post.images) {
+        this.existingImages = state.post.images;
         state.post.images.forEach((image) => {
           this.imagePreviews.push({
             file: new File([], image.imageName),
@@ -161,10 +170,13 @@ export class ManageInterviewComponent implements OnInit {
                 status: post.status,
                 moderatorComment: post.moderatorComment,
                 typeId: post.typeId,
+                company: post.company,
+                interviewDate: new Date(post.interviewDate),
               });
 
               // Load existing images
               if (post.images) {
+                this.existingImages = post.images;
                 post.images.forEach((image) => {
                   this.imagePreviews.push({
                     file: new File([], image.imageName),
@@ -305,11 +317,13 @@ export class ManageInterviewComponent implements OnInit {
             content: this.postForm.get('content')!.value,
             images: this.mergeImageLists(
               uploadedImages,
-              this.currentPost!.images
+              this.existingImages
             ),
             status: this.postForm.get('status')!.value,
             moderatorComment: moderatorComment,
             typeId: this.postForm.get('typeId')!.value,
+            company: this.postForm.get('company')!.value,
+            interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
           };
           this.postService.updatePost(interviewData as UpdateInterviewRequest).subscribe({
             next: (response) => {
@@ -338,6 +352,8 @@ export class ManageInterviewComponent implements OnInit {
             userId: Number(this.authService.getUserId()),
             moderatorComment: moderatorComment,
             typeId: this.postForm.get('typeId')!.value,
+            company: this.postForm.get('company')!.value,
+            interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
           };
           this.postService.createPost(postData).subscribe({
             next: (response) => {

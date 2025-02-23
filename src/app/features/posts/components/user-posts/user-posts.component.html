@@ -1,15 +1,10 @@
 <mat-card class="user-card" (click)="navigateToPostTimeline()">
   <mat-card-header>
     <div class="avatar" mat-card-avatar>
-      {{
-        (user().firstName.charAt(0) || "") + (user().lastName.charAt(0) || "")
-          | uppercase
-      }}
+      {{ (user().username.charAt(0) || "") | uppercase }}
     </div>
     <div class="header-content">
-      <mat-card-title
-        >{{ user().firstName }} {{ user().lastName }}</mat-card-title
-      >
+      <mat-card-title>{{ user().username }}</mat-card-title>
       <mat-card-subtitle>{{ user().username }}</mat-card-subtitle>
     </div>
     <div class="role-badge" [ngClass]="user().role.toLowerCase()">

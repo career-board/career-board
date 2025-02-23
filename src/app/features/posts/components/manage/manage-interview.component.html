@@ -2,17 +2,23 @@
   <h2>{{ isEditMode ? "Edit Post" : "Create New Interview" }}</h2>
 
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Description</mat-label>
-      <input
-        matInput
-        formControlName="description"
-        placeholder="Enter intevirew Description"
-      />
-      <mat-error *ngIf="postForm.get('description')?.hasError('required')">
+    <div class="full-width">
+      <label class="form-label">Description</label>
+      <span class="p-fluid">
+        <input
+          type="text"
+          pInputText
+          formControlName="description"
+          placeholder="Enter interview Description"
+          [style]="{ width: '100%' }"
+        />
+      </span>
+      @if (isDescriptionInvalid()) {
+      <small class="p-error">
         Description is required
-      </mat-error>
-    </mat-form-field>
+      </small>
+      }
+    </div>
 
     <div class="full-width">
       <label class="form-label">Interview Type</label>

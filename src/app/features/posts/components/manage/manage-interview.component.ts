@@ -329,6 +329,13 @@ export class ManageInterviewComponent implements OnInit {
     );
   }
 
+  isDescriptionInvalid(): boolean {
+    return (
+      this.postForm.get('description')!.invalid &&
+      this.postForm.get('description')!.touched
+    );
+  }
+
   async onSubmit() {
     if (this.postForm.valid) {
       try {

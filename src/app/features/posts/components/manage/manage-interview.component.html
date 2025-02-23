@@ -60,32 +60,23 @@
         <label class="form-label">Interview Date</label>
         <p-calendar
           formControlName="interviewDate"
-          [showTime]="false"
           [showIcon]="true"
+          [showTime]="true"
           [style]="{ width: '100%' }"
-          dateFormat="yy-mm-dd"
-          placeholder="Select interview date"
         ></p-calendar>
         @if (isInterviewDateInvalid()) {
-        <small class="p-error">
-          Interview Date is required
-        </small>
+        <small class="p-error">Interview Date is required</small>
         }
       </div>
     </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Content</mat-label>
-      <textarea
-        matInput
-        formControlName="content"
-        placeholder="Enter intevirew content"
-        rows="10"
-      ></textarea>
-      <mat-error *ngIf="postForm.get('content')?.hasError('required')">
-        Content is required
-      </mat-error>
-    </mat-form-field>
+    <div class="full-width">
+      <app-tabview-editor
+        formControlName="editorContent"
+        [readonly]="false"
+        [showEditorial]="canModerate"
+      ></app-tabview-editor>
+    </div>
 
     <div class="image-upload-section">
       <input
@@ -151,18 +142,6 @@
         <mat-option value="PUBLISHED">Published</mat-option>
       </mat-select>
     </mat-form-field>
-
-    <div *ngIf="canModerate" class="moderator-section">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Moderator Comment</mat-label>
-        <textarea
-          matInput
-          formControlName="moderatorComment"
-          placeholder="Add moderator comment"
-          rows="3"
-        ></textarea>
-      </mat-form-field>
-    </div>
 
     <div class="button-container">
       <button

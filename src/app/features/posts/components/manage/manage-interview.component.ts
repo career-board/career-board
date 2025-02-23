@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
+import { EditorModule } from 'primeng/editor';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CreateInterviewRequest } from '../../models/create-post-request.model';
 import { UpdateInterviewRequest } from '../../models/update-post-request.model';
@@ -29,6 +25,7 @@ import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { PresignImageResponse } from '../../models/presign-image-response.model';
+import { TabviewEditorComponent } from '../../../../shared/components/tabview-editor/tabview-editor.component';
 
 interface ImagePreview {
   file: File;
@@ -42,6 +39,7 @@ interface ImagePreview {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -52,6 +50,8 @@ interface ImagePreview {
     DropdownModule,
     InputTextModule,
     CalendarModule,
+    EditorModule,
+    TabviewEditorComponent,
   ],
 })
 export class ManageInterviewComponent implements OnInit {
@@ -66,6 +66,7 @@ export class ManageInterviewComponent implements OnInit {
   canModerate: boolean = false;
   interviewTypes: any[] = [];
   existingImages: postImage[] = [];
+  text: string = '';
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
@@ -78,12 +79,14 @@ export class ManageInterviewComponent implements OnInit {
   constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
       description: ['', [Validators.required]],
-      content: ['', [Validators.required]],
       status: ['DRAFT', [Validators.required]],
-      moderatorComment: [''],
       typeId: [null, [Validators.required]],
       company: ['', [Validators.required]],
-      interviewDate: [null, [Validators.required]],
+      interviewDate: ['', [Validators.required]],
+      editorContent: this.fb.group({
+        details: [''],
+        editorial: [''],
+      }),
     });
 
     const userRole = this.authService.getUserRole();
@@ -116,12 +119,15 @@ export class ManageInterviewComponent implements OnInit {
 
       this.postForm.patchValue({
         description: state.post.description,
-        content: state.post.content,
-        status: state.post.status,
-        moderatorComment: state.post.moderatorComment,
         typeId: state.post.typeId,
         company: state.post.company,
-        interviewDate: new Date(state.post.interviewDate),
+        interviewDate: state.post.interviewDate
+          ? new Date(state.post.interviewDate)
+          : null,
+        editorContent: {
+          details: state.post.content || '',
+          editorial: state.post.moderatorComment || '',
+        },
       });
 
       // Load existing images
@@ -169,12 +175,15 @@ export class ManageInterviewComponent implements OnInit {
 
               this.postForm.patchValue({
                 description: post.description,
-                content: post.content,
-                status: post.status,
-                moderatorComment: post.moderatorComment,
                 typeId: post.typeId,
                 company: post.company,
-                interviewDate: new Date(post.interviewDate),
+                interviewDate: post.interviewDate
+                  ? new Date(post.interviewDate)
+                  : null,
+                editorContent: {
+                  details: post.content || '',
+                  editorial: post.moderatorComment || '',
+                },
               });
 
               // Load existing images
@@ -342,7 +351,7 @@ export class ManageInterviewComponent implements OnInit {
         this.isUploading = true;
 
         if (this.isEditMode && this.postId) {
-          this.updateInterview()
+          this.updateInterview();
         } else {
           this.createInterview();
         }
@@ -364,6 +373,7 @@ export class ManageInterviewComponent implements OnInit {
   private createInterview() {
     console.log('Create Post');
     const postData: CreateInterviewRequest = this.mapToCreateInterviewRequest();
+    console.log(postData);
     this.postService.createPost(postData).subscribe({
       next: (response) => {
         if (typeof response === 'string') {
@@ -378,32 +388,29 @@ export class ManageInterviewComponent implements OnInit {
         }
       },
       error: (error) => {
-        this.snackBar.open(
-            'Error creating post: ' + error.message,
-            'Close',
-            {
-              duration: 3000,
-            }
-        );
+        this.snackBar.open('Error creating post: ' + error.message, 'Close', {
+          duration: 3000,
+        });
       },
     });
   }
 
   private mapToCreateInterviewRequest() {
-
     const uploadedImages = this.selectedFiles.map((file) => file.name);
     console.log(uploadedImages);
     let moderatorComment = '';
     if (this.canModerate) {
-      moderatorComment = this.postForm.get('moderatorComment')!.value;
+      moderatorComment =
+        this.postForm.get('editorContent')?.get('editorial')?.value || '';
     }
+    console.log(moderatorComment);
 
     const postData: CreateInterviewRequest = {
       description: this.postForm.get('description')?.value,
-      content: this.postForm.get('content')?.value,
       imageNames: uploadedImages,
       status: this.postForm.get('status')?.value,
       userId: Number(this.authService.getUserId()),
+      content: this.postForm.get('editorContent')?.get('details')?.value || '',
       moderatorComment: moderatorComment,
       typeId: this.postForm.get('typeId')!.value,
       company: this.postForm.get('company')!.value,
@@ -413,24 +420,21 @@ export class ManageInterviewComponent implements OnInit {
   }
 
   private mapToUpdateInterviewRequest() {
-
     const uploadedImages = this.selectedFiles.map((file) => file.name);
     console.log(uploadedImages);
     let moderatorComment = '';
     if (this.canModerate) {
-      moderatorComment = this.postForm.get('moderatorComment')!.value;
+      moderatorComment =
+        this.postForm.get('editorContent')?.get('editorial')?.value || '';
     }
 
     const interviewData: UpdateInterviewRequest = {
       interviewId: Number(this.postId),
       userId: this.currentPost!.userId,
       description: this.postForm!.get('description')!.value,
-      content: this.postForm.get('content')!.value,
-      images: this.mergeImageLists(
-          uploadedImages,
-          this.existingImages
-      ),
+      images: this.mergeImageLists(uploadedImages, this.existingImages),
       status: this.postForm.get('status')!.value,
+      content: this.postForm.get('editorContent')?.get('details')?.value || '',
       moderatorComment: moderatorComment,
       typeId: this.postForm.get('typeId')!.value,
       company: this.postForm.get('company')!.value,
@@ -441,7 +445,8 @@ export class ManageInterviewComponent implements OnInit {
 
   private updateInterview() {
     console.log('Update Post');
-    const interviewData: UpdateInterviewRequest = this.mapToUpdateInterviewRequest();
+    const interviewData: UpdateInterviewRequest =
+      this.mapToUpdateInterviewRequest();
     this.postService.updatePost(interviewData).subscribe({
       next: (response) => {
         this.snackBar.open('Interview updated successfully!', 'Close', {
@@ -450,13 +455,9 @@ export class ManageInterviewComponent implements OnInit {
         this.router.navigate(['/dashboard/post', this.postId]);
       },
       error: (error) => {
-        this.snackBar.open(
-            'Error updating post: ' + error.message,
-            'Close',
-            {
-              duration: 3000,
-            }
-        );
+        this.snackBar.open('Error updating post: ' + error.message, 'Close', {
+          duration: 3000,
+        });
       },
     });
   }

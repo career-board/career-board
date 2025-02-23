@@ -147,13 +147,13 @@
 :host ::ng-deep {
   .p-dropdown {
     width: 100%;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.25rem;
   }
 
   .p-fluid {
     width: 100%;
     display: block;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.25rem;
 
     .p-inputtext {
       width: 100%;
@@ -162,6 +162,26 @@
 
   .p-calendar {
     width: 100%;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .p-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+  margin-bottom: 1.25rem;
+
+  .form-col {
+    flex: 1;
+    padding: 0 10px;
+    min-width: 250px;
   }
 }

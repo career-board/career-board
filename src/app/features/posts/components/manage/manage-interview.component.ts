@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -46,8 +51,8 @@ interface ImagePreview {
     MatIconModule,
     DropdownModule,
     InputTextModule,
-    CalendarModule
-  ]
+    CalendarModule,
+  ],
 })
 export class ManageInterviewComponent implements OnInit {
   postForm: FormGroup;
@@ -128,9 +133,7 @@ export class ManageInterviewComponent implements OnInit {
             url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
           });
         });
-        this.selectedFiles = this.imagePreviews.map(
-          (preview) => preview.file
-        );
+        this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
       }
     } else {
       // If no state data, check if we're in edit mode via URL
@@ -190,29 +193,39 @@ export class ManageInterviewComponent implements OnInit {
             }
           },
           error: (error) => {
-            this.snackBar.open('Error loading post: ' + error.message, 'Close', {
-              duration: 3000,
-            });
+            this.snackBar.open(
+              'Error loading post: ' + error.message,
+              'Close',
+              {
+                duration: 3000,
+              }
+            );
           },
         });
     }
   }
 
   private loadInterviewTypes() {
-    this.http.get<any[]>(`${environment.apiUrl}/api/interview-types`).subscribe({
-      next: (types) => {
-        this.interviewTypes = types.map((type) => ({
-          ...type,
-          name: type.name.replace(/_/g, ' ').toLowerCase()
-            .split(' ')
-            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' '),
-        }));
-      },
-      error: (error) => {
-        console.error('Error loading interview types:', error);
-      },
-    });
+    this.http
+      .get<any[]>(`${environment.apiUrl}/api/interview-types`)
+      .subscribe({
+        next: (types) => {
+          this.interviewTypes = types.map((type) => ({
+            ...type,
+            name: type.name
+              .replace(/_/g, ' ')
+              .toLowerCase()
+              .split(' ')
+              .map(
+                (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
+              )
+              .join(' '),
+          }));
+        },
+        error: (error) => {
+          console.error('Error loading interview types:', error);
+        },
+      });
   }
 
   onFileSelected(event: any) {
@@ -295,89 +308,36 @@ export class ManageInterviewComponent implements OnInit {
     }));
   }
 
+  isInterviewDateInvalid(): boolean {
+    return (
+      this.postForm.get('interviewDate')!.invalid &&
+      this.postForm.get('interviewDate')!.touched
+    );
+  }
+
+  isCompanyInvalid(): boolean {
+    return (
+      this.postForm.get('company')!.invalid &&
+      this.postForm.get('company')!.touched
+    );
+  }
+
+  isTypeIdInvalid(): boolean {
+    return (
+      this.postForm.get('typeId')!.invalid &&
+      this.postForm.get('typeId')!.touched
+    );
+  }
+
   async onSubmit() {
     if (this.postForm.valid) {
       try {
         this.isUploading = true;
 
-        // Create post with image names
-        const uploadedImages = this.selectedFiles.map((file) => file.name);
-        console.log(uploadedImages);
-        let moderatorComment = '';
-        if (this.canModerate) {
-          moderatorComment = this.postForm.get('moderatorComment')!.value;
-        }
-
         if (this.isEditMode && this.postId) {
-          console.log('Update Post');
-          const interviewData: UpdateInterviewRequest = {
-            interviewId: Number(this.postId),
-            userId: this.currentPost!.userId,
-            description: this.postForm!.get('description')!.value,
-            content: this.postForm.get('content')!.value,
-            images: this.mergeImageLists(
-              uploadedImages,
-              this.existingImages
-            ),
-            status: this.postForm.get('status')!.value,
-            moderatorComment: moderatorComment,
-            typeId: this.postForm.get('typeId')!.value,
-            company: this.postForm.get('company')!.value,
-            interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
-          };
-          this.postService.updatePost(interviewData as UpdateInterviewRequest).subscribe({
-            next: (response) => {
-              this.snackBar.open('Interview updated successfully!', 'Close', {
-                duration: 3000,
-              });
-              this.router.navigate(['/dashboard/post', this.postId]);
-            },
-            error: (error) => {
-              this.snackBar.open(
-                'Error updating post: ' + error.message,
-                'Close',
-                {
-                  duration: 3000,
-                }
-              );
-            },
-          });
+          this.updateInterview()
         } else {
-          console.log('Create Post');
-          const postData: CreateInterviewRequest = {
-            description: this.postForm.get('description')?.value,
-            content: this.postForm.get('content')?.value,
-            imageNames: uploadedImages,
-            status: this.postForm.get('status')?.value,
-            userId: Number(this.authService.getUserId()),
-            moderatorComment: moderatorComment,
-            typeId: this.postForm.get('typeId')!.value,
-            company: this.postForm.get('company')!.value,
-            interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
-          };
-          this.postService.createPost(postData).subscribe({
-            next: (response) => {
-              if (typeof response === 'string') {
-                this.snackBar.open(response, 'Close', {
-                  duration: 3000,
-                });
-              } else {
-                this.snackBar.open('Interview created successfully!', 'Close', {
-                  duration: 3000,
-                });
-                this.router.navigate(['/dashboard/post', response.interviewId]);
-              }
-            },
-            error: (error) => {
-              this.snackBar.open(
-                'Error creating post: ' + error.message,
-                'Close',
-                {
-                  duration: 3000,
-                }
-              );
-            },
-          });
+          this.createInterview();
         }
       } catch (error: any) {
         this.snackBar.open(
@@ -392,5 +352,105 @@ export class ManageInterviewComponent implements OnInit {
         this.uploadProgress = 0;
       }
     }
+  }
+
+  private createInterview() {
+    console.log('Create Post');
+    const postData: CreateInterviewRequest = this.mapToCreateInterviewRequest();
+    this.postService.createPost(postData).subscribe({
+      next: (response) => {
+        if (typeof response === 'string') {
+          this.snackBar.open(response, 'Close', {
+            duration: 3000,
+          });
+        } else {
+          this.snackBar.open('Interview created successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.router.navigate(['/dashboard/post', response.interviewId]);
+        }
+      },
+      error: (error) => {
+        this.snackBar.open(
+            'Error creating post: ' + error.message,
+            'Close',
+            {
+              duration: 3000,
+            }
+        );
+      },
+    });
+  }
+
+  private mapToCreateInterviewRequest() {
+
+    const uploadedImages = this.selectedFiles.map((file) => file.name);
+    console.log(uploadedImages);
+    let moderatorComment = '';
+    if (this.canModerate) {
+      moderatorComment = this.postForm.get('moderatorComment')!.value;
+    }
+
+    const postData: CreateInterviewRequest = {
+      description: this.postForm.get('description')?.value,
+      content: this.postForm.get('content')?.value,
+      imageNames: uploadedImages,
+      status: this.postForm.get('status')?.value,
+      userId: Number(this.authService.getUserId()),
+      moderatorComment: moderatorComment,
+      typeId: this.postForm.get('typeId')!.value,
+      company: this.postForm.get('company')!.value,
+      interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
+    };
+    return postData;
+  }
+
+  private mapToUpdateInterviewRequest() {
+
+    const uploadedImages = this.selectedFiles.map((file) => file.name);
+    console.log(uploadedImages);
+    let moderatorComment = '';
+    if (this.canModerate) {
+      moderatorComment = this.postForm.get('moderatorComment')!.value;
+    }
+
+    const interviewData: UpdateInterviewRequest = {
+      interviewId: Number(this.postId),
+      userId: this.currentPost!.userId,
+      description: this.postForm!.get('description')!.value,
+      content: this.postForm.get('content')!.value,
+      images: this.mergeImageLists(
+          uploadedImages,
+          this.existingImages
+      ),
+      status: this.postForm.get('status')!.value,
+      moderatorComment: moderatorComment,
+      typeId: this.postForm.get('typeId')!.value,
+      company: this.postForm.get('company')!.value,
+      interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
+    };
+    return interviewData;
+  }
+
+  private updateInterview() {
+    console.log('Update Post');
+    const interviewData: UpdateInterviewRequest = this.mapToUpdateInterviewRequest();
+    this.postService.updatePost(interviewData).subscribe({
+      next: (response) => {
+        this.snackBar.open('Interview updated successfully!', 'Close', {
+          duration: 3000,
+        });
+        this.router.navigate(['/dashboard/post', this.postId]);
+      },
+      error: (error) => {
+        this.snackBar.open(
+            'Error updating post: ' + error.message,
+            'Close',
+            {
+              duration: 3000,
+            }
+        );
+      },
+    });
   }
 }

@@ -24,6 +24,11 @@
         placeholder="Select Interview Type"
         [style]="{ width: '100%' }"
       ></p-dropdown>
+      @if (isTypeIdInvalid()) {
+      <small class="p-error">
+        Interview Type is required
+      </small>
+      }
     </div>
 
     <div class="form-row">
@@ -38,6 +43,11 @@
             [style]="{ width: '100%' }"
           />
         </span>
+        @if (isCompanyInvalid()) {  
+        <small class="p-error">
+          Company name is required
+        </small>
+        }
       </div>
 
       <div class="form-col">
@@ -50,6 +60,11 @@
           dateFormat="yy-mm-dd"
           placeholder="Select interview date"
         ></p-calendar>
+        @if (isInterviewDateInvalid()) {
+        <small class="p-error">
+          Interview Date is required
+        </small>
+        }
       </div>
     </div>
 

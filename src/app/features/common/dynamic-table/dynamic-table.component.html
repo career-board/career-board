@@ -1,0 +1,29 @@
+<p-table [columns]="cols" [value]="datas" [tableStyle]="{ 'min-width': '50rem' }">
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of cols">
+        {{ col.header }}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData>
+    <tr>
+      <td *ngFor="let col of cols">
+
+
+        <ng-template #defaultCell>
+          <ng-container *ngIf="col.field === 'action'; else textCell">
+
+            <p-button icon="pi pi-pencil" class="p-button-text p-button-sm" (click)="emitEdit(rowData, $event)"></p-button>
+            <p-button icon="pi pi-trash" class="p-button-text p-button-sm" (click)="emitDelete(rowData, $event)"></p-button>
+
+              </ng-container>
+        </ng-template>
+
+        <ng-template #textCell>
+          {{ rowData[col.field] }}
+        </ng-template>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

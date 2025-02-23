@@ -2,12 +2,9 @@
 
 <tr (click)="navigateToPost()" style="cursor: pointer;">
   <td>
-      <div class="user-avatar flex align-items-center justify-content-center font-bold">
-        <img
-        [src]=""
-        [alt]="post.username[0]"
-        class="w-24 rounded"
-    />                </div>
+    <div class="user-avatar flex align-items-center justify-content-center">
+      {{ post.username[0]  }}
+    </div>
   </td>
 
   <td>

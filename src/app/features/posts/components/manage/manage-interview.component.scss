@@ -24,6 +24,7 @@
 
 .full-width {
   width: 100%;
+  margin-bottom: 1.25rem;
 }
 
 .image-upload-section {
@@ -104,5 +105,83 @@
 
   button {
     min-width: 120px;
+  }
+}
+
+.form-label {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+  margin-bottom: 1.25rem;
+
+  .form-col {
+    flex: 1;
+    padding: 0 10px;
+    min-width: 250px; // Ensures columns have minimum width before wrapping
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .form-row {
+    margin: 0;
+    
+    .form-col {
+      flex: 0 0 100%;
+      padding: 0;
+      margin-bottom: 1.25rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+:host ::ng-deep {
+  .p-dropdown {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .p-fluid {
+    width: 100%;
+    display: block;
+    margin-bottom: 0.25rem;
+
+    .p-inputtext {
+      width: 100%;
+    }
+  }
+
+  .p-calendar {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .p-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+  margin-bottom: 1.25rem;
+
+  .form-col {
+    flex: 1;
+    padding: 0 10px;
+    min-width: 250px;
   }
 }

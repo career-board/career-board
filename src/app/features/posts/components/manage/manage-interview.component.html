@@ -1,14 +1,78 @@
 <div class="post-create-container">
-  <h2>{{ isEditMode ? 'Edit Post' : 'Create New Interview' }}</h2>
+  <h2>{{ isEditMode ? "Edit Post" : "Create New Interview" }}</h2>
 
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" placeholder="Enter intevirew title" />
-      <mat-error *ngIf="postForm.get('title')?.hasError('required')">
-        Title is required
-      </mat-error>
-    </mat-form-field>
+    <div class="full-width">
+      <label class="form-label">Description</label>
+      <span class="p-fluid">
+        <input
+          type="text"
+          pInputText
+          formControlName="description"
+          placeholder="Enter interview Description"
+          [style]="{ width: '100%' }"
+        />
+      </span>
+      @if (isDescriptionInvalid()) {
+      <small class="p-error">
+        Description is required
+      </small>
+      }
+    </div>
+
+    <div class="full-width">
+      <label class="form-label">Interview Type</label>
+      <p-dropdown
+        [formControlName]="'typeId'"
+        [options]="interviewTypes"
+        optionLabel="name"
+        optionValue="typeId"
+        placeholder="Select Interview Type"
+        [style]="{ width: '100%' }"
+      ></p-dropdown>
+      @if (isTypeIdInvalid()) {
+      <small class="p-error">
+        Interview Type is required
+      </small>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-col">
+        <label class="form-label">Company</label>
+        <span class="p-fluid">
+          <input
+            type="text"
+            pInputText
+            formControlName="company"
+            placeholder="Enter company name"
+            [style]="{ width: '100%' }"
+          />
+        </span>
+        @if (isCompanyInvalid()) {  
+        <small class="p-error">
+          Company name is required
+        </small>
+        }
+      </div>
+
+      <div class="form-col">
+        <label class="form-label">Interview Date</label>
+        <p-calendar
+          formControlName="interviewDate"
+          [showTime]="false"
+          [showIcon]="true"
+          [style]="{ width: '100%' }"
+          dateFormat="yy-mm-dd"
+          placeholder="Select interview date"
+        ></p-calendar>
+        @if (isInterviewDateInvalid()) {
+        <small class="p-error">
+          Interview Date is required
+        </small>
+        }
+      </div>
+    </div>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Content</mat-label>
@@ -31,7 +95,7 @@
         multiple
         accept="image/*"
         style="display: none"
-      >
+      />
       <button
         mat-raised-button
         color="primary"
@@ -49,9 +113,16 @@
 
     <!-- Image Previews -->
     <div class="image-previews" *ngIf="imagePreviews.length > 0">
-      <div class="preview-item" *ngFor="let preview of imagePreviews; let i = index">
+      <div
+        class="preview-item"
+        *ngFor="let preview of imagePreviews; let i = index"
+      >
         <div class="preview-image-container">
-          <img [src]="preview.url" [alt]="preview.file.name" class="preview-image">
+          <img
+            [src]="preview.url"
+            [alt]="preview.file.name"
+            class="preview-image"
+          />
           <button
             mat-icon-button
             color="warn"
@@ -101,7 +172,7 @@
         [disabled]="!postForm.valid || isUploading"
         class="mat-elevation-z2"
       >
-        {{ isEditMode ? 'Update Interview' : 'Create Interview' }}
+        {{ isEditMode ? "Update Interview" : "Create Interview" }}
       </button>
     </div>
   </form>

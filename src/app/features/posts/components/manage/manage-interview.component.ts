@@ -14,16 +14,21 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { CalendarModule } from 'primeng/calendar';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CreateInterviewRequest } from '../../models/create-post-request.model';
-import { PresignImageResponse } from '../../models/presign-image-response.model';
 import { UpdateInterviewRequest } from '../../models/update-post-request.model';
-import { ImageService } from '../../services/image.service';
 import { PostService } from '../../services/post.service';
+import { ImageService } from '../../services/image.service';
 import { postImage } from '../../models/post-image.model';
 import { Post } from '../../models/post.model';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { environment } from '../../../../../environments/environment';
+import { PresignImageResponse } from '../../models/presign-image-response.model';
 
 interface ImagePreview {
   file: File;
@@ -32,6 +37,8 @@ interface ImagePreview {
 
 @Component({
   selector: 'app-manage-interview',
+  templateUrl: './manage-interview.component.html',
+  styleUrls: ['./manage-interview.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -42,9 +49,10 @@ interface ImagePreview {
     MatSelectModule,
     MatProgressBarModule,
     MatIconModule,
+    DropdownModule,
+    InputTextModule,
+    CalendarModule,
   ],
-  templateUrl: './manage-interview.component.html',
-  styleUrls: ['./manage-interview.component.scss'],
 })
 export class ManageInterviewComponent implements OnInit {
   postForm: FormGroup;
@@ -56,6 +64,8 @@ export class ManageInterviewComponent implements OnInit {
   postId: string | null = null;
   currentPost: Post | null = null;
   canModerate: boolean = false;
+  interviewTypes: any[] = [];
+  existingImages: postImage[] = [];
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
@@ -63,25 +73,29 @@ export class ManageInterviewComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
 
   constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
-      title: ['', [Validators.required]],
+      description: ['', [Validators.required]],
       content: ['', [Validators.required]],
       status: ['DRAFT', [Validators.required]],
       moderatorComment: [''],
+      typeId: [null, [Validators.required]],
+      company: ['', [Validators.required]],
+      interviewDate: [null, [Validators.required]],
     });
 
     const userRole = this.authService.getUserRole();
     this.canModerate = userRole === 'MODERATOR' || userRole === 'ADMIN';
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.loadInterviewTypes();
     const state = window.history.state as { post: Post } | undefined;
     console.log('State:', state);
 
     if (state?.post) {
-      // Use the post data from router state
       this.isEditMode = true;
       this.postId = state.post.interviewId?.toString() || null;
       this.currentPost = state.post;
@@ -101,23 +115,25 @@ export class ManageInterviewComponent implements OnInit {
       }
 
       this.postForm.patchValue({
-        title: state.post.description,
+        description: state.post.description,
         content: state.post.content,
         status: state.post.status,
-        moderatorComment: state.post.moderatorComment
+        moderatorComment: state.post.moderatorComment,
+        typeId: state.post.typeId,
+        company: state.post.company,
+        interviewDate: new Date(state.post.interviewDate),
       });
 
       // Load existing images
       if (state.post.images) {
+        this.existingImages = state.post.images;
         state.post.images.forEach((image) => {
           this.imagePreviews.push({
             file: new File([], image.imageName),
             url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
           });
         });
-        this.selectedFiles = this.imagePreviews.map(
-          (preview) => preview.file
-        );
+        this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
       }
     } else {
       // If no state data, check if we're in edit mode via URL
@@ -152,14 +168,18 @@ export class ManageInterviewComponent implements OnInit {
               }
 
               this.postForm.patchValue({
-                title: post.description,
+                description: post.description,
                 content: post.content,
                 status: post.status,
-                moderatorComment: post.moderatorComment
+                moderatorComment: post.moderatorComment,
+                typeId: post.typeId,
+                company: post.company,
+                interviewDate: new Date(post.interviewDate),
               });
 
               // Load existing images
               if (post.images) {
+                this.existingImages = post.images;
                 post.images.forEach((image) => {
                   this.imagePreviews.push({
                     file: new File([], image.imageName),
@@ -173,12 +193,39 @@ export class ManageInterviewComponent implements OnInit {
             }
           },
           error: (error) => {
-            this.snackBar.open('Error loading post: ' + error.message, 'Close', {
-              duration: 3000,
-            });
+            this.snackBar.open(
+              'Error loading post: ' + error.message,
+              'Close',
+              {
+                duration: 3000,
+              }
+            );
           },
         });
     }
+  }
+
+  private loadInterviewTypes() {
+    this.http
+      .get<any[]>(`${environment.apiUrl}/api/interview-types`)
+      .subscribe({
+        next: (types) => {
+          this.interviewTypes = types.map((type) => ({
+            ...type,
+            name: type.name
+              .replace(/_/g, ' ')
+              .toLowerCase()
+              .split(' ')
+              .map(
+                (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
+              )
+              .join(' '),
+          }));
+        },
+        error: (error) => {
+          console.error('Error loading interview types:', error);
+        },
+      });
   }
 
   onFileSelected(event: any) {
@@ -261,83 +308,43 @@ export class ManageInterviewComponent implements OnInit {
     }));
   }
 
+  isInterviewDateInvalid(): boolean {
+    return (
+      this.postForm.get('interviewDate')!.invalid &&
+      this.postForm.get('interviewDate')!.touched
+    );
+  }
+
+  isCompanyInvalid(): boolean {
+    return (
+      this.postForm.get('company')!.invalid &&
+      this.postForm.get('company')!.touched
+    );
+  }
+
+  isTypeIdInvalid(): boolean {
+    return (
+      this.postForm.get('typeId')!.invalid &&
+      this.postForm.get('typeId')!.touched
+    );
+  }
+
+  isDescriptionInvalid(): boolean {
+    return (
+      this.postForm.get('description')!.invalid &&
+      this.postForm.get('description')!.touched
+    );
+  }
+
   async onSubmit() {
     if (this.postForm.valid) {
       try {
         this.isUploading = true;
 
-        // Create post with image names
-        const uploadedImages = this.selectedFiles.map((file) => file.name);
-        console.log(uploadedImages);
-        let moderatorComment = '';
-        if (this.canModerate) {
-          moderatorComment = this.postForm.get('moderatorComment')!.value;
-        }
-
         if (this.isEditMode && this.postId) {
-          console.log('Update Post');
-          const interviewData: UpdateInterviewRequest = {
-            interviewId: Number(this.postId),
-            userId: this.currentPost!.userId,
-            description: this.postForm!.get('title')!.value,
-            content: this.postForm.get('content')!.value,
-            images: this.mergeImageLists(
-              uploadedImages,
-              this.currentPost!.images
-            ),
-            status: this.postForm.get('status')!.value,
-            moderatorComment: moderatorComment,
-          };
-          this.postService.updatePost(interviewData as UpdateInterviewRequest).subscribe({
-            next: (response) => {
-              this.snackBar.open('Interview updated successfully!', 'Close', {
-                duration: 3000,
-              });
-              this.router.navigate(['/dashboard/post', this.postId]);
-            },
-            error: (error) => {
-              this.snackBar.open(
-                'Error updating post: ' + error.message,
-                'Close',
-                {
-                  duration: 3000,
-                }
-              );
-            },
-          });
+          this.updateInterview()
         } else {
-          console.log('Create Post');
-          const postData: CreateInterviewRequest = {
-            description: this.postForm.get('title')?.value,
-            content: this.postForm.get('content')?.value,
-            imageNames: uploadedImages,
-            status: this.postForm.get('status')?.value,
-            userId: Number(this.authService.getUserId()),
-            moderatorComment: moderatorComment,
-          };
-          this.postService.createPost(postData).subscribe({
-            next: (response) => {
-              if (typeof response === 'string') {
-                this.snackBar.open(response, 'Close', {
-                  duration: 3000,
-                });
-              } else {
-                this.snackBar.open('Interview created successfully!', 'Close', {
-                  duration: 3000,
-                });
-                this.router.navigate(['/dashboard/post', response.interviewId]);
-              }
-            },
-            error: (error) => {
-              this.snackBar.open(
-                'Error creating post: ' + error.message,
-                'Close',
-                {
-                  duration: 3000,
-                }
-              );
-            },
-          });
+          this.createInterview();
         }
       } catch (error: any) {
         this.snackBar.open(
@@ -352,5 +359,105 @@ export class ManageInterviewComponent implements OnInit {
         this.uploadProgress = 0;
       }
     }
+  }
+
+  private createInterview() {
+    console.log('Create Post');
+    const postData: CreateInterviewRequest = this.mapToCreateInterviewRequest();
+    this.postService.createPost(postData).subscribe({
+      next: (response) => {
+        if (typeof response === 'string') {
+          this.snackBar.open(response, 'Close', {
+            duration: 3000,
+          });
+        } else {
+          this.snackBar.open('Interview created successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.router.navigate(['/dashboard/post', response.interviewId]);
+        }
+      },
+      error: (error) => {
+        this.snackBar.open(
+            'Error creating post: ' + error.message,
+            'Close',
+            {
+              duration: 3000,
+            }
+        );
+      },
+    });
+  }
+
+  private mapToCreateInterviewRequest() {
+
+    const uploadedImages = this.selectedFiles.map((file) => file.name);
+    console.log(uploadedImages);
+    let moderatorComment = '';
+    if (this.canModerate) {
+      moderatorComment = this.postForm.get('moderatorComment')!.value;
+    }
+
+    const postData: CreateInterviewRequest = {
+      description: this.postForm.get('description')?.value,
+      content: this.postForm.get('content')?.value,
+      imageNames: uploadedImages,
+      status: this.postForm.get('status')?.value,
+      userId: Number(this.authService.getUserId()),
+      moderatorComment: moderatorComment,
+      typeId: this.postForm.get('typeId')!.value,
+      company: this.postForm.get('company')!.value,
+      interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
+    };
+    return postData;
+  }
+
+  private mapToUpdateInterviewRequest() {
+
+    const uploadedImages = this.selectedFiles.map((file) => file.name);
+    console.log(uploadedImages);
+    let moderatorComment = '';
+    if (this.canModerate) {
+      moderatorComment = this.postForm.get('moderatorComment')!.value;
+    }
+
+    const interviewData: UpdateInterviewRequest = {
+      interviewId: Number(this.postId),
+      userId: this.currentPost!.userId,
+      description: this.postForm!.get('description')!.value,
+      content: this.postForm.get('content')!.value,
+      images: this.mergeImageLists(
+          uploadedImages,
+          this.existingImages
+      ),
+      status: this.postForm.get('status')!.value,
+      moderatorComment: moderatorComment,
+      typeId: this.postForm.get('typeId')!.value,
+      company: this.postForm.get('company')!.value,
+      interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
+    };
+    return interviewData;
+  }
+
+  private updateInterview() {
+    console.log('Update Post');
+    const interviewData: UpdateInterviewRequest = this.mapToUpdateInterviewRequest();
+    this.postService.updatePost(interviewData).subscribe({
+      next: (response) => {
+        this.snackBar.open('Interview updated successfully!', 'Close', {
+          duration: 3000,
+        });
+        this.router.navigate(['/dashboard/post', this.postId]);
+      },
+      error: (error) => {
+        this.snackBar.open(
+            'Error updating post: ' + error.message,
+            'Close',
+            {
+              duration: 3000,
+            }
+        );
+      },
+    });
   }
 }

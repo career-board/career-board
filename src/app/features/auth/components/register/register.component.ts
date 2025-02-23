@@ -54,7 +54,8 @@ export class RegisterComponent {
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
-      currentCompany: [''],
+      email: ['', [Validators.required, Validators.email]],
+      currentCompany: ['', [Validators.required]],
       passwords: this.fb.group(
         {
           password: [
@@ -99,6 +100,7 @@ export class RegisterComponent {
       const registerRequest: RegisterRequest = {
         currentCompany: formValue.currentCompany,
         username: formValue.username,
+        email: formValue.email,
         password: formValue.passwords.password,
         role: 'USER',
       };
@@ -138,12 +140,16 @@ export class RegisterComponent {
     return { passwordMismatch: true };
   }
 
-  get isUsernameInValid() {
-    return this.isFieldValid('username');
+  get isUsernameInValid(): boolean {
+    return this.isFieldInvalid('username');
   }
 
-  get isCurrentCompanyInValid() {
-    return this.isFieldValid('currentCompany');
+  get isEmailInValid(): boolean {
+    return this.isFieldInvalid('email');
+  }
+
+  get isCurrentCompanyInValid(): boolean {
+    return this.isFieldInvalid('currentCompany');
   }
 
   get isPasswordInValid() {
@@ -178,10 +184,10 @@ export class RegisterComponent {
     );
   }
 
-  isFieldValid(field: string) {
+  isFieldInvalid(field: string) {
     return (
-      this.registerForm.get(field)?.invalid &&
-      this.registerForm.get(field)?.touched
+      this.registerForm.get(field)!.invalid &&
+      this.registerForm.get(field)!.touched
     );
   }
 }

@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,16 +9,19 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { DropdownModule } from 'primeng/dropdown';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CreateInterviewRequest } from '../../models/create-post-request.model';
-import { PresignImageResponse } from '../../models/presign-image-response.model';
 import { UpdateInterviewRequest } from '../../models/update-post-request.model';
-import { ImageService } from '../../services/image.service';
 import { PostService } from '../../services/post.service';
+import { ImageService } from '../../services/image.service';
 import { postImage } from '../../models/post-image.model';
 import { Post } from '../../models/post.model';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { environment } from '../../../../../environments/environment';
+import {PresignImageResponse} from '../../models/presign-image-response.model';
 
 interface ImagePreview {
   file: File;
@@ -32,6 +30,8 @@ interface ImagePreview {
 
 @Component({
   selector: 'app-manage-interview',
+  templateUrl: './manage-interview.component.html',
+  styleUrls: ['./manage-interview.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -42,9 +42,8 @@ interface ImagePreview {
     MatSelectModule,
     MatProgressBarModule,
     MatIconModule,
-  ],
-  templateUrl: './manage-interview.component.html',
-  styleUrls: ['./manage-interview.component.scss'],
+    DropdownModule
+  ]
 })
 export class ManageInterviewComponent implements OnInit {
   postForm: FormGroup;
@@ -56,6 +55,7 @@ export class ManageInterviewComponent implements OnInit {
   postId: string | null = null;
   currentPost: Post | null = null;
   canModerate: boolean = false;
+  interviewTypes: any[] = [];
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
@@ -63,6 +63,7 @@ export class ManageInterviewComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
 
   constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
@@ -70,13 +71,15 @@ export class ManageInterviewComponent implements OnInit {
       content: ['', [Validators.required]],
       status: ['DRAFT', [Validators.required]],
       moderatorComment: [''],
+      typeId: [null, [Validators.required]],
     });
 
     const userRole = this.authService.getUserRole();
     this.canModerate = userRole === 'MODERATOR' || userRole === 'ADMIN';
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.loadInterviewTypes();
     const state = window.history.state as { post: Post } | undefined;
     console.log('State:', state);
 
@@ -104,7 +107,8 @@ export class ManageInterviewComponent implements OnInit {
         description: state.post.description,
         content: state.post.content,
         status: state.post.status,
-        moderatorComment: state.post.moderatorComment
+        moderatorComment: state.post.moderatorComment,
+        typeId: state.post.typeId,
       });
 
       // Load existing images
@@ -155,7 +159,8 @@ export class ManageInterviewComponent implements OnInit {
                 description: post.description,
                 content: post.content,
                 status: post.status,
-                moderatorComment: post.moderatorComment
+                moderatorComment: post.moderatorComment,
+                typeId: post.typeId,
               });
 
               // Load existing images
@@ -179,6 +184,23 @@ export class ManageInterviewComponent implements OnInit {
           },
         });
     }
+  }
+
+  private loadInterviewTypes() {
+    this.http.get<any[]>(`${environment.apiUrl}/api/interview-types`).subscribe({
+      next: (types) => {
+        this.interviewTypes = types.map((type) => ({
+          ...type,
+          name: type.name.replace(/_/g, ' ').toLowerCase()
+            .split(' ')
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' '),
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading interview types:', error);
+      },
+    });
   }
 
   onFileSelected(event: any) {
@@ -287,7 +309,7 @@ export class ManageInterviewComponent implements OnInit {
             ),
             status: this.postForm.get('status')!.value,
             moderatorComment: moderatorComment,
-            typeId: 2,
+            typeId: this.postForm.get('typeId')!.value,
           };
           this.postService.updatePost(interviewData as UpdateInterviewRequest).subscribe({
             next: (response) => {
@@ -315,7 +337,7 @@ export class ManageInterviewComponent implements OnInit {
             status: this.postForm.get('status')?.value,
             userId: Number(this.authService.getUserId()),
             moderatorComment: moderatorComment,
-            typeId: 2,
+            typeId: this.postForm.get('typeId')!.value,
           };
           this.postService.createPost(postData).subscribe({
             next: (response) => {

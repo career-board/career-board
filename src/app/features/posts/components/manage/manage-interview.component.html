@@ -10,6 +10,18 @@
       </mat-error>
     </mat-form-field>
 
+    <div class="full-width">
+      <label class="form-label">Interview Type</label>
+      <p-dropdown
+        [formControlName]="'typeId'"
+        [options]="interviewTypes"
+        optionLabel="name"
+        optionValue="typeId"
+        placeholder="Select Interview Type"
+        [style]="{'width': '100%'}"
+      ></p-dropdown>
+    </div>
+
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Content</mat-label>
       <textarea

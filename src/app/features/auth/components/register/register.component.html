@@ -10,6 +10,14 @@
         </div>
 
         <div class="form-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" pInputText formControlName="email" />
+          <small class="error-message" *ngIf="isEmailInValid">
+            {{ registerForm.get('email')?.errors?.['required'] ? 'Email is required' : 'Please enter a valid email' }}
+          </small>
+        </div>
+
+        <div class="form-field">
           <label for="currentCompany">Current Company</label>
           <input id="currentCompany" type="text" pInputText formControlName="currentCompany" />
           <small class="error-message" *ngIf="isCurrentCompanyInValid">Current company is required</small>

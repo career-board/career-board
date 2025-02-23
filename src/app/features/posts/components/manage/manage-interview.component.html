@@ -61,8 +61,11 @@
         <p-calendar
           formControlName="interviewDate"
           [showIcon]="true"
-          [showTime]="true"
+          [showTime]="false"
           [style]="{ width: '100%' }"
+          [baseZIndex]="1000"
+          [keepInvalid]="true"
+          appendTo="body"
         ></p-calendar>
         @if (isInterviewDateInvalid()) {
         <small class="p-error">Interview Date is required</small>

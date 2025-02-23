@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +31,7 @@ import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { PresignImageResponse } from '../../models/presign-image-response.model';
-import { TabviewEditorComponent } from '../../../../shared/components/tabview-editor/tabview-editor.component';
+import { TabviewEditorComponent } from '../tabview-editor/tabview-editor.component';
 
 interface ImagePreview {
   file: File;
@@ -82,7 +88,7 @@ export class ManageInterviewComponent implements OnInit {
       status: ['DRAFT', [Validators.required]],
       typeId: [null, [Validators.required]],
       company: ['', [Validators.required]],
-      interviewDate: ['', [Validators.required]],
+      interviewDate: [null, [Validators.required]],
       editorContent: this.fb.group({
         details: [''],
         editorial: [''],
@@ -91,6 +97,15 @@ export class ManageInterviewComponent implements OnInit {
 
     const userRole = this.authService.getUserRole();
     this.canModerate = userRole === 'MODERATOR' || userRole === 'ADMIN';
+
+    // Handle date timezone conversion
+    this.postForm.get('interviewDate')?.valueChanges.subscribe((date) => {
+      if (date) {
+        const localDate = new Date(date);
+        localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+        this.postForm.get('interviewDate')?.setValue(localDate, { emitEvent: false });
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -128,6 +143,7 @@ export class ManageInterviewComponent implements OnInit {
           details: state.post.content || '',
           editorial: state.post.moderatorComment || '',
         },
+        status: state.post.status,
       });
 
       // Load existing images
@@ -184,6 +200,7 @@ export class ManageInterviewComponent implements OnInit {
                   details: post.content || '',
                   editorial: post.moderatorComment || '',
                 },
+                status: post.status,
               });
 
               // Load existing images

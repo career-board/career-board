@@ -7,6 +7,8 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AuthService } from './core/services/auth.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -24,5 +26,10 @@ export const appConfig: ApplicationConfig = {
     ),
     AuthService,
     importProvidersFrom(MatSnackBarModule),
+    providePrimeNG({
+        theme: {
+            preset: Aura
+        }
+    })
   ],
 };

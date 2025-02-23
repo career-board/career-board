@@ -1,8 +1,26 @@
 <div class="posts-container">
   @if (posts && posts.length) {
-    @for (post of posts; track post?.postId) {
-      <app-post [post]="post"></app-post>
-    }
+    <!-- @for (post of posts; track post?.postId) { -->
+    <div class="card">
+      <p-table [value]="posts" [tableStyle]="{ 'min-width': '40rem' }">
+        <ng-template #header>
+            <tr>
+                <th>Avatar</th>
+                <th>Title</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-post>
+         <app-post [post]="post"></app-post>
+
+      </ng-template>
+    </p-table>
+    </div>
+
+    <!-- } -->
   } @else {
     <div class="empty-state mat-elevation-z2">
       <div class="empty-state-icon">

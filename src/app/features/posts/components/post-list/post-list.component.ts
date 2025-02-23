@@ -2,11 +2,15 @@ import {Component, inject, input, OnInit} from '@angular/core';
 import {PostComponent} from "../post/post.component";
 import {Post} from '../../models/post.model';
 import {PostService} from '../../services/post.service';
+import { TableModule } from 'primeng/table';
+
+
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-post-list',
   imports: [
-    PostComponent
+    PostComponent,CommonModule,TableModule,
   ],
   templateUrl: './post-list.component.html',
   styleUrl: './post-list.component.scss'

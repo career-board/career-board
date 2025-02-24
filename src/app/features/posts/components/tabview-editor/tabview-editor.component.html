@@ -1,0 +1,18 @@
+<p-tabView (activeIndexChange)="onTabChange($event)">
+  <p-tabPanel header="Details">
+    <app-editor
+      [(ngModel)]="detailsContent"
+      (ngModelChange)="onDetailsChange($event)"
+      [readonly]="readonly()"
+    ></app-editor>
+  </p-tabPanel>
+  @if(showEditorial()){
+  <p-tabPanel header="Editorial">
+    <app-editor
+      [(ngModel)]="editorialContent"
+      (ngModelChange)="onEditorialChange($event)"
+      [readonly]="readonly()"
+    ></app-editor>
+  </p-tabPanel>
+  }
+</p-tabView>

@@ -1,0 +1,35 @@
+.custom-editor {
+  :host ::ng-deep {
+    .p-editor-container {
+      height: 320px;
+
+      .p-editor-toolbar {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+
+      .p-editor-content {
+        height: calc(100% - 50px);
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+    }
+  }
+}
+
+
+.ql-editor pre {
+  background-color: #282c34 !important;
+  /* Dark background */
+  color: #f8f8f2 !important;
+  /* Light text */
+  padding: 10px !important;
+  border-radius: 5px !important;
+  overflow-x: auto !important;
+}
+
+.ql-editor pre.ql-syntax {
+  font-family: "Courier New", monospace !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}

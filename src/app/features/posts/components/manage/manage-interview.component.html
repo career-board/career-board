@@ -1,7 +1,7 @@
 <div class="post-create-container">
   <h2>{{ isEditMode ? "Edit Post" : "Create New Interview" }}</h2>
 
-  <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
+  <form [formGroup]="postForm" class="post-form">
     <div class="full-width">
       <label class="form-label">Description</label>
       <span class="p-fluid">
@@ -60,32 +60,26 @@
         <label class="form-label">Interview Date</label>
         <p-calendar
           formControlName="interviewDate"
-          [showTime]="false"
           [showIcon]="true"
+          [showTime]="false"
           [style]="{ width: '100%' }"
-          dateFormat="yy-mm-dd"
-          placeholder="Select interview date"
+          [baseZIndex]="1000"
+          [keepInvalid]="true"
+          appendTo="body"
         ></p-calendar>
         @if (isInterviewDateInvalid()) {
-        <small class="p-error">
-          Interview Date is required
-        </small>
+        <small class="p-error">Interview Date is required</small>
         }
       </div>
     </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Content</mat-label>
-      <textarea
-        matInput
-        formControlName="content"
-        placeholder="Enter intevirew content"
-        rows="10"
-      ></textarea>
-      <mat-error *ngIf="postForm.get('content')?.hasError('required')">
-        Content is required
-      </mat-error>
-    </mat-form-field>
+    <div class="full-width">
+      <app-tabview-editor
+        formControlName="editorContent"
+        [readonly]="false"
+        [showEditorial]="canModerate"
+      ></app-tabview-editor>
+    </div>
 
     <div class="image-upload-section">
       <input
@@ -144,36 +138,29 @@
       class="upload-progress"
     ></mat-progress-bar>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Status</mat-label>
-      <mat-select formControlName="status">
-        <mat-option value="DRAFT">Draft</mat-option>
-        <mat-option value="PUBLISHED">Published</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <div *ngIf="canModerate" class="moderator-section">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Moderator Comment</mat-label>
-        <textarea
-          matInput
-          formControlName="moderatorComment"
-          placeholder="Add moderator comment"
-          rows="3"
-        ></textarea>
-      </mat-form-field>
-    </div>
-
     <div class="button-container">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="!postForm.valid || isUploading"
-        class="mat-elevation-z2"
-      >
-        {{ isEditMode ? "Update Interview" : "Create Interview" }}
-      </button>
+      <p-button
+        icon="pi pi-times"
+        label="Cancel"
+        severity="secondary"
+        (onClick)="onCancel()"
+        styleClass="p-button-outlined"
+      ></p-button>
+      <div class="right-buttons">
+        <p-button
+          [icon]="'pi pi-save'"
+          [label]="isEditMode ? 'Update Draft' : 'Create Draft'"
+          severity="secondary"
+          (onClick)="onSubmit('DRAFT')"
+          styleClass="p-button-outlined mr-2"
+        ></p-button>
+        <p-button
+          icon="pi pi-check"
+          [label]="isEditMode ? 'Update & Publish' : 'Create & Publish'"
+          [disabled]="!postForm.valid || isUploading"
+          (onClick)="onSubmit('PUBLISHED')"
+        ></p-button>
+      </div>
     </div>
   </form>
 </div>

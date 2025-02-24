@@ -1,0 +1,33 @@
+<p-editor
+  [(ngModel)]="value"
+  [style]="{ height: '320px' }"
+  (onTextChange)="onChange($event.htmlValue)"
+  (onSelectionChange)="onTouched()"
+  [readonly]="readonly()"
+  class="custom-editor"
+>
+  <ng-template #header>
+    <span class="ql-formats">
+      <select class="ql-header">
+        <option selected>Normal</option>
+        <option value="1">Heading 1</option>
+        <option value="2">Heading 2</option>
+        <option value="3">Heading 3</option>
+        <option value="4">Heading 4</option>
+      </select>
+      <button type="button" class="ql-bold" aria-label="Bold"></button>
+      <button type="button" class="ql-italic" aria-label="Italic"></button>
+      <button
+        type="button"
+        class="ql-underline"
+        aria-label="Underline"
+      ></button>
+      <button type="button" class="ql-link" aria-label="Link"></button>
+      <button
+        type="button"
+        class="ql-code-block"
+        aria-label="Code Block"
+      ></button>
+    </span>
+  </ng-template>
+</p-editor>

@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DividerModule } from 'primeng/divider';
+import { FormsModule } from '@angular/forms';
 import { Post } from '../../models/post.model';
 import { PostService } from '../../services/post.service';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -13,6 +14,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { PostComponent } from "../post/post.component";
+import { SkeletonModule } from 'primeng/skeleton';
+import { TabviewEditorComponent } from "../tabview-editor/tabview-editor.component";
 
 /**
  * Post details component
@@ -22,6 +26,7 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     CardModule,
     ButtonModule,
     CarouselModule,
@@ -29,7 +34,10 @@ import { HttpClient } from '@angular/common/http';
     DividerModule,
     MatTabsModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    PostComponent,
+    SkeletonModule,
+    TabviewEditorComponent
   ],
   templateUrl: './post-details.component.html',
   styleUrls: ['./post-details.component.scss']
@@ -38,8 +46,30 @@ export class PostDetailsComponent implements OnInit {
   post: Post | null = null;
   loading = true;
   error: string | null = null;
-  selectedIndex = 0;
   canEdit = false;
+  selectedIndex = 0;
+  editorContent = {
+    details: '',
+    editorial: ''
+  };
+
+  carouselResponsiveOptions = [
+    {
+      breakpoint: '1024px',
+      numVisible: 4,
+      numScroll: 1
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3,
+      numScroll: 1
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 2,
+      numScroll: 1
+    }
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -49,29 +79,34 @@ export class PostDetailsComponent implements OnInit {
     private http: HttpClient
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const postId = this.route.snapshot.paramMap.get('id');
     if (postId) {
       this.fetchPost(postId);
     }
   }
 
-  private fetchPost(postId: string) {
+  private fetchPost(postId: string): void {
+    this.loading = true;
     this.postService.getPost(postId).subscribe({
       next: (post) => {
         this.post = post;
+        this.editorContent = {
+          details: post.details || '',
+          editorial: post.editorial || ''
+        };
         this.loading = false;
         this.checkEditPermission();
       },
       error: (error) => {
-        this.error = 'Failed to load post details';
+        this.error = 'Error loading post';
         this.loading = false;
         console.error('Error fetching post:', error);
       }
     });
   }
 
-  private checkEditPermission() {
+  private checkEditPermission(): void {
     if (!this.post) return;
     console.log(this.post);
     const userId = this.authService.getUserId();
@@ -85,13 +120,17 @@ export class PostDetailsComponent implements OnInit {
       userRole === 'ADMIN';
   }
 
-  onEditClick() {
+  onEditClick(): void {
     if (this.post) {
       this.router.navigate(['/dashboard/post/edit', this.post.interviewId], {
         state: { post: this.post },
         skipLocationChange: false
       });
     }
+  }
+
+  onDoneClick(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   getImageUrl(imageName: string): string {

@@ -1,38 +1,29 @@
 <div class="post-details-container">
-  @if (loading) {
-  <div class="loading-spinner">
-    <p-progressSpinner strokeWidth="4" />
-  </div>
-  } @else if (post) {
   <p-card styleClass="post-card">
     <div class="post-header">
-      <div class="title-actions">
-        <h1 class="post-title">{{ post.description }}</h1>
-        @if (canEdit) {
-        <p-button
-          icon="pi pi-pencil"
-          label="Edit Post"
-          (onClick)="onEditClick()"
-          severity="primary"
-        />
-        }
-      </div>
-      <div class="post-meta">
-        <span class="author">By {{ post.username }}</span>
-        <span class="date">{{ post.createdAt | date : "medium" }}</span>
+      @if (post) {
+      <app-post [post]="post" [loading]="false"></app-post>
+
+      <div class="full-width post-content">
+        <app-tabview-editor
+          [readonly]="true"
+          [showEditorial]="true"
+          [(ngModel)]="editorContent"
+        ></app-tabview-editor>
       </div>
 
-      @if (post.images.length > 0) {
       <div class="mb-6">
         <p-carousel
           [value]="post.images"
-          [numVisible]="1"
+          [numVisible]="4"
+          [numScroll]="1"
           [circular]="false"
-          [showNavigators]="post.images.length > 1"
-          [showIndicators]="post.images.length > 1"
+          [responsiveOptions]="carouselResponsiveOptions"
+          [showNavigators]="post.images.length > 4"
+          [showIndicators]="post.images.length > 4"
         >
           <ng-template let-image pTemplate="item">
-            <div class="image-container">
+            <div class="carousel-item">
               <img
                 [src]="getImageUrl(image.imageName)"
                 [alt]="image.imageName"
@@ -42,28 +33,32 @@
           </ng-template>
         </p-carousel>
       </div>
+    }
+    </div>
+    
+    <div class="button-container">
+      <p-button
+        icon="pi pi-check"
+        label="Done"
+        (onClick)="onDoneClick()"
+        severity="success"
+      />
+      @if (canEdit) {
+        <p-button
+          icon="pi pi-pencil"
+          label="Edit Post"
+          (onClick)="onEditClick()"
+          severity="primary"
+        />
       }
     </div>
-
-    <div class="post-content">
-      {{ post.details }}
-    </div>
-
-    @if (post.editorial) {
-    <p-divider />
-    <div class="moderator-comment">
-      <h3 class="moderator-title">Moderator Comment</h3>
-      <div class="comment-content">
-        {{ post.editorial }}
-      </div>
-    </div>
-    }
   </p-card>
-  } @else if (error) {
+
+  <!-- @if (error) {
   <p-card styleClass="error-card">
     <div class="error-message">
       {{ error }}
     </div>
   </p-card>
-  }
+  } -->
 </div>

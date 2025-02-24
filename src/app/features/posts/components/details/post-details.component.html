@@ -1,64 +1,75 @@
 <div class="post-details-container">
   <p-card styleClass="post-card">
     <div class="post-header">
-      @if (post) {
-      <app-post [post]="post" [loading]="false"></app-post>
-
-      <div class="full-width post-content">
-        <app-tabview-editor
-          [readonly]="true"
-          [showEditorial]="true"
-          [(ngModel)]="editorContent"
-        ></app-tabview-editor>
-      </div>
-
-      <div class="mb-6">
-        <p-carousel
-          [value]="post.images"
-          [numVisible]="4"
-          [numScroll]="1"
-          [circular]="false"
-          [responsiveOptions]="carouselResponsiveOptions"
-          [showNavigators]="post.images.length > 4"
-          [showIndicators]="post.images.length > 4"
-        >
-          <ng-template let-image pTemplate="item">
-            <div class="carousel-item">
-              <img
-                [src]="getImageUrl(image.imageName)"
-                [alt]="image.imageName"
-                class="carousel-image"
-              />
+      @if (loading) {
+        <div class="loading-skeleton">
+          <p-skeleton height="100px" styleClass="mb-2"></p-skeleton>
+          <div class="tabview-skeleton">
+            <p-skeleton height="40px" styleClass="mb-2"></p-skeleton>
+            <p-skeleton height="200px"></p-skeleton>
+          </div>
+          <div class="carousel-skeleton">
+            <div class="carousel-items">
+              <p-skeleton width="200px" height="150px" styleClass="mr-2"></p-skeleton>
+              <p-skeleton width="200px" height="150px" styleClass="mr-2"></p-skeleton>
+              <p-skeleton width="200px" height="150px"></p-skeleton>
             </div>
-          </ng-template>
-        </p-carousel>
-      </div>
-    }
+          </div>
+        </div>
+      } @else if (post) {
+        <app-post [post]="post" [loading]="false"></app-post>
+
+        <div class="full-width post-content">
+          <app-tabview-editor
+            [readonly]="true"
+            [showEditorial]="true"
+            [(ngModel)]="editorContent"
+          ></app-tabview-editor>
+        </div>
+
+        <div class="mb-6">
+          <p-carousel
+            [value]="post.images"
+            [numVisible]="4"
+            [numScroll]="1"
+            [circular]="false"
+            [responsiveOptions]="carouselResponsiveOptions"
+            [showNavigators]="post.images.length > 4"
+            [showIndicators]="post.images.length > 4"
+          >
+            <ng-template let-image pTemplate="item">
+              <div class="carousel-item">
+                <img
+                  [src]="getImageUrl(image.imageName)"
+                  [alt]="image.imageName"
+                  class="carousel-image"
+                />
+              </div>
+            </ng-template>
+          </p-carousel>
+        </div>
+      }
     </div>
     
     <div class="button-container">
-      <p-button
-        icon="pi pi-check"
-        label="Done"
-        (onClick)="onDoneClick()"
-        severity="success"
-      />
-      @if (canEdit) {
+      <div class="left-button">
         <p-button
-          icon="pi pi-pencil"
-          label="Edit Post"
-          (onClick)="onEditClick()"
-          severity="primary"
+          icon="pi pi-check"
+          label="Done"
+          (onClick)="onDoneClick()"
+          severity="success"
         />
-      }
+      </div>
+      <div class="right-button">
+        @if (canEdit) {
+          <p-button
+            icon="pi pi-pencil"
+            label="Edit Post"
+            (onClick)="onEditClick()"
+            severity="primary"
+          />
+        }
+      </div>
     </div>
   </p-card>
-
-  <!-- @if (error) {
-  <p-card styleClass="error-card">
-    <div class="error-message">
-      {{ error }}
-    </div>
-  </p-card>
-  } -->
 </div>

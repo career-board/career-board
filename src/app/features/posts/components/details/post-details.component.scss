@@ -203,12 +203,19 @@
   margin-top: 1rem;
   padding: 0 1rem;
 
-  :first-child {
-    margin-right: auto; // Pushes the first button to the left
+  .left-button {
+    flex: 0 0 auto;
   }
 
-  :last-child {
-    margin-left: auto; // Pushes the last button to the right
+  .right-button {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  ::ng-deep {
+    .p-button {
+      margin: 0;
+    }
   }
 }
 
@@ -221,4 +228,30 @@
 
 .post-content {
   margin-top: 2rem;
+}
+
+.loading-skeleton {
+  padding: 1rem;
+
+  .tabview-skeleton {
+    margin: 2rem 0;
+  }
+
+  .carousel-skeleton {
+    margin-top: 2rem;
+
+    .carousel-items {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+  }
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
 }

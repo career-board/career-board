@@ -140,8 +140,8 @@ export class ManageInterviewComponent implements OnInit {
           ? new Date(state.post.interviewDate)
           : null,
         editorContent: {
-          details: state.post.content || '',
-          editorial: state.post.moderatorComment || '',
+          details: state.post.details || '',
+          editorial: state.post.editorial || '',
         },
         status: state.post.status,
       });
@@ -197,8 +197,8 @@ export class ManageInterviewComponent implements OnInit {
                   ? new Date(post.interviewDate)
                   : null,
                 editorContent: {
-                  details: post.content || '',
-                  editorial: post.moderatorComment || '',
+                  details: post.details || '',
+                  editorial: post.editorial || '',
                 },
                 status: post.status,
               });
@@ -415,20 +415,20 @@ export class ManageInterviewComponent implements OnInit {
   private mapToCreateInterviewRequest() {
     const uploadedImages = this.selectedFiles.map((file) => file.name);
     console.log(uploadedImages);
-    let moderatorComment = '';
+    let editorial = '';
     if (this.canModerate) {
-      moderatorComment =
+      editorial =
         this.postForm.get('editorContent')?.get('editorial')?.value || '';
     }
-    console.log(moderatorComment);
+    console.log(editorial);
 
     const postData: CreateInterviewRequest = {
       description: this.postForm.get('description')?.value,
       imageNames: uploadedImages,
       status: this.postForm.get('status')?.value,
       userId: Number(this.authService.getUserId()),
-      content: this.postForm.get('editorContent')?.get('details')?.value || '',
-      moderatorComment: moderatorComment,
+      details: this.postForm.get('editorContent')?.get('details')?.value || '',
+      editorial: editorial,
       typeId: this.postForm.get('typeId')!.value,
       company: this.postForm.get('company')!.value,
       interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),
@@ -439,9 +439,9 @@ export class ManageInterviewComponent implements OnInit {
   private mapToUpdateInterviewRequest() {
     const uploadedImages = this.selectedFiles.map((file) => file.name);
     console.log(uploadedImages);
-    let moderatorComment = '';
+    let editorial = '';
     if (this.canModerate) {
-      moderatorComment =
+      editorial =
         this.postForm.get('editorContent')?.get('editorial')?.value || '';
     }
 
@@ -451,8 +451,8 @@ export class ManageInterviewComponent implements OnInit {
       description: this.postForm!.get('description')!.value,
       images: this.mergeImageLists(uploadedImages, this.existingImages),
       status: this.postForm.get('status')!.value,
-      content: this.postForm.get('editorContent')?.get('details')?.value || '',
-      moderatorComment: moderatorComment,
+      details: this.postForm.get('editorContent')?.get('details')?.value || '',
+      editorial: editorial,
       typeId: this.postForm.get('typeId')!.value,
       company: this.postForm.get('company')!.value,
       interviewDate: this.postForm.get('interviewDate')!.value.toISOString(),

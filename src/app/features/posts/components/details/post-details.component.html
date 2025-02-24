@@ -56,13 +56,13 @@
         </div>
       </header>
       <div class="post-content">
-        {{ post.content }}
+        {{ post.details }}
       </div>
 
-      <div *ngIf="post.moderatorComment" class="moderator-comment">
+      <div *ngIf="post.editorial" class="moderator-comment">
         <h3 class="moderator-title">Moderator Comment</h3>
         <div class="comment-content">
-          {{ post.moderatorComment }}
+          {{ post.editorial }}
         </div>
       </div>
     </article>

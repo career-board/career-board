@@ -1,10 +1,10 @@
 export interface CreateInterviewRequest {
     description: string;
-    content: string;
+    details: string;
     userId: number;
     imageNames: string[];
     status: "DRAFT" | "PUBLISHED";
-    moderatorComment?: string;
+    editorial?: string;
     typeId: number;
     company: string;
     interviewDate: string;

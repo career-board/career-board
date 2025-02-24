@@ -5,10 +5,10 @@ export interface UpdateInterviewRequest {
   interviewId: number;
   userId: number;
   description: string;
-  content: string;
+  details: string;
   images: postImage[];
   status: string;
-  moderatorComment?: string;
+  editorial?: string;
   typeId: number;
   company: string;
   interviewDate: string;

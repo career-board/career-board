@@ -6,11 +6,11 @@ export interface Post {
   userId: number;
   username: string;
   description: string;
-  content: string;
+  details: string;
   createdAt: string;
   updatedAt: string;
   status: 'DRAFT' | 'PUBLISHED';
-  moderatorComment?: string;
+  editorial?: string;
   images: postImage[];
   typeId: number;
   company: string;

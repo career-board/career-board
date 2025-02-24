@@ -1,166 +1,207 @@
 <div class="post-create-container">
   <h2>{{ isEditMode ? "Edit Post" : "Create New Interview" }}</h2>
 
-  <form [formGroup]="postForm" class="post-form">
-    <div class="full-width">
-      <label class="form-label">Description</label>
-      <span class="p-fluid">
-        <input
-          type="text"
-          pInputText
-          formControlName="description"
-          placeholder="Enter interview Description"
-          [style]="{ width: '100%' }"
-        />
-      </span>
-      @if (isDescriptionInvalid()) {
-      <small class="p-error">
-        Description is required
-      </small>
-      }
-    </div>
+  @if (isEditMode && loading) {
+    <div class="skeleton-container">
+      <p-skeleton height="50px" styleClass="mb-4"></p-skeleton>
+      
+      <p-skeleton width="150px" height="20px" styleClass="mb-2"></p-skeleton>
+      <p-skeleton height="40px" styleClass="mb-4"></p-skeleton>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <p-skeleton width="100px" height="20px" styleClass="mb-2"></p-skeleton>
+          <p-skeleton height="40px"></p-skeleton>
+        </div>
+        <div class="form-col">
+          <p-skeleton width="120px" height="20px" styleClass="mb-2"></p-skeleton>
+          <p-skeleton height="40px"></p-skeleton>
+        </div>
+      </div>
 
-    <div class="full-width">
-      <label class="form-label">Interview Type</label>
-      <p-dropdown
-        [formControlName]="'typeId'"
-        [options]="interviewTypes"
-        optionLabel="name"
-        optionValue="typeId"
-        placeholder="Select Interview Type"
-        [style]="{ width: '100%' }"
-      ></p-dropdown>
-      @if (isTypeIdInvalid()) {
-      <small class="p-error">
-        Interview Type is required
-      </small>
-      }
-    </div>
+      <div class="editor-skeleton mt-4">
+        <p-skeleton height="40px" styleClass="mb-2"></p-skeleton>
+        <p-skeleton height="200px"></p-skeleton>
+      </div>
 
-    <div class="form-row">
-      <div class="form-col">
-        <label class="form-label">Company</label>
+      <div class="image-skeleton mt-4">
+        <p-skeleton width="150px" height="40px" styleClass="mb-3"></p-skeleton>
+        <div class="preview-skeletons">
+          <p-skeleton width="150px" height="150px" styleClass="mr-2"></p-skeleton>
+          <p-skeleton width="150px" height="150px" styleClass="mr-2"></p-skeleton>
+          <p-skeleton width="150px" height="150px"></p-skeleton>
+        </div>
+      </div>
+
+      <div class="button-container mt-4">
+        <p-skeleton width="100px" height="40px"></p-skeleton>
+        <div class="right-buttons">
+          <p-skeleton width="120px" height="40px" styleClass="mr-2"></p-skeleton>
+          <p-skeleton width="150px" height="40px"></p-skeleton>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="postForm" class="post-form">
+      <div class="full-width">
+        <label class="form-label">Description</label>
         <span class="p-fluid">
           <input
             type="text"
             pInputText
-            formControlName="company"
-            placeholder="Enter company name"
+            formControlName="description"
+            placeholder="Enter interview Description"
             [style]="{ width: '100%' }"
           />
         </span>
-        @if (isCompanyInvalid()) {  
+        @if (isDescriptionInvalid()) {
         <small class="p-error">
-          Company name is required
+          Description is required
         </small>
         }
       </div>
 
-      <div class="form-col">
-        <label class="form-label">Interview Date</label>
-        <p-calendar
-          formControlName="interviewDate"
-          [showIcon]="true"
-          [showTime]="false"
+      <div class="full-width">
+        <label class="form-label">Interview Type</label>
+        <p-dropdown
+          [formControlName]="'typeId'"
+          [options]="interviewTypes"
+          optionLabel="name"
+          optionValue="typeId"
+          placeholder="Select Interview Type"
           [style]="{ width: '100%' }"
-          [baseZIndex]="1000"
-          [keepInvalid]="true"
-          appendTo="body"
-        ></p-calendar>
-        @if (isInterviewDateInvalid()) {
-        <small class="p-error">Interview Date is required</small>
+        ></p-dropdown>
+        @if (isTypeIdInvalid()) {
+        <small class="p-error">
+          Interview Type is required
+        </small>
         }
       </div>
-    </div>
 
-    <div class="full-width">
-      <app-tabview-editor
-        formControlName="editorContent"
-        [readonly]="false"
-        [showEditorial]="canModerate"
-      ></app-tabview-editor>
-    </div>
-
-    <div class="image-upload-section">
-      <input
-        type="file"
-        #fileInput
-        (change)="onFileSelected($event)"
-        multiple
-        accept="image/*"
-        style="display: none"
-      />
-      <button
-        mat-raised-button
-        color="primary"
-        type="button"
-        (click)="fileInput.click()"
-        class="upload-button mat-elevation-z2"
-      >
-        <mat-icon>add_photo_alternate</mat-icon>
-        Select Images
-      </button>
-      <span class="selected-files" *ngIf="selectedFiles.length > 0">
-        {{ selectedFiles.length }} image(s) selected
-      </span>
-    </div>
-
-    <!-- Image Previews -->
-    <div class="image-previews" *ngIf="imagePreviews.length > 0">
-      <div
-        class="preview-item"
-        *ngFor="let preview of imagePreviews; let i = index"
-      >
-        <div class="preview-image-container">
-          <img
-            [src]="preview.url"
-            [alt]="preview.file.name"
-            class="preview-image"
-          />
-          <button
-            mat-icon-button
-            color="warn"
-            class="remove-button mat-elevation-z2"
-            type="button"
-            (click)="removeImage(i)"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+      <div class="form-row">
+        <div class="form-col">
+          <label class="form-label">Company</label>
+          <span class="p-fluid">
+            <input
+              type="text"
+              pInputText
+              formControlName="company"
+              placeholder="Enter company name"
+              [style]="{ width: '100%' }"
+            />
+          </span>
+          @if (isCompanyInvalid()) {  
+          <small class="p-error">
+            Company name is required
+          </small>
+          }
         </div>
-        <span class="image-name">{{ preview.file.name }}</span>
+
+        <div class="form-col">
+          <label class="form-label">Interview Date</label>
+          <p-calendar
+            formControlName="interviewDate"
+            [showIcon]="true"
+            [showTime]="false"
+            [style]="{ width: '100%' }"
+            [baseZIndex]="1000"
+            [keepInvalid]="true"
+            appendTo="body"
+          ></p-calendar>
+          @if (isInterviewDateInvalid()) {
+          <small class="p-error">Interview Date is required</small>
+          }
+        </div>
       </div>
-    </div>
 
-    <mat-progress-bar
-      *ngIf="isUploading"
-      mode="determinate"
-      [value]="uploadProgress"
-      class="upload-progress"
-    ></mat-progress-bar>
+      <div class="full-width">
+        <app-tabview-editor
+          formControlName="editorContent"
+          [readonly]="false"
+          [showEditorial]="canModerate"
+        ></app-tabview-editor>
+      </div>
 
-    <div class="button-container">
-      <p-button
-        icon="pi pi-times"
-        label="Cancel"
-        severity="secondary"
-        (onClick)="onCancel()"
-        styleClass="p-button-outlined"
-      ></p-button>
-      <div class="right-buttons">
+      <div class="image-upload-section">
+        <input
+          type="file"
+          #fileInput
+          (change)="onFileSelected($event)"
+          multiple
+          accept="image/*"
+          style="display: none"
+        />
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="fileInput.click()"
+          class="upload-button mat-elevation-z2"
+        >
+          <mat-icon>add_photo_alternate</mat-icon>
+          Select Images
+        </button>
+        <span class="selected-files" *ngIf="selectedFiles.length > 0">
+          {{ selectedFiles.length }} image(s) selected
+        </span>
+      </div>
+
+      <div class="image-previews" *ngIf="imagePreviews.length > 0">
+        <div
+          class="preview-item"
+          *ngFor="let preview of imagePreviews; let i = index"
+        >
+          <div class="preview-image-container">
+            <img
+              [src]="preview.url"
+              [alt]="preview.file.name"
+              class="preview-image"
+            />
+            <button
+              mat-icon-button
+              color="warn"
+              class="remove-button mat-elevation-z2"
+              type="button"
+              (click)="removeImage(i)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <span class="image-name">{{ preview.file.name }}</span>
+        </div>
+      </div>
+
+      <mat-progress-bar
+        *ngIf="isUploading"
+        mode="determinate"
+        [value]="uploadProgress"
+        class="upload-progress"
+      ></mat-progress-bar>
+
+      <div class="button-container">
         <p-button
-          [icon]="'pi pi-save'"
-          [label]="isEditMode ? 'Update Draft' : 'Create Draft'"
+          icon="pi pi-times"
+          label="Cancel"
           severity="secondary"
-          (onClick)="onSubmit('DRAFT')"
-          styleClass="p-button-outlined mr-2"
+          (onClick)="onCancel()"
+          styleClass="p-button-outlined"
         ></p-button>
-        <p-button
-          icon="pi pi-check"
-          [label]="isEditMode ? 'Update & Publish' : 'Create & Publish'"
-          [disabled]="!postForm.valid || isUploading"
-          (onClick)="onSubmit('PUBLISHED')"
-        ></p-button>
+        <div class="right-buttons">
+          <p-button
+            [icon]="'pi pi-save'"
+            [label]="isEditMode ? 'Update Draft' : 'Create Draft'"
+            severity="secondary"
+            (onClick)="onSubmit('DRAFT')"
+            styleClass="p-button-outlined mr-2"
+          ></p-button>
+          <p-button
+            icon="pi pi-check"
+            [label]="isEditMode ? 'Update & Publish' : 'Create & Publish'"
+            [disabled]="!postForm.valid || isUploading"
+            (onClick)="onSubmit('PUBLISHED')"
+          ></p-button>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  }
 </div>

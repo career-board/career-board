@@ -33,6 +33,7 @@ import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { PresignImageResponse } from '../../models/presign-image-response.model';
 import { TabviewEditorComponent } from '../tabview-editor/tabview-editor.component';
+import { SkeletonModule } from 'primeng/skeleton';
 
 interface ImagePreview {
   file: File;
@@ -60,6 +61,7 @@ interface ImagePreview {
     EditorModule,
     TabviewEditorComponent,
     ButtonModule,
+    SkeletonModule,
   ],
 })
 export class ManageInterviewComponent implements OnInit {
@@ -75,6 +77,7 @@ export class ManageInterviewComponent implements OnInit {
   interviewTypes: any[] = [];
   existingImages: postImage[] = [];
   text: string = '';
+  loading: boolean = false;
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
@@ -119,6 +122,7 @@ export class ManageInterviewComponent implements OnInit {
     console.log('State:', state);
 
     if (state?.post) {
+      this.loading = true;
       this.isEditMode = true;
       this.postId = state.post.interviewId?.toString() || null;
       this.currentPost = state.post;
@@ -162,7 +166,9 @@ export class ManageInterviewComponent implements OnInit {
         });
         this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
       }
+      this.loading = false;
     } else {
+      this.loading = true;
       // If no state data, check if we're in edit mode via URL
       this.route.params
         .pipe(
@@ -221,6 +227,7 @@ export class ManageInterviewComponent implements OnInit {
                   (preview) => preview.file
                 );
               }
+              this.loading = false;
             }
           },
           error: (error) => {
@@ -231,6 +238,7 @@ export class ManageInterviewComponent implements OnInit {
                 duration: 3000,
               }
             );
+            this.loading = false;
           },
         });
     }

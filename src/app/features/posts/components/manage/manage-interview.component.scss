@@ -96,12 +96,18 @@
 .button-container {
   margin: 2rem 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   position: sticky;
   bottom: 0;
   background: white;
   padding: 1rem 0;
   z-index: 1;
+
+  .right-buttons {
+    display: flex;
+    gap: 1rem;
+  }
 
   button {
     min-width: 120px;

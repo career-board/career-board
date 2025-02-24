@@ -19,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { EditorModule } from 'primeng/editor';
+import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CreateInterviewRequest } from '../../models/create-post-request.model';
 import { UpdateInterviewRequest } from '../../models/update-post-request.model';
@@ -58,6 +59,7 @@ interface ImagePreview {
     CalendarModule,
     EditorModule,
     TabviewEditorComponent,
+    ButtonModule,
   ],
 })
 export class ManageInterviewComponent implements OnInit {
@@ -85,7 +87,6 @@ export class ManageInterviewComponent implements OnInit {
   constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
       description: ['', [Validators.required]],
-      status: ['DRAFT', [Validators.required]],
       typeId: [null, [Validators.required]],
       company: ['', [Validators.required]],
       interviewDate: [null, [Validators.required]],
@@ -102,8 +103,12 @@ export class ManageInterviewComponent implements OnInit {
     this.postForm.get('interviewDate')?.valueChanges.subscribe((date) => {
       if (date) {
         const localDate = new Date(date);
-        localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
-        this.postForm.get('interviewDate')?.setValue(localDate, { emitEvent: false });
+        localDate.setMinutes(
+          localDate.getMinutes() - localDate.getTimezoneOffset()
+        );
+        this.postForm
+          .get('interviewDate')
+          ?.setValue(localDate, { emitEvent: false });
       }
     });
   }
@@ -362,15 +367,19 @@ export class ManageInterviewComponent implements OnInit {
     );
   }
 
-  async onSubmit() {
+  onCancel(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+  async onSubmit(status: 'DRAFT' | 'PUBLISHED') {
     if (this.postForm.valid) {
       try {
         this.isUploading = true;
 
         if (this.isEditMode && this.postId) {
-          this.updateInterview();
+          this.updateInterview(status);
         } else {
-          this.createInterview();
+          this.createInterview(status);
         }
       } catch (error: any) {
         this.snackBar.open(
@@ -387,9 +396,10 @@ export class ManageInterviewComponent implements OnInit {
     }
   }
 
-  private createInterview() {
+  private createInterview(status: 'DRAFT' | 'PUBLISHED') {
     console.log('Create Post');
-    const postData: CreateInterviewRequest = this.mapToCreateInterviewRequest();
+    const postData: CreateInterviewRequest =
+      this.mapToCreateInterviewRequest(status);
     console.log(postData);
     this.postService.createPost(postData).subscribe({
       next: (response) => {
@@ -412,7 +422,7 @@ export class ManageInterviewComponent implements OnInit {
     });
   }
 
-  private mapToCreateInterviewRequest() {
+  private mapToCreateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
     const uploadedImages = this.selectedFiles.map((file) => file.name);
     console.log(uploadedImages);
     let editorial = '';
@@ -425,7 +435,7 @@ export class ManageInterviewComponent implements OnInit {
     const postData: CreateInterviewRequest = {
       description: this.postForm.get('description')?.value,
       imageNames: uploadedImages,
-      status: this.postForm.get('status')?.value,
+      status: status,
       userId: Number(this.authService.getUserId()),
       details: this.postForm.get('editorContent')?.get('details')?.value || '',
       editorial: editorial,
@@ -436,7 +446,7 @@ export class ManageInterviewComponent implements OnInit {
     return postData;
   }
 
-  private mapToUpdateInterviewRequest() {
+  private mapToUpdateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
     const uploadedImages = this.selectedFiles.map((file) => file.name);
     console.log(uploadedImages);
     let editorial = '';
@@ -450,7 +460,7 @@ export class ManageInterviewComponent implements OnInit {
       userId: this.currentPost!.userId,
       description: this.postForm!.get('description')!.value,
       images: this.mergeImageLists(uploadedImages, this.existingImages),
-      status: this.postForm.get('status')!.value,
+      status: status,
       details: this.postForm.get('editorContent')?.get('details')?.value || '',
       editorial: editorial,
       typeId: this.postForm.get('typeId')!.value,
@@ -460,10 +470,10 @@ export class ManageInterviewComponent implements OnInit {
     return interviewData;
   }
 
-  private updateInterview() {
+  private updateInterview(status: 'DRAFT' | 'PUBLISHED') {
     console.log('Update Post');
     const interviewData: UpdateInterviewRequest =
-      this.mapToUpdateInterviewRequest();
+      this.mapToUpdateInterviewRequest(status);
     this.postService.updatePost(interviewData).subscribe({
       next: (response) => {
         this.snackBar.open('Interview updated successfully!', 'Close', {

@@ -1,7 +1,7 @@
 <div class="post-create-container">
   <h2>{{ isEditMode ? "Edit Post" : "Create New Interview" }}</h2>
 
-  <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
+  <form [formGroup]="postForm" class="post-form">
     <div class="full-width">
       <label class="form-label">Description</label>
       <span class="p-fluid">
@@ -138,24 +138,29 @@
       class="upload-progress"
     ></mat-progress-bar>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Status</mat-label>
-      <mat-select formControlName="status">
-        <mat-option value="DRAFT">Draft</mat-option>
-        <mat-option value="PUBLISHED">Published</mat-option>
-      </mat-select>
-    </mat-form-field>
-
     <div class="button-container">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="!postForm.valid || isUploading"
-        class="mat-elevation-z2"
-      >
-        {{ isEditMode ? "Update Interview" : "Create Interview" }}
-      </button>
+      <p-button
+        icon="pi pi-times"
+        label="Cancel"
+        severity="secondary"
+        (onClick)="onCancel()"
+        styleClass="p-button-outlined"
+      ></p-button>
+      <div class="right-buttons">
+        <p-button
+          [icon]="'pi pi-save'"
+          [label]="isEditMode ? 'Update Draft' : 'Create Draft'"
+          severity="secondary"
+          (onClick)="onSubmit('DRAFT')"
+          styleClass="p-button-outlined mr-2"
+        ></p-button>
+        <p-button
+          icon="pi pi-check"
+          [label]="isEditMode ? 'Update & Publish' : 'Create & Publish'"
+          [disabled]="!postForm.valid || isUploading"
+          (onClick)="onSubmit('PUBLISHED')"
+        ></p-button>
+      </div>
     </div>
   </form>
 </div>

@@ -16,6 +16,7 @@
       @if (!loading) {
         <p-paginator 
           [rows]="pageSize"
+          [first]="pageIndex * pageSize"
           [totalRecords]="totalPosts"
           [rowsPerPageOptions]="[5, 10, 25, 50]"
           (onPageChange)="onPageChange($event)"

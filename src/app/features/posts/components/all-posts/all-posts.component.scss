@@ -1,27 +1,57 @@
 .all-posts-container {
-  padding: 20px;
+  min-height: 100%;
+  background-color: #f8f9fa;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  overflow-y: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  /* Webkit scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
 .content-wrapper {
-  width: 66.666%; 
-  max-width: 1200px; 
-  margin: 0 auto;
-  padding: 0 16px;
-  box-sizing: border-box;
+  width: 50%;
+  max-width: 800px;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 5rem;
+  height: auto;
+  min-height: fit-content;
 }
 
 .posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  width: 100%;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .post-card {
@@ -35,130 +65,45 @@
 }
 
 .paginator-container {
-  margin-top: 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 0.5rem;
-  width: 100%;
-  box-sizing: border-box;
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
 
-  .custom-paginator {
-    background: transparent;
-
-    ::ng-deep {
-      .mat-mdc-paginator {
-        border-radius: 12px;
+  ::ng-deep {
+    .p-paginator {
+      border: none;
+      background: transparent;
+      padding: 0;
+      
+      .p-paginator-pages .p-paginator-page.p-highlight {
+        background: #1976d2;
+        color: white;
       }
+    }
 
-      .mat-mdc-paginator-container {
-        padding: 8px 12px;
-        justify-content: center;
-        gap: 24px;
-      }
-
-      .mat-mdc-paginator-range-label {
-        margin: 0;
-        font-weight: 500;
-      }
-
-      .mat-mdc-paginator-navigation-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .mat-mdc-icon-button {
-        background-color: #f3f4f6;
-        border-radius: 8px;
-        transition: all 0.2s ease;
-
-        &:hover {
-          background-color: #e5e7eb;
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          background-color: #f3f4f6;
-        }
-      }
-
-      // Target the select field
-      .mat-mdc-form-field {
-        width: 70px;
-        
-        .mdc-text-field--outlined {
-          --mdc-outlined-text-field-outline-color: transparent;
-          --mdc-outlined-text-field-outline-width: 0;
-        }
-
-        .mdc-line-ripple {
-          display: none;
-        }
-
-        .mdc-notched-outline {
-          display: none;
-        }
-
-        .mat-mdc-form-field-infix {
-          border: none;
-          padding: 0;
-          width: auto;
-          min-height: 0;
-        }
-      }
-
-      .mat-mdc-select {
-        background-color: #f3f4f6;
-        border-radius: 8px;
-        padding: 4px 8px;
-        width: auto;
-
-        .mat-mdc-select-trigger {
-          border: none;
-        }
-
-        .mat-mdc-select-value {
-          padding: 0;
-          width: auto;
-        }
-      }
-
-      .mat-mdc-form-field-subscript-wrapper,
-      .mat-mdc-form-field-bottom-align::before,
-      .mdc-line-ripple::before,
-      .mdc-line-ripple::after {
-        display: none;
-      }
-
-      .mat-mdc-text-field-wrapper {
-        background: transparent;
-        border: none;
-        padding: 0;
-      }
-
-      .mat-mdc-form-field-flex {
-        padding: 0;
-        background: transparent;
+    .paginator-skeleton {
+      border-radius: 8px;
+      background-color: #f3f4f6;
+      
+      &::after {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
       }
     }
   }
 }
 
-// Add responsive design for smaller screens
-@media (max-width: 1024px) {
-  .content-wrapper {
-    width: 80%; 
+// Media query for mobile devices
+@media screen and (max-width: 768px) {
+  .all-posts-container {
+    padding: 1rem;
   }
-}
 
-@media (max-width: 768px) {
   .content-wrapper {
-    width: 95%; 
-    padding: 0 8px;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 3rem;
   }
 
   .posts-grid {
-    grid-template-columns: 1fr; // Single column on mobile
+    gap: 1rem;
   }
 }

@@ -94,23 +94,61 @@
 }
 
 .button-container {
-  margin: 2rem 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  bottom: 0;
-  background: white;
-  padding: 1rem 0;
-  z-index: 1;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
+
+  .left-button {
+    display: flex;
+    flex: 0 0 auto;
+
+    ::ng-deep .p-button {
+      min-width: 120px;
+    }
+  }
 
   .right-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
-  button {
-    min-width: 120px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+
+    .left-button {
+      display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+      
+        ::ng-deep .p-button {
+          width: 100%;
+          justify-content: center;
+        }
+    }
+
+    .right-buttons {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 0.5rem;
+
+      ::ng-deep .p-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    ::ng-deep .p-button .p-button-label {
+      font-size: 14px;
+    }
   }
 }
 
@@ -189,5 +227,56 @@
     flex: 1;
     padding: 0 10px;
     min-width: 250px;
+  }
+}
+
+.skeleton-container {
+  padding: 1rem;
+
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+
+  .mb-3 {
+    margin-bottom: 0.75rem;
+  }
+
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .mt-4 {
+    margin-top: 1rem;
+  }
+
+  .mr-2 {
+    margin-right: 0.5rem;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+
+    .form-col {
+      flex: 1;
+    }
+  }
+
+  .preview-skeletons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .right-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
   }
 }

@@ -1,7 +1,11 @@
 <div class="posts-container">
-  @if (posts && posts.length) {
+  @if (loading) {
+    @for (item of [1,2,3]; track $index) {
+      <app-post [loading]="true"></app-post>
+    }
+  } @else if (posts && posts.length) {
     @for (post of posts; track post?.interviewId) {
-      <app-post [post]="post"></app-post>
+      <app-post [post]="post" [loading]="false"></app-post>
     }
   } @else {
     <div class="empty-state mat-elevation-z2">

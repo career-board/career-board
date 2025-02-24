@@ -1,15 +1,54 @@
 .post-details-container {
   padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: calc(100vh - 8rem);
+  min-height: 100vh;
+  background-color: #f8f9fa;
+
+  ::ng-deep {
+    .post-card {
+      max-width: 800px;
+      margin: 0 auto;
+      
+      .p-card-body {
+        padding: 2rem;
+      }
+    }
+
+    .error-card {
+      max-width: 600px;
+      margin: 0 auto;
+      
+      .p-card-body {
+        padding: 1.5rem;
+      }
+    }
+
+    .p-carousel {
+      .p-carousel-indicators {
+        margin-top: 1rem;
+      }
+
+      .p-carousel-item {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .p-progressspinner {
+      width: 50px;
+      height: 50px;
+    }
+
+    .p-divider {
+      margin: 2rem 0;
+    }
+  }
 }
 
 .loading-spinner {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px;
+  min-height: 400px;
 }
 
 .post {
@@ -30,10 +69,8 @@
 
       .post-title {
         margin: 0;
-        font-size: 2rem;
-        font-weight: bold;
-        color: #333;
-        flex: 1;
+        font-size: 1.75rem;
+        color: #2c3e50;
       }
 
       .edit-button {
@@ -50,7 +87,6 @@
       gap: 1rem;
       color: #666;
       font-size: 0.9rem;
-      margin-bottom: 1.5rem;
 
       .author {
         margin-right: 1rem;
@@ -68,7 +104,8 @@
   .post-content {
     font-size: 1.1rem;
     line-height: 1.6;
-    color: #444;
+    color: #333;
+    margin-bottom: 2rem;
     white-space: pre-wrap;
   }
 }
@@ -91,12 +128,14 @@
   }
 
   .image-container {
+    width: 100%;
+    max-height: 500px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    overflow: hidden;
     
-    img {
+    .carousel-image {
       max-width: 100%;
       max-height: 500px;
       object-fit: contain;
@@ -111,30 +150,72 @@
   margin-top: 1rem;
 }
 
+.carousel-item {
+  padding: 0.5rem;
+  box-sizing: border-box;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img.carousel-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .error-message {
   color: #dc3545;
   text-align: center;
+  font-size: 1.1rem;
   padding: 2rem;
-  font-size: 1.2rem;
 }
 
 .moderator-comment {
-  margin-top: 2rem;
-  padding: 1rem;
   background-color: #f8f9fa;
-  border-left: 4px solid #ffc107;
-  border-radius: 4px;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 2rem;
 
   .moderator-title {
-    color: #6c757d;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
   }
 
   .comment-content {
-    color: #212529;
+    color: #666;
     line-height: 1.5;
+  }
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0 1rem;
+
+  .left-button {
+    flex: 0 0 auto;
+  }
+
+  .right-button {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  ::ng-deep {
+    .p-button {
+      margin: 0;
+    }
   }
 }
 
@@ -143,4 +224,34 @@
   height: 100vh;
   overflow-y: auto;
   padding-bottom: 4rem;
+}
+
+.post-content {
+  margin-top: 2rem;
+}
+
+.loading-skeleton {
+  padding: 1rem;
+
+  .tabview-skeleton {
+    margin: 2rem 0;
+  }
+
+  .carousel-skeleton {
+    margin-top: 2rem;
+
+    .carousel-items {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+  }
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
 }

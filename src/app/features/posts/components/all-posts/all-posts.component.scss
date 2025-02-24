@@ -79,6 +79,15 @@
         color: white;
       }
     }
+
+    .paginator-skeleton {
+      border-radius: 8px;
+      background-color: #f3f4f6;
+      
+      &::after {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+      }
+    }
   }
 }
 

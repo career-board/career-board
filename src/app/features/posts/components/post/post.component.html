@@ -1,17 +1,34 @@
 <p-card [style]="{'cursor': 'pointer'}" styleClass="post-card" (click)="navigateToPost()">
     <div class="card-header">
         <div class="company-info">
-            <span class="company">{{ post.company }}</span>
-            <span class="interview-date">{{ post.interviewDate | date : "MMM d, y" }}</span>
+            @if (!loading) {
+                <span class="company">{{ post.company }}</span>
+                <span class="interview-date">{{ post.interviewDate | date : "MMM d, y" }}</span>
+            } @else {
+                <p-skeleton width="60%" height="24px" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="40%" height="18px"></p-skeleton>
+            }
         </div>
         <div class="interview-type">
-            {{ post.typeName }}
+            @if (!loading) {
+                {{ post.typeName }}
+            } @else {
+                <p-skeleton width="80px" height="24px" styleClass="interview-type-skeleton"></p-skeleton>
+            }
         </div>
     </div>
     <div class="description">
-        {{ post.description }}
+        @if (!loading) {
+            {{ post.description }}
+        } @else {
+            <p-skeleton width="100%" height="60px"></p-skeleton>
+        }
     </div>
     <div class="post-meta">
-        {{ post.username }} : {{ post.createdAt | date : "MMM d, y" }}
+        @if (!loading) {
+            {{ post.username }} : {{ post.createdAt | date : "MMM d, y" }}
+        } @else {
+            <p-skeleton width="200px" height="18px"></p-skeleton>
+        }
     </div>
 </p-card>

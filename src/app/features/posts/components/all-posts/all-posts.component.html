@@ -1,20 +1,30 @@
 <div class="all-posts-container">
   <div class="content-wrapper">
     <div class="posts-grid">
-      @for (post of posts; track post.interviewId) {
-        <app-post [post]="post"></app-post>
+      @if (!loading) {
+        @for (post of posts; track post.interviewId) {
+          <app-post [post]="post" [loading]="false"></app-post>
+        }
+      } @else {
+        @for (item of [1,2,3,4,5]; track $index) {
+          <app-post [loading]="true"></app-post>
+        }
       }
     </div>
 
     <div class="paginator-container">
-      <p-paginator 
-        [rows]="pageSize"
-        [totalRecords]="totalPosts"
-        [rowsPerPageOptions]="[5, 10, 25, 50]"
-        (onPageChange)="onPageChange($event)"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      ></p-paginator>
+      @if (!loading) {
+        <p-paginator 
+          [rows]="pageSize"
+          [totalRecords]="totalPosts"
+          [rowsPerPageOptions]="[5, 10, 25, 50]"
+          (onPageChange)="onPageChange($event)"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        ></p-paginator>
+      } @else {
+        <p-skeleton height="56px" styleClass="paginator-skeleton"></p-skeleton>
+      }
     </div>
   </div>
 </div>

@@ -18,6 +18,22 @@
       }
     }
   }
+
+  .interview-type-skeleton {
+    border-radius: 16px;
+  }
+
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .p-skeleton {
+    background-color: #f3f4f6;
+    
+    &::after {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+    }
+  }
 }
 
 .card-header {

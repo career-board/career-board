@@ -7,15 +7,14 @@
     </div>
 
     <div class="paginator-container">
-      <mat-paginator
-        class="custom-paginator"
-        [length]="totalPosts"
-        [pageSize]="pageSize"
-        [pageIndex]="pageIndex"
-        [pageSizeOptions]="[5, 10, 25, 50]"
-        (page)="handlePageEvent($event)"
-        aria-label="Select page">
-      </mat-paginator>
+      <p-paginator 
+        [rows]="pageSize"
+        [totalRecords]="totalPosts"
+        [rowsPerPageOptions]="[5, 10, 25, 50]"
+        (onPageChange)="onPageChange($event)"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      ></p-paginator>
     </div>
   </div>
 </div>

@@ -1,40 +1,33 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatCardModule } from '@angular/material/card';
-import { Router } from '@angular/router';
+import { PaginatorModule } from 'primeng/paginator';
 import { PostComponent } from '../post/post.component';
-import { PostService, PostResponse } from '../../services/post.service';
+import { PostService } from '../../services/post.service';
 import { Post } from '../../models/post.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-all-posts',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatPaginatorModule,
-    MatCardModule,
-    PostComponent
-  ],
+  imports: [CommonModule, PaginatorModule, PostComponent],
   templateUrl: './all-posts.component.html',
   styleUrls: ['./all-posts.component.scss']
 })
 export class AllPostsComponent implements OnInit {
-  private postService = inject(PostService);
-  private router = inject(Router);
-
   posts: Post[] = [];
-  totalPosts = 0;
-  pageSize = 10;
-  pageIndex = 0;
+  totalPosts: number = 0;
+  pageSize: number = 10;
+  pageIndex: number = 0;
 
-  ngOnInit() {
+  constructor(private postService: PostService, private router: Router) {}
+
+  ngOnInit(): void {
     this.loadPosts();
   }
 
-  loadPosts() {
+  loadPosts(): void {
     this.postService.getAllPosts(this.pageIndex, this.pageSize).subscribe({
-      next: (response: PostResponse) => {
+      next: (response) => {
         this.posts = response.content;
         this.totalPosts = response.totalElements;
       },
@@ -44,9 +37,9 @@ export class AllPostsComponent implements OnInit {
     });
   }
 
-  handlePageEvent(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
+  onPageChange(event: any): void {
+    this.pageIndex = event.page;
+    this.pageSize = event.rows;
     this.loadPosts();
   }
 

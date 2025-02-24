@@ -1,76 +1,69 @@
 <div class="post-details-container">
-  <ng-container *ngIf="loading">
-    <div class="loading-spinner">
-      <span>Loading...</span>
+  @if (loading) {
+  <div class="loading-spinner">
+    <p-progressSpinner strokeWidth="4" />
+  </div>
+  } @else if (post) {
+  <p-card styleClass="post-card">
+    <div class="post-header">
+      <div class="title-actions">
+        <h1 class="post-title">{{ post.description }}</h1>
+        @if (canEdit) {
+        <p-button
+          icon="pi pi-pencil"
+          label="Edit Post"
+          (onClick)="onEditClick()"
+          severity="primary"
+        />
+        }
+      </div>
+      <div class="post-meta">
+        <span class="author">By {{ post.username }}</span>
+        <span class="date">{{ post.createdAt | date : "medium" }}</span>
+      </div>
+
+      @if (post.images.length > 0) {
+      <div class="mb-6">
+        <p-carousel
+          [value]="post.images"
+          [numVisible]="1"
+          [circular]="false"
+          [showNavigators]="post.images.length > 1"
+          [showIndicators]="post.images.length > 1"
+        >
+          <ng-template let-image pTemplate="item">
+            <div class="image-container">
+              <img
+                [src]="getImageUrl(image.imageName)"
+                [alt]="image.imageName"
+                class="carousel-image"
+              />
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+      }
     </div>
-  </ng-container>
 
-  <ng-container *ngIf="!loading && post">
-    <article class="post">
-      <header class="post-header">
-        <div class="title-actions">
-          <h1 class="post-title">{{ post.description }}</h1>
-          <button
-            *ngIf="canEdit"
-            mat-raised-button
-            color="primary"
-            (click)="onEditClick()"
-            class="edit-button"
-          >
-            <mat-icon>edit</mat-icon>
-            Edit Post
-          </button>
-        </div>
-        <div class="post-meta">
-          <span class="author">By {{ post.username }}</span>
-          <span class="date">{{ post.createdAt | date : "medium" }}</span>
-        </div>
-        <div *ngIf="post.images && post.images.length > 0" class="mb-6">
-          <mat-tab-group
-            [selectedIndex]="selectedIndex"
-            (selectedIndexChange)="onTabChange($event)"
-            mat-stretch-tabs="false"
-            mat-align-tabs="center"
-            animationDuration="300ms"
-            class="image-carousel"
-          >
-            <mat-tab *ngFor="let image of post.images; let i = index">
-              <div class="image-container">
-                <img
-                  [src]="getImageUrl(image.imageName)"
-                  [alt]="image.imageName"
-                  class="carousel-image"
-                />
-              </div>
-            </mat-tab>
-          </mat-tab-group>
+    <div class="post-content">
+      {{ post.details }}
+    </div>
 
-          <div class="carousel-controls" *ngIf="post.images.length > 1">
-            <button mat-icon-button (click)="previousImage()" [disabled]="selectedIndex === 0">
-              <mat-icon>chevron_left</mat-icon>
-            </button>
-            <button mat-icon-button (click)="nextImage()" [disabled]="selectedIndex === post.images.length - 1">
-              <mat-icon>chevron_right</mat-icon>
-            </button>
-          </div>
-        </div>
-      </header>
-      <div class="post-content">
-        {{ post.details }}
+    @if (post.editorial) {
+    <p-divider />
+    <div class="moderator-comment">
+      <h3 class="moderator-title">Moderator Comment</h3>
+      <div class="comment-content">
+        {{ post.editorial }}
       </div>
-
-      <div *ngIf="post.editorial" class="moderator-comment">
-        <h3 class="moderator-title">Moderator Comment</h3>
-        <div class="comment-content">
-          {{ post.editorial }}
-        </div>
-      </div>
-    </article>
-  </ng-container>
-
-  <ng-container *ngIf="!loading && error">
+    </div>
+    }
+  </p-card>
+  } @else if (error) {
+  <p-card styleClass="error-card">
     <div class="error-message">
       {{ error }}
     </div>
-  </ng-container>
+  </p-card>
+  }
 </div>

@@ -179,20 +179,22 @@
       ></mat-progress-bar>
 
       <div class="button-container">
-        <p-button
-          icon="pi pi-times"
-          label="Cancel"
-          severity="secondary"
-          (onClick)="onCancel()"
-          styleClass="p-button-outlined"
-        ></p-button>
+        <div class="left-button">
+          <p-button
+            icon="pi pi-times"
+            label="Cancel"
+            severity="secondary"
+            (onClick)="onCancel()"
+            styleClass="p-button-outlined w-full"
+          ></p-button>
+        </div>
         <div class="right-buttons">
           <p-button
             [icon]="'pi pi-save'"
             [label]="isEditMode ? 'Update Draft' : 'Create Draft'"
             severity="secondary"
             (onClick)="onSubmit('DRAFT')"
-            styleClass="p-button-outlined mr-2"
+            styleClass="p-button-outlined"
           ></p-button>
           <p-button
             icon="pi pi-check"

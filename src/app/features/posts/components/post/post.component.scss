@@ -1,67 +1,76 @@
-.post-card {
-  margin-bottom: 1rem;
-  border-radius: 12px;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  cursor: pointer;
+:host ::ng-deep {
+  .post-card {
+    display: block;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  }
-
-  mat-card-header {
-    padding: 16px;
-    
-    .user-avatar {
-      background-color: #f0f2f5;
-      color: #1a73e8;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 500;
-      font-size: 1.2rem;
-      margin-right: 12px;
+    &:hover {
+      transform: translateY(-2px);
     }
 
-    .header-content {
-      flex: 1;
+    .p-card {
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-      mat-card-title {
-        font-size: 1.1rem;
-        font-weight: 500;
-        margin-bottom: 4px;
-        color: #1f1f1f;
-      }
-
-      .post-meta {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #5f6368;
-        font-size: 0.9rem;
-
-        .username {
-          color: #1a73e8;
-          font-weight: 500;
-        }
-
-        .dot-separator {
-          font-size: 0.8rem;
-          opacity: 0.6;
-        }
-
-        .timestamp {
-          color: #5f6368;
-        }
+      .p-card-body {
+        padding: 1.25rem;
       }
     }
   }
 }
 
-::ng-deep .mat-mdc-card {
-  --mdc-elevated-card-container-color: #ffffff;
-  border: 1px solid #e0e0e0;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+
+  .company-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .company {
+      font-weight: 600;
+      color: #333;
+      font-size: 1rem;
+    }
+
+    .interview-date {
+      color: #666;
+      font-size: 0.875rem;
+    }
+  }
+
+  .interview-type {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+.description {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.post-meta {
+  text-align: right;
+  font-size: 0.875rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  border-top: 1px solid #eee;
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  padding-right: 1rem;
 }

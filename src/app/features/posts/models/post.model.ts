@@ -13,6 +13,7 @@ export interface Post {
   editorial?: string;
   images: postImage[];
   typeId: number;
+  typeName: string;
   company: string;
   interviewDate: string;
 }

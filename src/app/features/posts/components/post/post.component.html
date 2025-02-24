@@ -1,20 +1,17 @@
-<mat-card
-  class="post-card"
-  appearance="outlined"
-  (click)="navigateToPost()"
-  style="cursor: pointer"
->
-  <mat-card-header>
-    <div mat-card-avatar class="user-avatar">
-      {{ post.username[0] | uppercase }}
+<p-card [style]="{'cursor': 'pointer'}" styleClass="post-card" (click)="navigateToPost()">
+    <div class="card-header">
+        <div class="company-info">
+            <span class="company">{{ post.company }}</span>
+            <span class="interview-date">{{ post.interviewDate | date : "MMM d, y" }}</span>
+        </div>
+        <div class="interview-type">
+            {{ post.typeName }}
+        </div>
     </div>
-    <div class="header-content">
-      <mat-card-title>{{ post.description }}</mat-card-title>
-      <mat-card-subtitle class="post-meta">
-        <span class="username">{{ post.username }}</span>
-        <span class="dot-separator">•</span>
-        <span class="timestamp">{{ post.createdAt | date : "MMM d, y" }}</span>
-      </mat-card-subtitle>
+    <div class="description">
+        {{ post.description }}
     </div>
-  </mat-card-header>
-</mat-card>
+    <div class="post-meta">
+        {{ post.username }} : {{ post.createdAt | date : "MMM d, y" }}
+    </div>
+</p-card>

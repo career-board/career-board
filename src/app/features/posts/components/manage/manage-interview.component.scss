@@ -1,18 +1,75 @@
 :host {
   display: block;
-  height: 100vh;
+  height: 100%;
+}
+
+.manage-interview-page {
+  min-height: 100%;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   overflow-y: auto;
-  padding-bottom: 2rem;
+  position: absolute;
+  margin-bottom: 2rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  @media screen and (max-width: 768px) {
+    background-color: #fff;
+    margin-bottom: 0;
+  }
+
+  /* Webkit scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
 .post-create-container {
+  width: 50%;
   max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 5rem;
+  height: auto;
+  min-height: fit-content;
+  margin-bottom: 2rem;
 
   h2 {
     margin-bottom: 2rem;
     color: #333;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: #fff;
+    margin-bottom: 3rem;
   }
 }
 

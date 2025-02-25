@@ -73,17 +73,47 @@
       border: none;
       background: transparent;
       padding: 0;
-      
+
       .p-paginator-pages .p-paginator-page.p-highlight {
         background: #1976d2;
         color: white;
+      }
+
+      @media screen and (max-width: 768px) {
+        .p-paginator-current {
+          display: none;
+        }
+
+        .p-paginator-pages {
+          .p-paginator-page {
+            min-width: 32px;
+            height: 32px;
+            margin: 0 2px;
+          }
+        }
+
+        .p-paginator-first,
+        .p-paginator-last,
+        .p-paginator-next,
+        .p-paginator-prev {
+          min-width: 32px;
+          height: 32px;
+        }
+
+        .p-dropdown {
+          width: 65px;
+
+          .p-dropdown-label {
+            padding-right: 0;
+          }
+        }
       }
     }
 
     .paginator-skeleton {
       border-radius: 8px;
       background-color: #f3f4f6;
-      
+
       &::after {
         background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
       }
@@ -101,6 +131,7 @@
     width: 100%;
     padding: 1rem;
     margin-top: 3rem;
+    margin-bottom: 5rem;
   }
 
   .posts-grid {

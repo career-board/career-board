@@ -4,9 +4,11 @@
   (onTextChange)="onChange($event.htmlValue)"
   (onSelectionChange)="onTouched()"
   [readonly]="readonly()"
+  [ngClass]="{ 'readonly-mode': readonly() }" 
   class="custom-editor"
 >
   <ng-template #header>
+    @if (!readonly()) {
     <span class="ql-formats">
       <select class="ql-header">
         <option selected>Normal</option>
@@ -29,5 +31,6 @@
         aria-label="Code Block"
       ></button>
     </span>
+    }
   </ng-template>
 </p-editor>

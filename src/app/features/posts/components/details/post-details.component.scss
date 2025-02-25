@@ -3,22 +3,54 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  padding: 1.5rem;
 
   .content-area {
     flex: 1;
     overflow-y: auto;
-    padding-right: 0.5rem;
+    padding: 1.5rem 1.5rem 2rem;
 
-    ::ng-deep {
-      .p-card, app-tabview-editor, .p-carousel {
-        display: block;
-        max-width: 800px;
-        margin: 0 auto;
+    .content-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+
+      @media screen and (min-width: 768px) {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
       }
 
-      app-tabview-editor .p-tabview .p-tabview-panels {
-        padding: 1.25rem 0;
+      .section {
+        margin-bottom: 2rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    ::ng-deep {
+      .p-tabview {
+        .p-tabview-panels {
+          padding: 1.25rem;
+        }
+      }
+
+      .p-carousel {
+        padding: 1.5rem 0;
+      }
+
+      @media screen and (max-width: 767px) {
+        .p-dynamic-dialog {
+          width: 90vw !important;
+          max-width: none !important;
+          margin: 0.5rem auto !important;
+          
+          .p-dialog-content {
+            padding: 0 !important;
+            width: 100% !important;
+          }
+        }
       }
     }
   }
@@ -58,7 +90,7 @@
 
       .edit-button {
         margin-left: 1rem;
-        
+
         mat-icon {
           margin-right: 0.5rem;
         }
@@ -88,7 +120,7 @@
     font-size: 1.1rem;
     line-height: 1.6;
     color: #333;
-    margin: 1.5rem 0;
+    margin: 2rem 0;
     white-space: pre-wrap;
   }
 }
@@ -98,12 +130,12 @@
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
-  
+
   ::ng-deep {
     .mat-mdc-tab-header {
       display: none;
     }
-    
+
     .mat-mdc-tab-body-wrapper {
       height: 100%;
     }
@@ -120,7 +152,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    
+
     .carousel-image {
       max-width: 100%;
       max-height: 500px;
@@ -183,23 +215,27 @@
   }
 }
 
+.button-container-wrapper {
+  background: #fff;
+  border-top: 1px solid #dee2e6;
+  width: 100%;
+  padding: 0;
+  margin-top: 1rem;
+}
+
 .button-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 0;
-  background: #fff;
-  border-top: 1px solid #dee2e6;
-  margin-top: 1rem;
+  padding: 1rem 1.5rem;
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   width: 100%;
-  
+
   .left-button {
     margin-right: auto;
   }
-  
+
   .right-button {
     margin-left: auto;
   }
@@ -213,10 +249,9 @@
   }
 
   .carousel-skeleton {
-    margin-top: 2rem;
     max-width: 800px;
-    margin: 0 auto;
-    
+    margin: 2rem auto;
+
     .carousel-items {
       display: flex;
       gap: 1rem;
@@ -241,6 +276,7 @@
     .p-dialog-content {
       padding: 0 !important;
       overflow: hidden !important;
+      background: #f8f9fa;
     }
   }
 }

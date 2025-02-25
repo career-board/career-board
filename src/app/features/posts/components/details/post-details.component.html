@@ -16,60 +16,66 @@
     </div>
   } @else if (post) {
     <div class="content-area">
-      <app-post [post]="post" [loading]="false"></app-post>
-
-      <div class="full-width post-content mt-4">
-        <app-tabview-editor
-          [readonly]="true"
-          [showEditorial]="true"
-          [(ngModel)]="editorContent"
-        ></app-tabview-editor>
-      </div>
-
-      @if (post.images && post.images.length > 0) {
-        <div class="mt-4">
-          <p-carousel
-            [value]="post.images"
-            [numVisible]="4"
-            [numScroll]="1"
-            [circular]="false"
-            [responsiveOptions]="carouselResponsiveOptions"
-            [showNavigators]="post.images.length > 4"
-            [showIndicators]="post.images.length > 4"
-          >
-            <ng-template let-image pTemplate="item">
-              <div class="carousel-item">
-                <img
-                  [src]="getImageUrl(image.imageName)"
-                  [alt]="image.imageName"
-                  class="carousel-image"
-                />
-              </div>
-            </ng-template>
-          </p-carousel>
+      <div class="content-wrapper">
+        <div class="section">
+          <app-post [post]="post" [loading]="false"></app-post>
         </div>
-      }
+
+        <div class="section">
+          <app-tabview-editor
+            [readonly]="true"
+            [showEditorial]="true"
+            [(ngModel)]="editorContent"
+          ></app-tabview-editor>
+        </div>
+
+        @if (post.images && post.images.length > 0) {
+          <div class="section">
+            <p-carousel
+              [value]="post.images"
+              [numVisible]="4"
+              [numScroll]="1"
+              [circular]="false"
+              [responsiveOptions]="carouselResponsiveOptions"
+              [showNavigators]="post.images.length > 4"
+              [showIndicators]="post.images.length > 4"
+            >
+              <ng-template let-image pTemplate="item">
+                <div class="carousel-item">
+                  <img
+                    [src]="getImageUrl(image.imageName)"
+                    [alt]="image.imageName"
+                    class="carousel-image"
+                  />
+                </div>
+              </ng-template>
+            </p-carousel>
+          </div>
+        }
+      </div>
     </div>
 
-    <div class="button-container mt-4">
-      <div class="left-button">
-        <p-button
-          icon="pi pi-check"
-          label="Done"
-          (onClick)="onDoneClick()"
-          severity="success"
-        ></p-button>
-      </div>
-
-      <div class="right-button">
-        @if (canEdit) {
+    <div class="button-container-wrapper">
+      <div class="button-container">
+        <div class="left-button">
           <p-button
-            icon="pi pi-pencil"
-            label="Edit Post"
-            (onClick)="onEditClick()"
-            severity="primary"
+            icon="pi pi-check"
+            label="Done"
+            (onClick)="onDoneClick()"
+            severity="success"
           ></p-button>
-        }
+        </div>
+
+        <div class="right-button">
+          @if (canEdit) {
+            <p-button
+              icon="pi pi-pencil"
+              label="Edit Post"
+              (onClick)="onEditClick()"
+              severity="primary"
+            ></p-button>
+          }
+        </div>
       </div>
     </div>
   }

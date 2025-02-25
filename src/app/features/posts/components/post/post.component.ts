@@ -14,34 +14,34 @@ import { PostDetailsComponent } from '../details/post-details.component';
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss'],
   imports: [CommonModule, CardModule, SkeletonModule, DialogModule],
-  providers: [DialogService]
+  providers: [DialogService],
 })
 export class PostComponent implements OnDestroy {
   @Input() post!: Post;
   @Input() loading: boolean = true;
-  
+
   private ref: DynamicDialogRef | undefined;
 
-  constructor(
-    private router: Router,
-    private dialogService: DialogService
-  ) {}
+  constructor(private router: Router, private dialogService: DialogService) {}
 
   navigateToPost() {
-    // Show post details in dialog
+    // Get screen width
+    const isMobile = window.innerWidth <= 768;
+    
+    // Show post details in dialog with responsive width
     this.ref = this.dialogService.open(PostDetailsComponent, {
       header: 'Interview Details',
-      width: '70%',
+      width: isMobile ? '90%' : '70%',
       height: '90vh',
       maximizable: true,
       contentStyle: { overflow: 'auto' },
       baseZIndex: 10000,
       style: {
-        'max-width': '1200px'
+        'max-width': isMobile ? '100%' : '1200px',
       },
       data: {
-        postId: this.post.interviewId
-      }
+        postId: this.post.interviewId,
+      },
     });
 
     // Handle dialog close

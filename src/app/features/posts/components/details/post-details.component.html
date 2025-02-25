@@ -1,33 +1,33 @@
 <div class="post-details-container">
-  <p-card styleClass="post-card">
-    <div class="post-header">
-      @if (loading) {
-        <div class="loading-skeleton">
-          <p-skeleton height="100px" styleClass="mb-2"></p-skeleton>
-          <div class="tabview-skeleton">
-            <p-skeleton height="40px" styleClass="mb-2"></p-skeleton>
-            <p-skeleton height="200px"></p-skeleton>
-          </div>
-          <div class="carousel-skeleton">
-            <div class="carousel-items">
-              <p-skeleton width="200px" height="150px" styleClass="mr-2"></p-skeleton>
-              <p-skeleton width="200px" height="150px" styleClass="mr-2"></p-skeleton>
-              <p-skeleton width="200px" height="150px"></p-skeleton>
-            </div>
-          </div>
+  @if (loading) {
+    <div class="loading-skeleton">
+      <p-skeleton height="100px" styleClass="mb-2"></p-skeleton>
+      <div class="tabview-skeleton">
+        <p-skeleton height="40px" styleClass="mb-2"></p-skeleton>
+        <p-skeleton height="200px"></p-skeleton>
+      </div>
+      <div class="carousel-skeleton">
+        <div class="carousel-items">
+          <p-skeleton width="200px" height="150px" styleClass="mr-2"></p-skeleton>
+          <p-skeleton width="200px" height="150px" styleClass="mr-2"></p-skeleton>
+          <p-skeleton width="200px" height="150px"></p-skeleton>
         </div>
-      } @else if (post) {
-        <app-post [post]="post" [loading]="false"></app-post>
+      </div>
+    </div>
+  } @else if (post) {
+    <div class="content-area">
+      <app-post [post]="post" [loading]="false"></app-post>
 
-        <div class="full-width post-content">
-          <app-tabview-editor
-            [readonly]="true"
-            [showEditorial]="true"
-            [(ngModel)]="editorContent"
-          ></app-tabview-editor>
-        </div>
+      <div class="full-width post-content mt-4">
+        <app-tabview-editor
+          [readonly]="true"
+          [showEditorial]="true"
+          [(ngModel)]="editorContent"
+        ></app-tabview-editor>
+      </div>
 
-        <div class="mb-6">
+      @if (post.images && post.images.length > 0) {
+        <div class="mt-4">
           <p-carousel
             [value]="post.images"
             [numVisible]="4"
@@ -50,16 +50,17 @@
         </div>
       }
     </div>
-    
-    <div class="button-container">
+
+    <div class="button-container mt-4">
       <div class="left-button">
         <p-button
           icon="pi pi-check"
           label="Done"
           (onClick)="onDoneClick()"
           severity="success"
-        />
+        ></p-button>
       </div>
+
       <div class="right-button">
         @if (canEdit) {
           <p-button
@@ -67,9 +68,9 @@
             label="Edit Post"
             (onClick)="onEditClick()"
             severity="primary"
-          />
+          ></p-button>
         }
       </div>
     </div>
-  </p-card>
+  }
 </div>

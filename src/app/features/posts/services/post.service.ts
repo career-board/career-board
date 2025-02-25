@@ -22,8 +22,10 @@ export class PostService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/api`;
 
-  getUserPosts(userId: string): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.baseUrl}/post/user/${userId}`);
+  getUserPosts(userId: string, page: number, size: number): Observable<PostResponse> {
+    return this.http.get<PostResponse>(`${this.baseUrl}/post/user/${userId}`, {
+      params: { page: page.toString(), size: size.toString() }
+    });
   }
 
   getAllPosts(page: number, size: number): Observable<PostResponse> {

@@ -22,27 +22,21 @@
       <mat-icon>dashboard</mat-icon>
       <span>All Interviews</span>
     </a>
-    <a mat-button routerLink="/dashboard/my-posts" routerLinkActive="active">
-      <mat-icon>article</mat-icon>
-      <span>My Interviews</span>
-    </a>
-
-    @if (isAdmin) {
-    <a mat-button routerLink="/dashboard/admin" routerLinkActive="active">
-      <mat-icon>dashboard</mat-icon>
-      <span>Dashboard</span>
-    </a>
-    }
 
     <a mat-button routerLink="/dashboard/manage-post" routerLinkActive="active">
       <mat-icon>post_add</mat-icon>
       <span>Create Interview</span>
     </a>
 
+    <a mat-button routerLink="/dashboard/my-posts" routerLinkActive="active">
+      <mat-icon>article</mat-icon>
+      <span>My Profile</span>
+    </a>
+
     @if (isModerator || isAdmin) {
     <a mat-button routerLink="/dashboard/user-remove" routerLinkActive="active">
       <mat-icon>person_remove</mat-icon>
-      <span>Delete Users</span>
+      <span>All Users</span>
     </a>
     }
   </div>
@@ -90,34 +84,21 @@
   </a>
   <a
     mat-button
-    routerLink="/dashboard/my-posts"
-    routerLinkActive="active"
-    (click)="closeMobileMenu()"
-  >
-    <mat-icon>article</mat-icon>
-    <span>My Interviews</span>
-  </a>
-
-  @if (isAdmin) {
-  <a
-    mat-button
-    routerLink="/dashboard/admin"
-    routerLinkActive="active"
-    (click)="closeMobileMenu()"
-  >
-    <mat-icon>dashboard</mat-icon>
-    <span>Dashboard</span>
-  </a>
-  }
-
-  <a
-    mat-button
     routerLink="/dashboard/manage-post"
     routerLinkActive="active"
     (click)="closeMobileMenu()"
   >
     <mat-icon>post_add</mat-icon>
     <span>Create Interview</span>
+  </a>
+  <a
+    mat-button
+    routerLink="/dashboard/my-posts"
+    routerLinkActive="active"
+    (click)="closeMobileMenu()"
+  >
+    <mat-icon>article</mat-icon>
+    <span>My Profile</span>
   </a>
 
   @if (isModerator || isAdmin) {
@@ -128,7 +109,7 @@
     (click)="closeMobileMenu()"
   >
     <mat-icon>person_remove</mat-icon>
-    <span>Delete Users</span>
+    <span>All Users</span>
   </a>
   }
 </div>

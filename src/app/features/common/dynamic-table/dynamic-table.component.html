@@ -1,29 +1,71 @@
-<p-table [columns]="cols" [value]="datas" [tableStyle]="{ 'min-width': '50rem' }">
+<p-table
+  [columns]="cols"
+  [value]="datas"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 20]"
+  [sortField]="'someField'"
+  [sortOrder]="1"
+  [tableStyle]="{ 'min-width': '50rem' }">
+
+  <!-- Table Header -->
   <ng-template pTemplate="header">
     <tr>
-      <th *ngFor="let col of cols">
+      <th *ngFor="let col of cols" [pSortableColumn]="col.field">
         {{ col.header }}
+
+        <p-sortIcon  *ngIf="col.field!='action'" [field]="col.field"></p-sortIcon>
       </th>
     </tr>
   </ng-template>
+
+  <!-- Table Body -->
   <ng-template pTemplate="body" let-rowData>
-    <tr>
-      <td *ngFor="let col of cols">
+    <tr *ngIf="!isLoading; else loadingSkeleton">
+      <!-- Check if there's no data -->
+      <ng-container *ngIf="datas.length === 0; else tableContent">
+        <td [attr.colspan]="cols.length" style="text-align: center;">No records found</td>
+      </ng-container>
 
-
-        <ng-template #defaultCell>
+      <!-- Table Content -->
+      <ng-template #tableContent>
+        <td *ngFor="let col of cols">
           <ng-container *ngIf="col.field === 'action'; else textCell">
+            <div class="card flex justify-center">
+              <p-menu #menu [model]="actionsMenu" [popup]="true" appendTo="body"/>
+              <i
+              class="pi pi-ellipsis-v custom-icon-color"
+              (click)="setActionsMenu(rowData); menu.toggle($event)">
+            </i>
 
-            <p-button icon="pi pi-pencil" class="p-button-text p-button-sm" (click)="emitEdit(rowData, $event)"></p-button>
-            <p-button icon="pi pi-trash" class="p-button-text p-button-sm" (click)="emitDelete(rowData, $event)"></p-button>
+                        </div>
+          </ng-container>
 
-              </ng-container>
-        </ng-template>
-
-        <ng-template #textCell>
-          {{ rowData[col.field] }}
-        </ng-template>
-      </td>
+          <ng-template #textCell>
+            <p-tag *ngIf="col.field === 'active'" [value]="rowData[col.field]?'Active':'inactive'" severity="secondary"></p-tag>
+            <span *ngIf="col.field !== 'active'">
+              {{ isDate(rowData[col.field]) ? (rowData[col.field] | date: 'yyyy-MM-dd') : rowData[col.field] }}
+            </span>
+          </ng-template>
+        </td>
+      </ng-template>
     </tr>
+
+    <!-- Skeleton Loader (displayed while isLoading is true) -->
+    <ng-template #loadingSkeleton>
+      <tr *ngFor="let col of cols">
+        <td *ngFor="let col of cols">
+          <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </td>
+      </tr>
+    </ng-template>
+  </ng-template>
+
+  <!-- Pagination UI -->
+  <ng-template pTemplate="paginatorLeft">
+    <p-button icon="pi pi-refresh" class="p-button-text"></p-button>
+  </ng-template>
+  <ng-template pTemplate="paginatorRight">
+    <span>Total Records: {{ datas.length }}</span>
   </ng-template>
 </p-table>

@@ -3,6 +3,7 @@ import { LoginComponent } from './features/auth/components/login/login.component
 import { RegisterComponent } from './features/auth/components/register/register.component';
 import { authGuard } from './core/guards/auth.guard';
 import { UnauthorizedComponent } from './features/auth/components/unauthorized/unauthorized.component';
+import { UserListComponent } from './features/posts/components/user-list/user-list.component';
 
 export const routes: Routes = [
   {
@@ -28,8 +29,8 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./features/posts/components/user-post-list/user-post-list.component').then(
-            (m) => m.UserPostListComponent
+          import('./features/posts/components/user-list/user-list.component').then(
+            (m) => m.UserListComponent
           ),
       },
       {

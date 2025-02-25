@@ -1,0 +1,15 @@
+.custom-table {
+  width: 60%;
+}
+
+/* For screens smaller than 768px (mobile devices), set table to 100% width */
+@media (max-width: 768px) {
+  .custom-table {
+    width: 100%;
+  }
+}
+
+.custom-icon-color  {
+  cursor: pointer;
+  color: #6c757d; /* Secondary color, adjust as needed */
+}

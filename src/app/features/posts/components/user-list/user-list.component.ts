@@ -1,37 +1,35 @@
 import {Component, inject, input, OnInit} from '@angular/core';
-import {PostComponent} from "../post/post.component";
-import {Post} from '../../models/post.model';
-import {PostService} from '../../services/post.service';
+
+import {UserService} from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { DynamicTableComponent } from '../../../common/dynamic-table/dynamic-table.component';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-
-
+import { User } from '../../models/user.model';
 @Component({
-  selector: 'app-post-list',
+  selector: 'app-user-list',
   imports: [
     DynamicTableComponent,CommonModule,ConfirmDialogModule,
   ],
   providers: [ConfirmationService] ,
-  templateUrl: './post-list.component.html',
-  styleUrl: './post-list.component.scss'
+  templateUrl: './user-list.component.html',
+  styleUrl: './user-list.component.scss'
 })
-export class PostListComponent implements OnInit {
+export class UserListComponent implements OnInit {
 
   userId = input.required<string>();
 
-  private postService = inject(PostService);
-  posts: Post[] = [];
+  private userService = inject(UserService);
+  users: User[] = [];
   columns = [
-    { field: 'id', header: 'Id' },
+    { field: 'userId', header: 'Id' },
     { field: 'username', header: 'Username' },
-    { field: 'company', header: 'Company' },
-    { field: 'totalPost', header: 'No of Post' },
+    { field: 'currentCompany', header: 'Company' },
+    { field: 'postCount', header: 'No of Post' },
     { field: 'createdAt', header: 'Joined Date' },
-    { field: 'status', header: 'Status' },
+    { field: 'active', header: 'Status' },
     { field: 'action', header: 'Action' }
   ];
   actionsMenu: MenuItem[] = [
@@ -49,11 +47,11 @@ export class PostListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadUserPosts();
+    this.loadUserusers();
   }
 
-  onRowClick(post:any) {
-   // this.router.navigate(['/dashboard/post', post.postId]);
+  onRowClick(user:any) {
+   // this.router.navigate(['/dashboard/user', user.postId]);
   }
 
   onActionClick(event: { action: string; row: any }) {
@@ -87,13 +85,13 @@ export class PostListComponent implements OnInit {
     console.log('Deleting:', row);
     // Your delete logic here
   }
-  private loadUserPosts() {
-    this.postService.getUserPosts(this.userId()).subscribe({
-      next: (posts: Post[]) => {
-        this.posts = posts || [];
+  private loadUserusers() {
+    this.userService.fetchUsers().subscribe({
+      next: (users: User[]) => {
+        this.users = users || [];
       },
       error: (error: any) => {
-        this.posts = [];
+        this.users = [];
       },
     });
   }

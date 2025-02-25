@@ -1,0 +1,12 @@
+<div class="posts-container flex">
+
+  <app-dynamic-table
+  [cols]="columns"
+  [datas]="users"
+  [actionsMenu]="actionsMenu"
+  (actionClick)="onActionClick($event)"
+  (rowClick)="onRowClick($event)">
+</app-dynamic-table>
+<p-confirmDialog></p-confirmDialog>
+
+</div>

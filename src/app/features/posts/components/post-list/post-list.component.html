@@ -1,23 +1,12 @@
-<div class="posts-container">
-  @if (posts && posts.length) {
-    <!-- @for (post of posts; track post?.postId) { -->
+<div class="posts-container flex">
 
     <app-dynamic-table
     [cols]="columns"
     [datas]="posts"
-    (edit)="onEdit($event)"
-    (delete)="onDelete($event)"
+    [actionsMenu]="actionsMenu"
+    (actionClick)="onActionClick($event)"
     (rowClick)="onRowClick($event)">
   </app-dynamic-table>
+  <p-confirmDialog></p-confirmDialog>
 
-    <!-- } -->
-  } @else {
-    <div class="empty-state mat-elevation-z2">
-      <div class="empty-state-icon">
-        <i class="fas fa-newspaper fa-3x"></i>
-      </div>
-      <h3 class="empty-state-title">No Posts Yet</h3>
-      <p class="empty-state-message">Looks like there aren't any posts to display at the moment.</p>
-    </div>
-  }
 </div>

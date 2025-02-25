@@ -1,12 +1,30 @@
 .content-container {
   padding: 16px;
-  
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; // Better scrolling on iOS
+
   &.with-nav {
     padding-top: 80px; // Accounts for the fixed navigation bar
+    height: calc(100vh - 80px); // Adjust for nav bar height
   }
 }
 
 :host {
   display: block;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden; // Prevent body scrolling
+}
+
+// Mobile-specific adjustments
+@media screen and (max-width: 768px) {
+  .content-container {
+    padding: 12px;
+
+    &.with-nav {
+      padding-top: 64px; // Slightly reduced padding for mobile
+      height: calc(100vh - 64px);
+      padding-bottom: 24px; // Extra padding at bottom for better visibility
+    }
+  }
 }

@@ -33,3 +33,7 @@
   font-size: 14px !important;
   line-height: 1.5 !important;
 }
+
+:host ::ng-deep .readonly-mode .p-editor-toolbar {
+  border-bottom: none !important;
+}

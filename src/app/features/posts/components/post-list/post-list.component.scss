@@ -1,52 +1,218 @@
+.post-card {
+  margin-bottom: 20px;
 
-  .post-card {
-    margin-bottom: 20px;
+  mat-card-header {
+    margin-bottom: 16px;
+  }
 
-    mat-card-header {
-      margin-bottom: 16px;
-    }
+  mat-card-content {
+    padding: 16px 0;
+  }
+}
 
-    mat-card-content {
-      padding: 16px 0;
+.empty-state {
+  background: white;
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 500px;
+
+  .empty-state-icon {
+    margin-bottom: 1.5rem;
+    color: #6b7280;
+
+    i {
+      opacity: 0.8;
     }
   }
 
-  .empty-state {
-    background: white;
-    border-radius: 8px;
-    padding: 3rem 2rem;
-    text-align: center;
-    margin: 2rem auto;
-    max-width: 500px;
+  .empty-state-title {
+    color: #374151;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
 
-    .empty-state-icon {
-      margin-bottom: 1.5rem;
-      color: #6b7280;
+  .empty-state-message {
+    color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
 
-      i {
-        opacity: 0.8;
+.no-posts {
+  text-align: center;
+  color: #5f6368;
+  font-size: 1rem;
+  padding: 2rem;
+  margin: 0;
+}
+
+.all-posts-container {
+  min-height: 100%;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  overflow-y: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  /* Webkit scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+.content-wrapper {
+  width: 50%;
+  max-width: 800px;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 5rem;
+  height: auto;
+  min-height: fit-content;
+}
+
+.posts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.post-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-sizing: border-box;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.paginator-container {
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+
+  ::ng-deep {
+    .p-paginator {
+      border: none;
+      background: transparent;
+      padding: 0;
+
+      .p-paginator-pages .p-paginator-page.p-highlight {
+        background: #1976d2;
+        color: white;
+      }
+
+      @media screen and (max-width: 768px) {
+        .p-paginator-current {
+          display: none;
+        }
+
+        .p-paginator-pages {
+          .p-paginator-page {
+            min-width: 32px;
+            height: 32px;
+            margin: 0 2px;
+          }
+        }
+
+        .p-paginator-first,
+        .p-paginator-last,
+        .p-paginator-next,
+        .p-paginator-prev {
+          min-width: 32px;
+          height: 32px;
+        }
+
+        .p-dropdown {
+          width: 65px;
+
+          .p-dropdown-label {
+            padding-right: 0;
+          }
+        }
       }
     }
 
-    .empty-state-title {
-      color: #374151;
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
+    .paginator-skeleton {
+      border-radius: 8px;
+      background-color: #f3f4f6;
 
-    .empty-state-message {
-      color: #6b7280;
-      font-size: 1rem;
-      line-height: 1.5;
-      margin: 0;
+      &::after {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+      }
     }
   }
+}
 
-  .no-posts {
-    text-align: center;
-    color: #5f6368;
-    font-size: 1rem;
-    padding: 2rem;
-    margin: 0;
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+
+  .empty-state-icon {
+    color: #ccc;
+    margin-bottom: 1rem;
   }
+
+  .empty-state-title {
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state-message {
+    color: #666;
+  }
+}
+
+.paginator-skeleton {
+  margin-top: 1rem;
+  border-radius: 4px;
+}
+
+// Media query for mobile devices
+@media screen and (max-width: 768px) {
+  .all-posts-container {
+    padding: 1rem;
+  }
+
+  .content-wrapper {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 3rem;
+    margin-bottom: 5rem;
+  }
+
+  .posts-grid {
+    gap: 1rem;
+  }
+}

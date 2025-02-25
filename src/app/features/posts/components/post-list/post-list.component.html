@@ -1,19 +1,41 @@
-<div class="posts-container">
-  @if (loading) {
-    @for (item of [1,2,3]; track $index) {
-      <app-post [loading]="true"></app-post>
-    }
-  } @else if (posts && posts.length) {
-    @for (post of posts; track post?.interviewId) {
-      <app-post [post]="post" [loading]="false"></app-post>
-    }
-  } @else {
-    <div class="empty-state mat-elevation-z2">
-      <div class="empty-state-icon">
-        <i class="fas fa-newspaper fa-3x"></i>
-      </div>
-      <h3 class="empty-state-title">No Posts Yet</h3>
-      <p class="empty-state-message">Looks like there aren't any posts to display at the moment.</p>
+<div class="all-posts-container">
+  <div class="content-wrapper">
+    <div class="posts-grid">
+      @if (!loading) {
+        @if (posts && posts.length) {
+          @for (post of posts; track post.interviewId) {
+            <app-post [post]="post" [loading]="false"></app-post>
+          }
+        } @else {
+          <div class="empty-state mat-elevation-z2">
+            <div class="empty-state-icon">
+              <i class="fas fa-newspaper fa-3x"></i>
+            </div>
+            <h3 class="empty-state-title">No Posts Yet</h3>
+            <p class="empty-state-message">Looks like there aren't any posts to display at the moment.</p>
+          </div>
+        }
+      } @else {
+        @for (item of [1,2,3,4,5]; track $index) {
+          <app-post [loading]="true"></app-post>
+        }
+      }
     </div>
-  }
+
+    <div class="paginator-container">
+      @if (!loading) {
+        <p-paginator 
+          [rows]="pageSize"
+          [first]="pageIndex * pageSize"
+          [totalRecords]="totalPosts"
+          [rowsPerPageOptions]="[5, 10, 25, 50]"
+          (onPageChange)="onPageChange($event)"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        ></p-paginator>
+      } @else {
+        <p-skeleton height="56px" styleClass="paginator-skeleton"></p-skeleton>
+      }
+    </div>
+  </div>
 </div>

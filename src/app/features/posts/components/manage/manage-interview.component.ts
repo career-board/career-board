@@ -419,7 +419,7 @@ export class ManageInterviewComponent implements OnInit {
           this.snackBar.open('Interview created successfully!', 'Close', {
             duration: 3000,
           });
-          this.router.navigate(['/dashboard/post', response.interviewId]);
+          this.router.navigate(['/dashboard/my-posts']);
         }
       },
       error: (error) => {
@@ -487,7 +487,7 @@ export class ManageInterviewComponent implements OnInit {
         this.snackBar.open('Interview updated successfully!', 'Close', {
           duration: 3000,
         });
-        this.router.navigate(['/dashboard/post', this.postId]);
+        this.router.navigate(['/dashboard/my-posts']);
       },
       error: (error) => {
         this.snackBar.open('Error updating post: ' + error.message, 'Close', {

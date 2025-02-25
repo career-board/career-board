@@ -1,69 +1,72 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MenubarModule } from 'primeng/menubar';
+import { ButtonModule } from 'primeng/button';
+import { MenuModule } from 'primeng/menu';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
   imports: [
     CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatDividerModule,
-    MatTooltipModule,
-    RouterModule
+    RouterModule,
+    MenubarModule,
+    ButtonModule,
+    MenuModule,
+    TooltipModule
   ],
   templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./nav-bar.component.scss']
 })
 export class NavBarComponent implements OnInit {
-  userRole: string | null = '';
   isMobileMenuOpen = false;
   username: string | null = null;
+  isAdmin = false;
+  isModerator = false;
+  profileMenuItems: MenuItem[] = [];
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    // Initial role check
-    this.userRole = this.authService.getUserRole();
     this.username = this.authService.getUsername();
-
-    // Subscribe to authentication changes
-    this.authService.isAuthenticated$.subscribe(() => {
-      this.userRole = this.authService.getUserRole();
-      this.username = this.authService.getUsername();
-    });
+    this.isAdmin = this.authService.getUserRole() === 'ADMIN';
+    this.isModerator = this.authService.getUserRole() === 'MODERATOR';
+    
+    this.initializeProfileMenu();
   }
 
-  private updateUserRole() {
-    const role = this.authService.getUserRole();
-    this.userRole = role ? role.toUpperCase() : '';
-  }
-
-  get isAdmin(): boolean {
-    return this.userRole === 'ADMIN';
-  }
-
-  get isUser(): boolean {
-    return this.userRole === 'USER';
-  }
-
-  get isModerator(): boolean {
-    return this.userRole === 'MODERATOR';
-  }
-
-  onLogout() {
-    this.authService.logout();
+  private initializeProfileMenu() {
+    this.profileMenuItems = [
+      {
+        label: this.username || 'User',
+        disabled: true,
+        styleClass: 'username-display'
+      },
+      {
+        label: this.isModerator ? 'Moderator' : this.isAdmin ? 'Admin' : 'User',
+        disabled: true,
+        styleClass: 'role-display'
+      },
+      { separator: true },
+      {
+        label: 'Profile',
+        icon: 'pi pi-user',
+        routerLink: '/profile'
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: () => this.onLogout()
+      }
+    ];
   }
 
   toggleMobileMenu() {
@@ -72,5 +75,10 @@ export class NavBarComponent implements OnInit {
 
   closeMobileMenu() {
     this.isMobileMenuOpen = false;
+  }
+
+  onLogout() {
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
   }
 }

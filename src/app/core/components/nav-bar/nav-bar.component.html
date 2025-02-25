@@ -1,115 +1,106 @@
-<mat-toolbar color="primary" class="nav-toolbar">
-  <span class="brand">Career Board</span>
-  <span class="spacer"></span>
+<div class="nav-toolbar">
+  <p-menubar styleClass="nav-menubar">
+    <ng-template pTemplate="start">
+      <span class="brand">Career Board</span>
+      
+      <!-- Desktop menu -->
+      <div class="desktop-menu">
+        <a pButton
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          icon="pi pi-th-large"
+          label="All Interviews"
+          class="p-button-text">
+        </a>
 
-  <!-- Mobile menu toggle -->
-  <button
-    mat-icon-button
-    class="mobile-menu-toggle"
-    (click)="toggleMobileMenu()"
-  >
-    <mat-icon>{{ isMobileMenuOpen ? "close" : "menu" }}</mat-icon>
-  </button>
+        <a pButton
+          routerLink="/dashboard/manage-post"
+          routerLinkActive="active"
+          icon="pi pi-plus-circle"
+          label="Create Interview"
+          class="p-button-text">
+        </a>
 
-  <!-- Desktop menu -->
-  <div class="desktop-menu">
-    <a
-      mat-button
-      routerLink="/dashboard"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      <mat-icon>dashboard</mat-icon>
-      <span>All Interviews</span>
-    </a>
+        <a pButton
+          routerLink="/dashboard/my-posts"
+          routerLinkActive="active"
+          icon="pi pi-user"
+          label="My Profile"
+          class="p-button-text">
+        </a>
 
-    <a mat-button routerLink="/dashboard/manage-post" routerLinkActive="active">
-      <mat-icon>post_add</mat-icon>
-      <span>Create Interview</span>
-    </a>
+        @if (isAdmin || isModerator) {
+          <a pButton
+            routerLink="/dashboard/user-remove"
+            routerLinkActive="active"
+            icon="pi pi-users"
+            label="All Users"
+            class="p-button-text">
+          </a>
+        }
+      </div>
+    </ng-template>
 
-    <a mat-button routerLink="/dashboard/my-posts" routerLinkActive="active">
-      <mat-icon>article</mat-icon>
-      <span>My Profile</span>
-    </a>
+    <ng-template pTemplate="end">
+      <!-- Mobile menu toggle -->
+      <button pButton
+        class="mobile-menu-toggle p-button-text"
+        (click)="toggleMobileMenu()"
+        [icon]="isMobileMenuOpen ? 'pi pi-times' : 'pi pi-bars'">
+      </button>
 
-    @if (isModerator || isAdmin) {
-    <a mat-button routerLink="/dashboard/user-remove" routerLinkActive="active">
-      <mat-icon>person_remove</mat-icon>
-      <span>All Users</span>
-    </a>
-    }
-  </div>
-
-  <!-- Profile menu (always visible) -->
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="menu"
-    class="profile-button"
-    [matTooltip]="username || 'Profile'"
-  >
-    <mat-icon>account_circle</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <div class="menu-header">
-      <span class="username-display">{{ username || "User" }}</span>
-      <small>{{
-        isModerator ? "Moderator" : isAdmin ? "Admin" : "User"
-      }}</small>
-    </div>
-    <mat-divider></mat-divider>
-    <a mat-menu-item routerLink="/profile">
-      <mat-icon>person</mat-icon>
-      <span>Profile</span>
-    </a>
-    <button mat-menu-item (click)="onLogout()">
-      <mat-icon>exit_to_app</mat-icon>
-      <span>Logout</span>
-    </button>
-  </mat-menu>
-</mat-toolbar>
+      <!-- Profile menu -->
+      <p-menu #profileMenu [popup]="true" [model]="profileMenuItems"></p-menu>
+      <button pButton
+        [pTooltip]="username || 'Profile'"
+        tooltipPosition="bottom"
+        class="profile-button p-button-text"
+        icon="pi pi-user"
+        (click)="profileMenu.toggle($event)">
+      </button>
+    </ng-template>
+  </p-menubar>
+</div>
 
 <!-- Mobile menu overlay -->
 <div class="mobile-menu" [class.open]="isMobileMenuOpen">
-
-  <a
-    mat-button
+  <a pButton
     routerLink="/dashboard"
     routerLinkActive="active"
     [routerLinkActiveOptions]="{ exact: true }"
     (click)="closeMobileMenu()"
-  >
-    <mat-icon>dashboard</mat-icon>
-    <span>All Interviews</span>
+    icon="pi pi-th-large"
+    label="All Interviews"
+    class="p-button-text p-button-full">
   </a>
-  <a
-    mat-button
+
+  <a pButton
     routerLink="/dashboard/manage-post"
     routerLinkActive="active"
     (click)="closeMobileMenu()"
-  >
-    <mat-icon>post_add</mat-icon>
-    <span>Create Interview</span>
+    icon="pi pi-plus-circle"
+    label="Create Interview"
+    class="p-button-text p-button-full">
   </a>
-  <a
-    mat-button
+
+  <a pButton
     routerLink="/dashboard/my-posts"
     routerLinkActive="active"
     (click)="closeMobileMenu()"
-  >
-    <mat-icon>article</mat-icon>
-    <span>My Profile</span>
+    icon="pi pi-user"
+    label="My Profile"
+    class="p-button-text p-button-full">
   </a>
 
-  @if (isModerator || isAdmin) {
-  <a
-    mat-button
-    routerLink="/dashboard/user-remove"
-    routerLinkActive="active"
-    (click)="closeMobileMenu()"
-  >
-    <mat-icon>person_remove</mat-icon>
-    <span>All Users</span>
-  </a>
+  @if (isAdmin || isModerator) {
+    <a pButton
+      routerLink="/dashboard/user-remove"
+      routerLinkActive="active"
+      (click)="closeMobileMenu()"
+      icon="pi pi-users"
+      label="All Users"
+      class="p-button-text p-button-full">
+    </a>
   }
 </div>

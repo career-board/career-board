@@ -103,7 +103,7 @@ export class PostDetailsComponent implements OnInit {
 
     // User can edit if they are the author or if they are a moderator/admin
     this.canEdit = 
-      this.post.userId?.toString() === userId ||
+      this.post.userId?.toString() == userId ||
       userRole === 'MODERATOR' ||
       userRole === 'ADMIN';
   }

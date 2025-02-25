@@ -27,13 +27,13 @@ export class PostComponent implements OnDestroy {
   navigateToPost() {
     // Get screen width
     const isMobile = window.innerWidth <= 768;
-    
+
     // Show post details in dialog with responsive width
     this.ref = this.dialogService.open(PostDetailsComponent, {
       header: 'Interview Details',
       width: isMobile ? '90%' : '70%',
       height: '90vh',
-      maximizable: true,
+      maximizable: isMobile ?true : false,
       contentStyle: { overflow: 'auto' },
       baseZIndex: 10000,
       style: {

@@ -40,12 +40,21 @@
         padding: 1.5rem 0;
       }
 
+      // Hide maximize icon for all screens
+      .p-dialog-header {
+        .p-dialog-header-icon {
+          &.p-dialog-maximize-icon {
+            display: none !important;
+          }
+        }
+      }
+
       @media screen and (max-width: 767px) {
         .p-dynamic-dialog {
           width: 90vw !important;
           max-width: none !important;
           margin: 0.5rem auto !important;
-          
+
           .p-dialog-content {
             padding: 0 !important;
             width: 100% !important;

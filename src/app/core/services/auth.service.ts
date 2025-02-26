@@ -101,4 +101,16 @@ export class AuthService {
       return null;
     }
   }
+
+  getUsername(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.sub || null; // 'sub' is commonly used for username in JWT
+    } catch {
+      return null;
+    }
+  }
 }

@@ -19,7 +19,7 @@ export class PostComponent {
   constructor(private router: Router) {}
 
   navigateToPost() {
-    this.router.navigate(['/dashboard/post', this.post.postId]);
+    this.router.navigate(['/dashboard/post', this.post.interviewId]);
   }
   editPost(post: any) {
     console.log('Edit post:', post);

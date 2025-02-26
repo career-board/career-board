@@ -19,6 +19,13 @@ export const routes: Routes = [
     component: UnauthorizedComponent,
   },
   {
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/users/profile/profile.component').then(
+        (m) => m.ProfileComponent
+      ),
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./core/components/layout/layout.component').then(
@@ -29,9 +36,17 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./features/posts/components/user-list/user-list.component').then(
-            (m) => m.UserListComponent
-          ),
+          import(
+            './features/posts/components/all-posts/all-posts.component'
+          ).then((m) => m.AllPostsComponent),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'my-posts',
+        loadComponent: () =>
+          import(
+            './features/posts/components/user-list/user-list.component'
+          ).then((m) => m.UserListComponent),
       },
       {
         path: 'admin',
@@ -41,7 +56,7 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
         data: {
-          role: 'ADMIN',
+          role: ['ADMIN'],
         },
       },
       {
@@ -54,9 +69,17 @@ export const routes: Routes = [
       {
         path: 'post/:id',
         loadComponent: () =>
-          import('./features/posts/components/details/post-details.component').then(
-            (m) => m.PostDetailsComponent
-          ),
+          import(
+            './features/posts/components/details/post-details.component'
+          ).then((m) => m.PostDetailsComponent),
+      },
+      {
+        path: 'post/edit/:id',
+        loadComponent: () =>
+          import(
+            './features/posts/components/manage/manage-interview.component'
+          ).then((m) => m.ManageInterviewComponent),
+        canActivate: [authGuard],
       },
       {
         path: 'user-remove',
@@ -66,28 +89,17 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
         data: {
-          role: 'MODERATOR',
+          role: ['MODERATOR', 'ADMIN'],
         },
       },
       {
         path: 'manage-post',
         loadComponent: () =>
-          import('./features/posts/components/manage/manage-create.component').then(
-            (m) => m.PostCreateComponent
-          ),
+          import(
+            './features/posts/components/manage/manage-interview.component'
+          ).then((m) => m.ManageInterviewComponent),
         canActivate: [authGuard],
       },
-      // {
-      //   path: 'users-timeline',
-      //   loadComponent: () =>
-      //     import(
-      //       './dashboard/pages/components/users-timeline/users-timeline.component'
-      //     ).then((m) => m.UsersTimelineComponent),
-      //   canActivate: [authGuard],
-      //   data: {
-      //     role: 'ADMIN',
-      //   },
-      // },
     ],
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },

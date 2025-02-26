@@ -1,51 +1,55 @@
-<mat-toolbar color="primary">
-  <span>Career Board</span>
+<mat-toolbar color="primary" class="nav-toolbar">
+  <span class="brand">Career Board</span>
   <span class="spacer"></span>
 
-  <!-- Menu items for all authenticated users -->
-  <a mat-button routerLink="/dashboard" routerLinkActive="active">
-    <mat-icon>dashboard</mat-icon>
-    Dashboard
-  </a>
+  <!-- Mobile menu toggle -->
+  <button mat-icon-button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+    <mat-icon>{{ isMobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+  </button>
 
-  <a mat-button routerLink="/dashboard/manage-post" routerLinkActive="active">
-    <mat-icon>post_add</mat-icon>
-    Create Post
-  </a>
-
-  <!-- Admin only menu items -->
-  @if (isAdmin) {
-    <a mat-button routerLink="/users" routerLinkActive="active">
-      <mat-icon>people</mat-icon>
-      Users
+  <!-- Desktop menu -->
+  <div class="desktop-menu">
+    @if (isModerator || isUser) {
+    <a mat-button routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <mat-icon>dashboard</mat-icon>
+      <span>All Posts</span>
     </a>
-    <a mat-button routerLink="/settings" routerLinkActive="active">
-      <mat-icon>settings</mat-icon>
-      Settings
+    <a mat-button routerLink="/dashboard/my-posts" routerLinkActive="active">
+      <mat-icon>article</mat-icon>
+      <span>My Posts</span>
     </a>
-  }
+    }
 
-  <!-- Moderator only menu items -->
-  @if (isModerator) {
+    @if (isAdmin) {
+    <a mat-button routerLink="/dashboard/admin" routerLinkActive="active">
+      <mat-icon>dashboard</mat-icon>
+      <span>Dashboard</span>
+    </a>
+    }
+
+    <a mat-button routerLink="/dashboard/manage-post" routerLinkActive="active">
+      <mat-icon>post_add</mat-icon>
+      <span>Create Post</span>
+    </a>
+
+    @if (isModerator || isAdmin) {
     <a mat-button routerLink="/dashboard/user-remove" routerLinkActive="active">
       <mat-icon>person_remove</mat-icon>
-      Delete Users
+      <span>Delete Users</span>
     </a>
-  }
+    }
+  </div>
 
-  <!-- User only menu items -->
-  @if (isUser) {
-    <a mat-button routerLink="/my-posts" routerLinkActive="active">
-      <mat-icon>article</mat-icon>
-      My Posts
-    </a>
-  }
-
-  <!-- Profile and Logout -->
-  <button mat-icon-button [matMenuTriggerFor]="menu">
+  <!-- Profile menu (always visible) -->
+  <button mat-icon-button [matMenuTriggerFor]="menu" class="profile-button" [matTooltip]="username || 'Profile'">
     <mat-icon>account_circle</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
+    <div class="menu-header">
+      <span class="username-display">{{username || 'User'}}</span>
+      <small>{{isModerator ? 'Moderator' : (isAdmin ? 'Admin' : 'User')}}</small>
+    </div>
+    <mat-divider></mat-divider>
     <a mat-menu-item routerLink="/profile">
       <mat-icon>person</mat-icon>
       <span>Profile</span>
@@ -56,3 +60,36 @@
     </button>
   </mat-menu>
 </mat-toolbar>
+
+<!-- Mobile menu overlay -->
+<div class="mobile-menu" [class.open]="isMobileMenuOpen">
+  @if (isModerator || isUser) {
+  <a mat-button routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()">
+    <mat-icon>dashboard</mat-icon>
+    <span>All Posts</span>
+  </a>
+  <a mat-button routerLink="/dashboard/my-posts" routerLinkActive="active" (click)="closeMobileMenu()">
+    <mat-icon>article</mat-icon>
+    <span>My Posts</span>
+  </a>
+  }
+
+  @if (isAdmin) {
+  <a mat-button routerLink="/dashboard/admin" routerLinkActive="active" (click)="closeMobileMenu()">
+    <mat-icon>dashboard</mat-icon>
+    <span>Dashboard</span>
+  </a>
+  }
+
+  <a mat-button routerLink="/dashboard/manage-post" routerLinkActive="active" (click)="closeMobileMenu()">
+    <mat-icon>post_add</mat-icon>
+    <span>Create Post</span>
+  </a>
+
+  @if (isModerator || isAdmin) {
+  <a mat-button routerLink="/dashboard/user-remove" routerLinkActive="active" (click)="closeMobileMenu()">
+    <mat-icon>person_remove</mat-icon>
+    <span>Delete Users</span>
+  </a>
+  }
+</div>

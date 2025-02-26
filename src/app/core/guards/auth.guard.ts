@@ -25,8 +25,16 @@ export const authGuard: CanActivateFn = (
   }
 
   const userRoles = authService.getUserRole();
-  if (!userRoles || !userRoles.includes(role)) {
-    return new RedirectCommand(router.parseUrl('/unauthorized'));
+  // If roles is an array, check if user has any of the required roles
+  if (Array.isArray(role)) {
+    if (!userRoles || !role.some(r => userRoles.includes(r))) {
+      return new RedirectCommand(router.parseUrl('/unauthorized'));
+    }
+  } else {
+    // Backward compatibility for single role
+    if (!userRoles || !userRoles.includes(role)) {
+      return new RedirectCommand(router.parseUrl('/unauthorized'));
+    }
   }
 
   return true;

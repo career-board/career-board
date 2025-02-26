@@ -1,3 +1,8 @@
+// Variables
+$mobile-breakpoint: 600px;
+$tablet-breakpoint: 768px;
+$desktop-breakpoint: 1200px;
+
 .user-table-container {
   width: 66.67%;
   margin: 0 auto;
@@ -27,12 +32,14 @@
   .table-container {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: auto; // Enable horizontal scrolling
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
   }
 
   table {
     width: 100%;
+    min-width: 750px; // Minimum width to prevent squishing
     border-collapse: separate;
     border-spacing: 0;
 
@@ -43,6 +50,7 @@
       padding: 16px;
       font-size: 14px;
       border-bottom: 2px solid #dee2e6;
+      white-space: nowrap; // Prevent header text wrapping
     }
 
     td.mat-cell {
@@ -65,6 +73,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 120px; // Minimum width for username cell
 
     .user-avatar {
       width: 32px;
@@ -78,6 +87,7 @@
       font-weight: 500;
       font-size: 12px;
       text-transform: uppercase;
+      flex-shrink: 0; // Prevent avatar from shrinking
     }
   }
 
@@ -87,6 +97,7 @@
     font-size: 12px;
     font-weight: 500;
     text-transform: capitalize;
+    white-space: nowrap; // Prevent role text wrapping
 
     &.admin {
       background: #cce5ff;
@@ -135,29 +146,79 @@
 }
 
 // Responsive styles
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: $desktop-breakpoint) {
   .user-table-container {
     width: 80%;
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: $tablet-breakpoint) {
   .user-table-container {
-    width: 95%;
-    padding: 10px;
+    width: 90%;
+    padding: 16px;
 
     .header {
       flex-direction: column;
       gap: 12px;
       text-align: center;
+      margin-bottom: 16px;
+
+      h2 {
+        font-size: 20px;
+      }
     }
 
     table {
+
       th.mat-header-cell,
       td.mat-cell {
         padding: 12px 8px;
         font-size: 13px;
       }
+    }
+  }
+}
+
+@media screen and (max-width: $mobile-breakpoint) {
+  .user-table-container {
+    width: 100%;
+    padding: 12px;
+
+    .header {
+      h2 {
+        font-size: 18px;
+      }
+
+      .user-count {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+    }
+
+    .table-container {
+      border-radius: 4px;
+      margin: 0 -12px; // Extend table to edges on mobile
+      width: calc(100% + 24px);
+    }
+
+    table {
+
+      th.mat-header-cell,
+      td.mat-cell {
+        padding: 10px 6px;
+        font-size: 12px;
+      }
+    }
+
+    .role-badge {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .post-count {
+      min-width: 20px;
+      padding: 3px 6px;
+      font-size: 11px;
     }
   }
 }

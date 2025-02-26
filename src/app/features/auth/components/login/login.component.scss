@@ -1,44 +1,103 @@
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
 
-    mat-card {
-        width: 100%;
-        max-width: 400px;
-        padding: 20px;
+  ::ng-deep .p-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-        mat-card-header {
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        mat-card-content {
-            form {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-            }
-        }
+    .p-card-body {
+      padding: 2rem;
     }
+  }
 }
 
-.full-width {
+.login-form {
+  h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .form-field {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      color: #555;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      
+      &:focus {
+        outline: none;
+        border-color: #2196F3;
+      }
+    }
+
+    .error-message {
+      color: #f44336;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: block;
+    }
+  }
+
+  .login-button {
     width: 100%;
+    padding: 0.75rem;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 1rem;
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: #1976D2;
+    }
+  }
 }
 
 .register-link {
-    text-align: center;
-    margin: 16px 0;
+  text-align: center;
+  margin-top: 1rem;
+  color: #666;
 
-    a {
-        color: #3f51b5;
-        text-decoration: none;
+  a {
+    color: #2196F3;
+    text-decoration: none;
+    margin-left: 0.5rem;
 
-        &:hover {
-            text-decoration: underline;
-        }
+    &:hover {
+      text-decoration: underline;
     }
+  }
 }

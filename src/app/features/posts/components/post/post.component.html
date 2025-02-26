@@ -5,31 +5,13 @@
     <div class="user-avatar flex align-items-center justify-content-center">
       {{ post.username[0]  }}
     </div>
-  </td>
-
-  <td>
-      <p class="m-0 font-bold">{{ post.title }}</p>
-  </td>
-
-  <td>
-      <span class="username">{{ post.username }}</span>
-  </td>
-
-  <td>
-    <p-tag [value]="post.role" severity="secondary" />
-
-    <span class="username">{{ post.role }}</span>
-</td>
-
-  <td>
-      <span class="timestamp">{{ post.totalPost }}</span>
-  </td>
-
-  <td>
-      <!-- Edit Button -->
-      <p-button icon="pi pi-pencil" class="p-button-text p-button-sm" (click)="editPost(post)"></p-button>
-
-      <!-- Delete Button -->
-      <p-button icon="pi pi-trash" class="p-button-text p-button-sm" (click)="deletePost(post)"></p-button>
-  </td>
-</tr>
+    <div class="header-content">
+      <mat-card-title>{{ post.description }}</mat-card-title>
+      <mat-card-subtitle class="post-meta">
+        <span class="username">{{ post.username }}</span>
+        <span class="dot-separator">•</span>
+        <span class="timestamp">{{ post.createdAt | date : "MMM d, y" }}</span>
+      </mat-card-subtitle>
+    </div>
+  </mat-card-header>
+</mat-card>

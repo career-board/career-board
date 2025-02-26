@@ -7,16 +7,15 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { formatErrorMessage } from '../../../../shared/utils/string-formatter';
+import { ButtonModule } from 'primeng/button';
+import { PasswordModule } from 'primeng/password';
+import { InputTextModule } from 'primeng/inputtext';
+import { CardModule } from 'primeng/card';
+import { MessageModule } from 'primeng/message';
+import { InputGroupModule } from 'primeng/inputgroup';
 
 @Component({
   selector: 'app-login',
@@ -24,13 +23,13 @@ import { formatErrorMessage } from '../../../../shared/utils/string-formatter';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatSnackBarModule,
     RouterLink,
+    ButtonModule,
+    PasswordModule,
+    InputTextModule,
+    CardModule,
+    MessageModule,
+    InputGroupModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
@@ -55,7 +54,11 @@ export class LoginComponent implements OnInit {
     this.authService.isAuthenticated$.subscribe({
       next: (isAuthenticated) => {
         if (isAuthenticated) {
-          this.router.navigate(['/dashboard']);
+          if (this.authService.getUserRole() == 'ADMIN') {
+            this.router.navigate(['/dashboard/admin']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          }
         }
       },
     });
@@ -68,7 +71,11 @@ export class LoginComponent implements OnInit {
           if (response.success) {
             const successMessage = 'Login successful';
             this.notificationService.showSuccess(successMessage);
-            this.router.navigate(['/dashboard']);
+            if (this.authService.getUserRole() == 'ADMIN') {
+              this.router.navigate(['/dashboard/admin']);
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
           } else {
             const errorMessage = formatErrorMessage(
               response.message || 'LOGIN_FAILED'

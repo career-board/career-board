@@ -1,0 +1,21 @@
+<div class="all-posts-container">
+  <div class="content-wrapper">
+    <div class="posts-grid">
+      @for (post of posts; track post.interviewId) {
+        <app-post [post]="post"></app-post>
+      }
+    </div>
+
+    <div class="paginator-container">
+      <mat-paginator
+        class="custom-paginator"
+        [length]="totalPosts"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="handlePageEvent($event)"
+        aria-label="Select page">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

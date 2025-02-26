@@ -1,14 +1,16 @@
+import { postImage } from "./post-image.model";
+
 export interface Post {
-  postId: number;
-  title: string;
+  interviewId: number;
+  description: string;
   content: string;
   createdAt: string;
+  userId: number;
   username: string;
   role: string;
   totalPost: string;
   status: 'DRAFT' | 'PUBLISHED';
-  images: {
-    imageId: number;
-    imageName: string;
-  }[];
+  images: postImage[];
+  moderatorComment: string;
 }
+

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Post } from '../../models/post.model';
 import { PostService } from '../../services/post.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../../../../core/services/auth.service';
 
 /**
  * Post details component
@@ -28,10 +29,13 @@ export class PostDetailsComponent implements OnInit {
   loading = true;
   error: string | null = null;
   selectedIndex = 0;
+  canEdit = false;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private postService: PostService,
+    private authService: AuthService,
     private http: HttpClient
   ) {}
 
@@ -47,6 +51,7 @@ export class PostDetailsComponent implements OnInit {
       next: (post) => {
         this.post = post;
         this.loading = false;
+        this.checkEditPermission();
       },
       error: (error) => {
         this.error = 'Failed to load post details';
@@ -54,6 +59,29 @@ export class PostDetailsComponent implements OnInit {
         console.error('Error fetching post:', error);
       }
     });
+  }
+
+  private checkEditPermission() {
+    if (!this.post) return;
+    console.log(this.post);
+    const userId = this.authService.getUserId();
+    const userRole = this.authService.getUserRole();
+
+    console.log(this.post.userId, userId);
+    // User can edit if they are the author or if they are a moderator/admin
+    this.canEdit =
+      this.post.userId?.toString() == userId ||
+      userRole === 'MODERATOR' ||
+      userRole === 'ADMIN';
+  }
+
+  onEditClick() {
+    if (this.post) {
+      this.router.navigate(['/dashboard/post/edit', this.post.interviewId], {
+        state: { post: this.post },
+        skipLocationChange: false
+      });
+    }
   }
 
   getImageUrl(imageName: string): string {

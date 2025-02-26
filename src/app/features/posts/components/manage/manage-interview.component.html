@@ -1,18 +1,23 @@
 <div class="post-create-container">
-  <h2>Create New Post</h2>
-  
+  <h2>{{ isEditMode ? 'Edit Post' : 'Create New Interview' }}</h2>
+
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Title</mat-label>
-      <input matInput formControlName="title" placeholder="Enter post title">
+      <input matInput formControlName="title" placeholder="Enter intevirew title" />
       <mat-error *ngIf="postForm.get('title')?.hasError('required')">
         Title is required
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Content</mat-label>
-      <textarea matInput formControlName="content" placeholder="Enter post content" rows="6"></textarea>
+      <textarea
+        matInput
+        formControlName="content"
+        placeholder="Enter intevirew content"
+        rows="10"
+      ></textarea>
       <mat-error *ngIf="postForm.get('content')?.hasError('required')">
         Content is required
       </mat-error>
@@ -27,13 +32,14 @@
         accept="image/*"
         style="display: none"
       >
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="button" 
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
         (click)="fileInput.click()"
-        class="upload-button"
+        class="upload-button mat-elevation-z2"
       >
+        <mat-icon>add_photo_alternate</mat-icon>
         Select Images
       </button>
       <span class="selected-files" *ngIf="selectedFiles.length > 0">
@@ -46,10 +52,10 @@
       <div class="preview-item" *ngFor="let preview of imagePreviews; let i = index">
         <div class="preview-image-container">
           <img [src]="preview.url" [alt]="preview.file.name" class="preview-image">
-          <button 
-            mat-icon-button 
-            color="warn" 
-            class="remove-button"
+          <button
+            mat-icon-button
+            color="warn"
+            class="remove-button mat-elevation-z2"
             type="button"
             (click)="removeImage(i)"
           >
@@ -67,22 +73,35 @@
       class="upload-progress"
     ></mat-progress-bar>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
-        <mat-option value="PUBLISHED">Published</mat-option>
         <mat-option value="DRAFT">Draft</mat-option>
+        <mat-option value="PUBLISHED">Published</mat-option>
       </mat-select>
     </mat-form-field>
 
+    <div *ngIf="canModerate" class="moderator-section">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Moderator Comment</mat-label>
+        <textarea
+          matInput
+          formControlName="moderatorComment"
+          placeholder="Add moderator comment"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+    </div>
+
     <div class="button-container">
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="submit" 
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
         [disabled]="!postForm.valid || isUploading"
+        class="mat-elevation-z2"
       >
-        {{ isUploading ? 'Uploading...' : 'Create Post' }}
+        {{ isEditMode ? 'Update Interview' : 'Create Interview' }}
       </button>
     </div>
   </form>

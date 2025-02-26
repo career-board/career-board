@@ -1,5 +1,12 @@
-<div class="users-timeline-grid">
-  @for (user of users; track $index) {
-    <app-user-posts [user]="user" class="user-card-hover" />
-  }
+<div class="timeline-container">
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Loading users...</span>
+  </div>
+
+  <div *ngIf="!loading" class="users-timeline-grid">
+    @for (user of users; track $index) {
+      <app-user-posts [user]="user" class="user-card-hover" />
+    }
+  </div>
 </div>

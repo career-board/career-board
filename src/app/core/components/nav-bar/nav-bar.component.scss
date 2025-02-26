@@ -1,28 +1,205 @@
+// Variables
+$mobile-breakpoint: 768px;
+$tablet-breakpoint: 1024px;
+$desktop-breakpoint: 1200px;
+
+.nav-toolbar {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+}
+
 .spacer {
   flex: 1 1 auto;
 }
 
-.mat-toolbar {
-  position: fixed;
-  top: 0;
-  z-index: 1000;
+.brand {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-right: 16px;
 }
 
 .active {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-a {
-  text-decoration: none;
-  color: white;
-  
-  mat-icon {
-    margin-right: 4px;
+// Desktop menu styles
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  @media (max-width: $mobile-breakpoint) {
+    display: none;
   }
 }
 
-button {
+// Mobile menu toggle button
+button.mobile-menu-toggle {
+  display: none !important; 
+  margin-left: auto;
+  margin-right: 8px;
+
+  @media (max-width: $mobile-breakpoint) {
+    display: flex !important; 
+  }
+}
+
+// Mobile menu overlay
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px; // Height of toolbar
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  z-index: 999;
+  padding: 16px;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+
+  &.open {
+    display: flex;
+  }
+
+  a {
+    width: 100%;
+    justify-content: flex-start;
+    color: rgba(0, 0, 0, 0.87);
+    padding: 8px 16px;
+    border-radius: 4px;
+
+    mat-icon {
+      margin-right: 16px;
+    }
+
+    &.active {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+// Common link styles
+a {
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  
   mat-icon {
-    margin-right: 4px;
+    margin-right: 8px;
+  }
+
+  span {
+    margin-left: 4px;
+  }
+}
+
+// Profile button and menu styles
+.profile-button {
+  margin-left: 8px;
+}
+
+.mat-mdc-menu-panel {
+  min-width: 200px !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.mat-mdc-menu-content {
+  padding: 0 !important;
+}
+
+.menu-header {
+  padding: 16px;
+  background: linear-gradient(to right, #1976d2, #1565c0);
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .username-display {
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  small {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    text-transform: capitalize;
+  }
+}
+
+.mat-mdc-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  min-height: 48px !important;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .mat-icon {
+    margin-right: 0 !important;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  span {
+    color: rgba(0, 0, 0, 0.87);
+  }
+}
+
+.mat-divider {
+  margin: 0 !important;
+}
+
+// Responsive adjustments
+@media (min-width: $mobile-breakpoint) and (max-width: $tablet-breakpoint) {
+  .desktop-menu {
+    a {
+      padding: 0 8px;
+    }
+  }
+}
+
+@media (min-width: $tablet-breakpoint) and (max-width: $desktop-breakpoint) {
+  .nav-toolbar {
+    padding: 0 24px;
+  }
+}
+
+@media (min-width: $desktop-breakpoint) {
+  .nav-toolbar {
+    padding: 0 32px;
+  }
+}
+
+.mat-menu-panel {
+  .menu-header {
+    padding: 16px;
+    background-color: #f5f5f5;
+    
+    .username-display {
+      display: block;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.87);
+      font-size: 14px;
+      text-align: center;
+    }
   }
 }

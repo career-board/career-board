@@ -1,44 +1,31 @@
 <div class="login-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
-    </mat-card-header>
-    
-    <mat-card-content>
+  <p-card>
+    <div class="login-form">
+      <h2>Login</h2>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" placeholder="Enter your username">
-          @if (isUsernameValid) {
-            <mat-error>
-              Username is required
-            </mat-error>
-          }
-        </mat-form-field>
+        <div class="form-field">
+          <label for="username">Username</label>
+          <input id="username" type="text" pInputText formControlName="username" />
+          <small class="error-message" *ngIf="isUsernameValid">Username is required</small>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+        <div class="form-field">
+          <label for="password">Password</label>
+          <p-inputGroup>
+            <input id="password" [type]="hidePassword ? 'password' : 'text'" pInputText formControlName="password" />
+            <button type="button" pButton [icon]="hidePassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hidePassword = !hidePassword"></button>
+          </p-inputGroup>
           @if (isPasswordValid) {
-            <mat-error>
-              Password is required
-            </mat-error>
+            <small class="error-message">Password is required</small>
           }
-          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-        </mat-form-field>
+        </div>
 
-        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loginForm.invalid">
-          Login
-        </button>
+        <button pButton type="submit" label="Login" raised="true" rounded="true" [disabled]="loginForm.invalid" class="login-button"></button>
+
+        <div class="register-link">
+          Don't have an account? <a routerLink="/register">Register here</a>
+        </div>
       </form>
-    </mat-card-content>
-
-    <mat-card-footer>
-      <p class="register-link">
-        Don't have an account? <a routerLink="/register">Register here</a>
-      </p>
-    </mat-card-footer>
-  </mat-card>
+    </div>
+  </p-card>
 </div>

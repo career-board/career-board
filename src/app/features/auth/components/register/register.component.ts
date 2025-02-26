@@ -9,18 +9,17 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterRequest } from '../../../../core/models/auth.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { formatErrorMessage } from '../../../../shared/utils/string-formatter';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-register',
@@ -28,14 +27,14 @@ import { formatErrorMessage } from '../../../../shared/utils/string-formatter';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatSelectModule,
     RouterLink,
     HttpClientModule,
+    ButtonModule,
+    CardModule,
+    InputTextModule,
+    PasswordModule,
+    InputGroupModule,
+    DropdownModule,
   ],
   providers: [AuthService],
   templateUrl: './register.component.html',
@@ -55,8 +54,7 @@ export class RegisterComponent {
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
+      currentCompany: [''],
       passwords: this.fb.group(
         {
           password: [
@@ -99,8 +97,7 @@ export class RegisterComponent {
       const formValue = this.registerForm.value;
 
       const registerRequest: RegisterRequest = {
-        firstName: formValue.firstName,
-        lastName: formValue.lastName,
+        currentCompany: formValue.currentCompany,
         username: formValue.username,
         password: formValue.passwords.password,
         role: 'USER',
@@ -145,12 +142,8 @@ export class RegisterComponent {
     return this.isFieldValid('username');
   }
 
-  get isFirstNameInValid() {
-    return this.isFieldValid('firstName');
-  }
-
-  get isLastNameInValid() {
-    return this.isFieldValid('lastName');
+  get isCurrentCompanyInValid() {
+    return this.isFieldValid('currentCompany');
   }
 
   get isPasswordInValid() {

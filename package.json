@@ -21,7 +21,6 @@
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
     "@primeng/themes": "^19.0.6",
-    "highlight.js": "^11.11.1",
     "jwt-decode": "^4.0.0",
     "primeng": "^19.0.6",
     "quill": "^2.0.3",

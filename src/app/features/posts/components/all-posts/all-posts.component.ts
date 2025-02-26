@@ -45,6 +45,11 @@ export class AllPostsComponent implements OnInit {
   }
 
   onPageChange(event: any): void {
+    // Check if it's the same page
+    if (this.pageIndex === event.page && this.pageSize === event.rows) {
+      return;
+    }
+    
     this.pageIndex = event.page;
     this.pageSize = event.rows;
     this.loadPosts();

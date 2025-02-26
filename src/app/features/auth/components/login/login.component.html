@@ -2,11 +2,17 @@
   <p-card>
     <div class="login-form">
       <h2>Login</h2>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-content">
         <div class="form-field">
           <label for="username">Username</label>
-          <input id="username" type="text" pInputText formControlName="username" />
-          <small class="error-message" *ngIf="isUsernameValid">Username is required</small>
+          <p-inputGroup>
+            <input id="username" type="text" pInputText formControlName="username" />
+          </p-inputGroup>
+          <div class="error-container">
+            @if (isUsernameValid) {
+              <small class="error-message">Username is required</small>
+            }
+          </div>
         </div>
 
         <div class="form-field">
@@ -15,12 +21,14 @@
             <input id="password" [type]="hidePassword ? 'password' : 'text'" pInputText formControlName="password" />
             <button type="button" pButton [icon]="hidePassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hidePassword = !hidePassword"></button>
           </p-inputGroup>
-          @if (isPasswordValid) {
-            <small class="error-message">Password is required</small>
-          }
+          <div class="error-container">
+            @if (isPasswordValid) {
+              <small class="error-message">Password is required</small>
+            }
+          </div>
         </div>
 
-        <button pButton type="submit" label="Login" raised="true" rounded="true" [disabled]="loginForm.invalid" class="login-button"></button>
+        <button pButton type="submit" label="Login" icon="pi pi-user" iconPos="left" raised="true" rounded="true" [disabled]="loginForm.invalid" class="login-button"></button>
 
         <div class="register-link">
           Don't have an account? <a routerLink="/register">Register here</a>

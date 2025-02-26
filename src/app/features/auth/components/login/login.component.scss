@@ -12,6 +12,21 @@
   top: 0;
   left: 0;
 
+  @media screen and (max-width: 768px) {
+    background-color: white;
+    padding: 0 1rem;
+
+    ::ng-deep .p-card {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      margin-top: 2rem !important;
+      
+      .p-card-body {
+        padding: 1rem !important;
+      }
+    }
+  }
+
   ::ng-deep .p-card {
     width: 100%;
     max-width: 400px;
@@ -32,10 +47,17 @@
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
     font-weight: 500;
+    text-align: center;
+  }
+
+  .form-content {
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   .form-field {
     margin-bottom: 1.5rem;
+    position: relative;
 
     label {
       display: block;
@@ -56,11 +78,22 @@
       }
     }
 
+    .error-container {
+      min-height: 20px;
+      margin-top: 4px;
+    }
+
     .error-message {
       color: #f44336;
       font-size: 0.75rem;
-      margin-top: 0.25rem;
-      display: block;
+    }
+
+    ::ng-deep .p-inputgroup {
+      margin-bottom: 0;
+    }
+
+    &:last-of-type {
+      margin-bottom: 2rem;
     }
   }
 

@@ -19,12 +19,17 @@ import { PostDetailsComponent } from '../details/post-details.component';
 export class PostComponent implements OnDestroy {
   @Input() post!: Post;
   @Input() loading: boolean = true;
+  @Input() disablePopup: boolean = false;
 
   private ref: DynamicDialogRef | undefined;
 
   constructor(private router: Router, private dialogService: DialogService) {}
 
   navigateToPost() {
+    if (this.disablePopup) {
+      return;
+    }
+    
     // Get screen width
     const isMobile = window.innerWidth <= 768;
 

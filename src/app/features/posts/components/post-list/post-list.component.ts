@@ -8,12 +8,13 @@ import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { MatCard } from '@angular/material/card';
 
 
 @Component({
   selector: 'app-post-list',
   imports: [
-    DynamicTableComponent,CommonModule,ConfirmDialogModule,
+    CommonModule,ConfirmDialogModule,PostComponent,
   ],
   providers: [ConfirmationService] ,
   templateUrl: './post-list.component.html',

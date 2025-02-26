@@ -6,12 +6,13 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
+import {  MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-post',
   standalone: true,
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss',
-  imports: [CommonModule,ButtonModule,CardModule,ButtonModule,TagModule],
+  imports: [CommonModule,ButtonModule,CardModule,ButtonModule,TagModule,MatCardModule],
 })
 export class PostComponent {
   @Input() post!: Post;

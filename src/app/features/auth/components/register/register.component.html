@@ -33,7 +33,6 @@
                 pInputText 
                 formControlName="password"
               />
-              <button type="button" pButton [icon]="hidePassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hidePassword = !hidePassword"></button>
             </p-inputGroup>
             <small class="error-message" *ngIf="isPasswordInValid">Password is required</small>
             <small class="error-message" *ngIf="isPasswordLengthInValid">Password must be at least 8 characters and at most 64 characters</small>
@@ -48,7 +47,6 @@
                 pInputText 
                 formControlName="confirmPassword"
               />
-              <button type="button" pButton [icon]="hideConfirmPassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hideConfirmPassword = !hideConfirmPassword"></button>
             </p-inputGroup>
             <small class="error-message" *ngIf="isConfirmPasswordInValid">Password is required</small>
             <small class="error-message" *ngIf="isConfirmPasswordLengthInValid">Password must be at least 8 characters and at most 64 characters</small>

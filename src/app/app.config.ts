@@ -1,19 +1,16 @@
 import {
-  ApplicationConfig,
-  provideZoneChangeDetection,
-  importProvidersFrom,
+  ApplicationConfig
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { routes } from './app.routes';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { AuthService } from './core/services/auth.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { providePrimeNG } from 'primeng/config';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import Aura from '@primeng/themes/aura';
 import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
+import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { AuthService } from './core/services/auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,7 +21,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor])),
     AuthService,
-    importProvidersFrom(MatSnackBarModule),
     providePrimeNG({
       theme: {
         preset: Aura,

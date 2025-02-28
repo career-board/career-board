@@ -54,7 +54,14 @@ export class RegisterComponent {
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
+        ],
+      ],
       currentCompany: ['', [Validators.required]],
       passwords: this.fb.group(
         {
@@ -118,8 +125,9 @@ export class RegisterComponent {
           }
         },
         error: (error) => {
+          console.log(error.error);
           const errorMessage = formatErrorMessage(
-            error.message || 'Registration failed. Please try again.'
+            error.error?.message || 'Registration failed. Please try again.'
           );
           this.notificationService.showError(errorMessage);
         },
@@ -155,14 +163,19 @@ export class RegisterComponent {
   get isPasswordInValid() {
     return (
       this.getPasswordsFormControl().get('password')?.invalid &&
-      this.getPasswordsFormControl().get('password')?.touched
+      this.getPasswordsFormControl().get('password')?.touched &&
+      (!this.getPasswordsFormControl().get('password')?.value ||
+        this.getPasswordsFormControl().get('password')?.value.trim() === '')
     );
   }
 
   get isConfirmPasswordInValid() {
     return (
       this.getPasswordsFormControl().get('confirmPassword')?.invalid &&
-      this.getPasswordsFormControl().get('confirmPassword')?.touched
+      this.getPasswordsFormControl().get('confirmPassword')?.touched &&
+      (!this.getPasswordsFormControl().get('confirmPassword')?.value ||
+        this.getPasswordsFormControl().get('confirmPassword')?.value.trim() ===
+          '')
     );
   }
 
@@ -182,6 +195,19 @@ export class RegisterComponent {
         .get('confirmPassword')
         ?.hasError('maxlength')
     );
+  }
+
+  get emailErrorMessage(): string {
+    const control = this.registerForm.get('email');
+    if (control?.errors) {
+      if (control.errors['required']) {
+        return 'Email is required';
+      }
+      if (control.errors['email'] || control.errors['pattern']) {
+        return 'Please enter a valid email address';
+      }
+    }
+    return '';
   }
 
   isFieldInvalid(field: string) {

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -13,27 +14,26 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { CalendarModule } from 'primeng/calendar';
-import { EditorModule } from 'primeng/editor';
 import { ButtonModule } from 'primeng/button';
-import { AuthService } from '../../../../core/services/auth.service';
-import { CreateInterviewRequest } from '../../models/create-post-request.model';
-import { UpdateInterviewRequest } from '../../models/update-post-request.model';
-import { PostService } from '../../services/post.service';
-import { ImageService } from '../../services/image.service';
-import { postImage } from '../../models/post-image.model';
-import { Post } from '../../models/post.model';
-import { HttpClient } from '@angular/common/http';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
+import { EditorModule } from 'primeng/editor';
+import { InputTextModule } from 'primeng/inputtext';
+import { SkeletonModule } from 'primeng/skeleton';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
+import { AuthService } from '../../../../core/services/auth.service';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { CreateInterviewRequest } from '../../models/create-post-request.model';
+import { postImage } from '../../models/post-image.model';
+import { Post } from '../../models/post.model';
 import { PresignImageResponse } from '../../models/presign-image-response.model';
+import { UpdateInterviewRequest } from '../../models/update-post-request.model';
+import { ImageService } from '../../services/image.service';
+import { PostService } from '../../services/post.service';
 import { TabviewEditorComponent } from '../tabview-editor/tabview-editor.component';
-import { SkeletonModule } from 'primeng/skeleton';
 
 interface ImagePreview {
   file: File;
@@ -82,10 +82,10 @@ export class ManageInterviewComponent implements OnInit {
   imageService = inject(ImageService);
   authService = inject(AuthService);
   postService = inject(PostService);
-  private snackBar = inject(MatSnackBar);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
+  private notificationService = inject(NotificationService);
 
   constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
@@ -130,13 +130,7 @@ export class ManageInterviewComponent implements OnInit {
       // Check if user has permission to edit
       const userId = this.authService.getUserId();
       if (state.post.userId.toString() != userId && !this.canModerate) {
-        this.snackBar.open(
-          'You do not have permission to edit this post',
-          'Close',
-          {
-            duration: 3000,
-          }
-        );
+        this.notificationService.showError('You do not have permission to edit this post');
         this.router.navigate(['/dashboard']);
         return;
       }
@@ -189,13 +183,7 @@ export class ManageInterviewComponent implements OnInit {
               // Check if user has permission to edit
               const userId = this.authService.getUserId();
               if (post.userId.toString() != userId && !this.canModerate) {
-                this.snackBar.open(
-                  'You do not have permission to edit this post',
-                  'Close',
-                  {
-                    duration: 3000,
-                  }
-                );
+                this.notificationService.showError('You do not have permission to edit this post');
                 this.router.navigate(['/dashboard']);
                 return;
               }
@@ -231,13 +219,7 @@ export class ManageInterviewComponent implements OnInit {
             }
           },
           error: (error) => {
-            this.snackBar.open(
-              'Error loading post: ' + error.message,
-              'Close',
-              {
-                duration: 3000,
-              }
-            );
+            this.notificationService.showError('Error loading post: ' + error.message);
             this.loading = false;
           },
         });
@@ -390,13 +372,7 @@ export class ManageInterviewComponent implements OnInit {
           this.createInterview(status);
         }
       } catch (error: any) {
-        this.snackBar.open(
-          'Error uploading images: ' + error.message,
-          'Close',
-          {
-            duration: 3000,
-          }
-        );
+        this.notificationService.showError('Error uploading images: ' + error.message);
       } finally {
         this.isUploading = false;
         this.uploadProgress = 0;
@@ -411,21 +387,11 @@ export class ManageInterviewComponent implements OnInit {
     console.log(postData);
     this.postService.createPost(postData).subscribe({
       next: (response) => {
-        if (typeof response === 'string') {
-          this.snackBar.open(response, 'Close', {
-            duration: 3000,
-          });
-        } else {
-          this.snackBar.open('Interview created successfully!', 'Close', {
-            duration: 3000,
-          });
+          this.notificationService.showSuccess('Interview created successfully!');
           this.router.navigate(['/dashboard/my-posts']);
-        }
       },
       error: (error) => {
-        this.snackBar.open('Error creating post: ' + error.message, 'Close', {
-          duration: 3000,
-        });
+        this.notificationService.showError('Error creating post: ' + error.message);
       },
     });
   }
@@ -484,15 +450,11 @@ export class ManageInterviewComponent implements OnInit {
       this.mapToUpdateInterviewRequest(status);
     this.postService.updatePost(interviewData).subscribe({
       next: (response) => {
-        this.snackBar.open('Interview updated successfully!', 'Close', {
-          duration: 3000,
-        });
+        this.notificationService.showSuccess('Interview updated successfully!');
         this.router.navigate(['/dashboard/my-posts']);
       },
       error: (error) => {
-        this.snackBar.open('Error updating post: ' + error.message, 'Close', {
-          duration: 3000,
-        });
+        this.notificationService.showError('Error updating post: ' + error.message);
       },
     });
   }

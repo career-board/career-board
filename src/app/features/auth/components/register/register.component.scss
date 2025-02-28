@@ -3,14 +3,33 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   margin: 0;
   padding: 0;
   background-color: #f5f5f5;
-  overflow: hidden;
-  position: fixed;
+  overflow-y: auto;
+  position: absolute;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
+
+  @media screen and (max-width: 768px) {
+    background-color: white;
+    padding: 1rem;
+    align-items: flex-start;
+
+    ::ng-deep .p-card {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      margin-top: 1rem !important;
+      margin-bottom: 2rem !important;
+
+      .p-card-body {
+        padding: 1rem !important;
+      }
+    }
+  }
 
   ::ng-deep .p-card {
     width: 100%;
@@ -27,15 +46,26 @@
 }
 
 .register-form {
+  width: 100%;
+  
   h2 {
     color: #333;
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
     font-weight: 500;
+    text-align: center;
+  }
+
+  .form-content {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   .form-field {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.2rem;
+    position: relative;
+    width: 100%;
 
     label {
       display: block;
@@ -56,11 +86,29 @@
       }
     }
 
+    .error-container {
+      min-height: 20px;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+    }
+
     .error-message {
       color: #f44336;
       font-size: 0.75rem;
-      margin-top: 0.25rem;
+      line-height: 1.2;
       display: block;
+      width: 100%;
+    }
+
+    ::ng-deep .p-inputgroup {
+      margin-bottom: 0;
+    }
+
+    &:last-of-type {
+      margin-bottom: 1rem;
     }
   }
 
@@ -103,14 +151,5 @@
 }
 
 .passwords-mismatch {
-  .error-message {
-    color: #f44336;
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-    display: block;
-  }
-}
-
-.register-card {
-  min-width: 400px;
+  margin-bottom: 1rem;
 }

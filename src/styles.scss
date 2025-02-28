@@ -23,4 +23,282 @@ body {
 
 :root {
   overflow: hidden;
+  color-scheme: light;
+  background-color: white;
+  color: black;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+}
+
+html,
+body {
+  -webkit-appearance: none;
+  -webkit-text-fill-color: initial !important;
+  background-color: white !important;
+  color: black !important;
+}
+
+/* Global iOS input style fix */
+input,
+textarea,
+select,
+.p-inputtext,
+.p-dropdown,
+.p-multiselect,
+.p-calendar,
+.p-editor-container,
+.p-editor-content,
+.ql-editor,
+.p-dropdown-panel,
+.p-multiselect-panel,
+.p-calendar-panel,
+.p-card,
+.p-card-content,
+.p-card-body,
+.p-card-title,
+.p-card-subtitle,
+.p-card-footer {
+  background-color: white !important;
+  color: #333 !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Calendar specific fixes */
+.p-calendar {
+  width: 100%;
+  
+  .p-inputtext {
+    width: 100%;
+    padding-right: 2.5rem !important;
+  }
+
+  .p-datepicker {
+    background-color: white !important;
+    color: #333 !important;
+
+    .p-datepicker-header {
+      background-color: white !important;
+      color: #333 !important;
+      
+      .p-datepicker-title {
+        .p-datepicker-month,
+        .p-datepicker-year {
+          color: #333 !important;
+        }
+      }
+    }
+
+    .p-datepicker-calendar {
+      th {
+        color: #333 !important;
+      }
+
+      td {
+        background-color: white !important;
+        
+        .p-highlight {
+          background-color: #2196F3 !important;
+          color: white !important;
+        }
+
+        &:not(.p-disabled):hover {
+          background-color: #f4f4f4 !important;
+        }
+      }
+    }
+  }
+}
+
+/* Form container fixes */
+.create-interview-form,
+.manage-interview-page {
+  background-color: white !important;
+  
+  .form-group,
+  .form-control,
+  .input-group {
+    background-color: white !important;
+    
+    label {
+      color: #333 !important;
+    }
+  }
+
+  .p-tabview {
+    .p-tabview-panels,
+    .p-tabview-panel {
+      background-color: white !important;
+    }
+
+    .p-tabview-nav {
+      li {
+        .p-tabview-nav-link {
+          background-color: white !important;
+          color: #666 !important;
+
+          &:hover {
+            color: #333 !important;
+          }
+        }
+
+        &.p-highlight .p-tabview-nav-link {
+          color: #2196F3 !important;
+        }
+      }
+    }
+  }
+}
+
+/* TabView specific fixes for iOS dark mode */
+.p-tabview {
+  background-color: white !important;
+
+  .p-tabview-nav {
+    background-color: white !important;
+    border-color: #dee2e6 !important;
+
+    li {
+      background-color: white !important;
+
+      .p-tabview-nav-link {
+        background-color: white !important;
+        color: #6c757d !important;
+        border-color: transparent !important;
+
+        &:not(.p-disabled):focus {
+          box-shadow: none !important;
+        }
+      }
+
+      &.p-highlight {
+        .p-tabview-nav-link {
+          background-color: white !important;
+          border-color: #dee2e6 !important;
+          border-bottom-color: white !important;
+          color: #2196F3 !important;
+        }
+      }
+
+      &:not(.p-highlight):not(.p-disabled):hover {
+        .p-tabview-nav-link {
+          background-color: white !important;
+          border-color: #dee2e6 !important;
+          color: #495057 !important;
+        }
+      }
+    }
+  }
+
+  .p-tabview-panels {
+    background-color: white !important;
+    border-color: #dee2e6 !important;
+    color: #333 !important;
+
+    .p-tabview-panel {
+      background-color: white !important;
+      color: #333 !important;
+
+      .ql-toolbar,
+      .ql-container,
+      .ql-editor {
+        background-color: white !important;
+        color: #333 !important;
+      }
+    }
+  }
+}
+
+/* Ensure editor content is visible */
+.ql-editor {
+  background-color: white !important;
+  color: #333 !important;
+
+  p, 
+  span, 
+  strong, 
+  em, 
+  u, 
+  s {
+    color: #333 !important;
+  }
+}
+
+/* Editor toolbar buttons */
+.ql-toolbar {
+  .ql-stroke {
+    stroke: #333 !important;
+  }
+  
+  .ql-fill {
+    fill: #333 !important;
+  }
+  
+  .ql-picker {
+    color: #333 !important;
+  }
+}
+
+/* Fix for dark mode override in iOS */
+.post-card,
+.interview-card {
+  background-color: white !important;
+  
+  .card-title,
+  .card-subtitle,
+  .card-content,
+  .card-footer,
+  h1, h2, h3, h4, h5, h6,
+  p, span, div {
+    color: #333 !important;
+  }
+
+  .badge {
+    &.first-round {
+      background-color: #2196F3 !important;
+      color: white !important;
+    }
+    &.assessment {
+      background-color: #4CAF50 !important;
+      color: white !important;
+    }
+  }
+
+  .date-text,
+  .author-text {
+    color: #666 !important;
+  }
+}
+
+.p-dropdown,
+.p-multiselect {
+  .p-dropdown-trigger,
+  .p-multiselect-trigger {
+    background-color: white !important;
+  }
+}
+
+.p-dropdown-item,
+.p-multiselect-item {
+  background-color: white !important;
+  color: #333 !important;
+
+  &:hover {
+    background-color: #f4f4f4 !important;
+  }
+}
+
+.p-editor-toolbar,
+.ql-toolbar {
+  background-color: #f8f9fa !important;
+}
+
+.ql-container {
+  background-color: white !important;
 }

@@ -50,11 +50,6 @@ export class NavBarComponent implements OnInit {
         disabled: true,
         styleClass: 'username-display'
       },
-      {
-        label: this.isModerator ? 'Moderator' : this.isAdmin ? 'Admin' : 'User',
-        disabled: true,
-        styleClass: 'role-display'
-      },
       { separator: true },
       {
         label: 'Profile',

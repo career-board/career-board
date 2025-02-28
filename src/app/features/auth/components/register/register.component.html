@@ -1,26 +1,42 @@
 <div class="register-container">
-  <p-card class="register-card">
+  <p-card styleClass="register-card">
     <div class="register-form">
       <h2>Register</h2>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-content">
         <div class="form-field">
           <label for="username">Username</label>
-          <input id="username" type="text" pInputText formControlName="username" />
-          <small class="error-message" *ngIf="isUsernameInValid">Username is required</small>
+          <p-inputGroup>
+            <input id="username" type="text" pInputText formControlName="username" />
+          </p-inputGroup>
+          <div class="error-container">
+            @if (isUsernameInValid) {
+              <small class="error-message">Username is required</small>
+            }
+          </div>
         </div>
 
         <div class="form-field">
           <label for="email">Email</label>
-          <input id="email" type="email" pInputText formControlName="email" />
-          <small class="error-message" *ngIf="isEmailInValid">
-            {{ registerForm.get('email')?.errors?.['required'] ? 'Email is required' : 'Please enter a valid email' }}
-          </small>
+          <p-inputGroup>
+            <input id="email" type="email" pInputText formControlName="email" />
+          </p-inputGroup>
+          <div class="error-container">
+            @if (isFieldInvalid('email')) {
+              <small class="error-message">{{ emailErrorMessage }}</small>
+            }
+          </div>
         </div>
 
         <div class="form-field">
           <label for="currentCompany">Current Company</label>
-          <input id="currentCompany" type="text" pInputText formControlName="currentCompany" />
-          <small class="error-message" *ngIf="isCurrentCompanyInValid">Current company is required</small>
+          <p-inputGroup>
+            <input id="currentCompany" type="text" pInputText formControlName="currentCompany" />
+          </p-inputGroup>
+          <div class="error-container">
+            @if (isCurrentCompanyInValid) {
+              <small class="error-message">Current company is required</small>
+            }
+          </div>
         </div>
 
         <div formGroupName="passwords" [class.passwords-mismatch]="isPasswordsMatch">
@@ -33,10 +49,14 @@
                 pInputText 
                 formControlName="password"
               />
-              <button type="button" pButton [icon]="hidePassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hidePassword = !hidePassword"></button>
             </p-inputGroup>
-            <small class="error-message" *ngIf="isPasswordInValid">Password is required</small>
-            <small class="error-message" *ngIf="isPasswordLengthInValid">Password must be at least 8 characters and at most 64 characters</small>
+            <div class="error-container">
+              @if (isPasswordInValid) {
+                <small class="error-message">Password is required</small>
+              } @else if (isPasswordLengthInValid) {
+                <small class="error-message">Password length must be 8-64 characters</small>
+              }
+            </div>
           </div>
 
           <div class="form-field">
@@ -48,18 +68,22 @@
                 pInputText 
                 formControlName="confirmPassword"
               />
-              <button type="button" pButton [icon]="hideConfirmPassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hideConfirmPassword = !hideConfirmPassword"></button>
             </p-inputGroup>
-            <small class="error-message" *ngIf="isConfirmPasswordInValid">Password is required</small>
-            <small class="error-message" *ngIf="isConfirmPasswordLengthInValid">Password must be at least 8 characters and at most 64 characters</small>
+            <div class="error-container">
+              @if (isConfirmPasswordInValid) {
+                <small class="error-message">Password is required</small>
+              } @else if (isConfirmPasswordLengthInValid) {
+                <small class="error-message">Password length must be 8-64 characters</small>
+              } @else if (isPasswordsMatch) {
+                <small class="error-message">Passwords do not match</small>
+              }
+            </div>
           </div>
-
-          <small class="error-message" *ngIf="isPasswordsMatch">Passwords do not match</small>
         </div>
 
-        <button pButton type="submit" label="Register" raised="true" rounded="true" [disabled]="registerForm.invalid" class="register-button"></button>
+        <button pButton type="submit" label="Register" icon="pi pi-user" iconPos="left" raised="true" rounded="true" [disabled]="registerForm.invalid" class="register-button"></button>
 
-        <div class="login-link">
+        <div class="register-link">
           Already have an account? <a routerLink="/login">Login here</a>
         </div>
       </form>

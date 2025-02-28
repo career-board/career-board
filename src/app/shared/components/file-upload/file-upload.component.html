@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<p-fileupload name="myfile[]" [url]="url" [multiple]="true" accept="image/*" [maxFileSize]="maxSize" (onUpload)="onTemplatedUpload()" (onSelect)="onSelectedFiles($event)">
+<p-fileupload name="myfile[]" [url]="url" [multiple]="true" accept="image/*" [maxFileSize]="maxSize" [auto]="false" [customUpload]="useCustomUpload" (onUpload)="onTemplatedUpload()" (onSelect)="onSelectedFiles($event)">
     <ng-template pTemplate="header" let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
         <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
             <div class="flex gap-2">

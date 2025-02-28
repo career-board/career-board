@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
@@ -6,6 +6,10 @@ import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { BadgeModule } from 'primeng/badge';
 import { MessageService } from 'primeng/api';
+import { ImageService } from '../../../features/posts/services/image.service';
+import { Observable, forkJoin } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { PresignImageResponse } from '../../../features/posts/models/presign-image-response.model';
 
 @Component({
   selector: 'app-file-upload',
@@ -23,12 +27,17 @@ import { MessageService } from 'primeng/api';
 })
 export class FileUploadComponent {
   @Input() url: string = 'https://www.primefaces.org/cdn/api/upload.php';
-  @Input() maxSize: number = 1000000; // 1MB
+  @Input() maxSize: number = 5000000; // 5MB
+  @Input() useCustomUpload: boolean = false; // If true, uses the custom upload method
   @Output() filesSelected = new EventEmitter<File[]>();
   @Output() fileUploaded = new EventEmitter<any>();
+  @Output() uploadProgress = new EventEmitter<number>();
+  @Output() uploadComplete = new EventEmitter<string[]>();
   
   totalSize: string = '0';
   totalSizePercent: number = 0;
+  private imageService = inject(ImageService);
+  private http = inject(HttpClient);
   
   constructor(private messageService: MessageService) {}
 
@@ -38,6 +47,92 @@ export class FileUploadComponent {
     const filesArray = event.files ? (Array.isArray(event.files) ? event.files : Array.from(event.files)) : [];
     this.calculateTotalSize(filesArray);
     this.filesSelected.emit(filesArray);
+
+    if (this.useCustomUpload) {
+      // Use custom upload method instead of PrimeNG's built-in upload
+      this.uploadSelectedFiles(filesArray);
+    }
+  }
+  
+  /**
+   * Custom method to upload files using ImageService
+   * @param files Files to upload
+   */
+  uploadSelectedFiles(files: File[]): void {
+    if (!files || files.length === 0) return;
+
+    const nameList = files.map((file: File) => file.name);
+    this.uploadProgress.emit(10); // Start progress
+    
+    this.imageService.getPresignedUploadUrl(nameList).subscribe({
+      next: (response) => {
+        this.uploadProgress.emit(30); // URLs obtained
+        
+        // Create an array of observables for each file upload
+        const uploadObservables: Observable<any>[] = [];
+        const uploadedFileKeys: string[] = [];
+        
+        files.forEach((file: File) => {
+          const presignedUrl = response.find((res: PresignImageResponse) => res.key === file.name);
+          
+          if (presignedUrl) {
+            uploadedFileKeys.push(presignedUrl.key);
+            uploadObservables.push(this.imageService.uploadFile(file, presignedUrl.url));
+          }
+        });
+        
+        // If no files to upload, emit complete
+        if (uploadObservables.length === 0) {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'No files to upload' 
+          });
+          this.uploadProgress.emit(0);
+          return;
+        }
+        
+        // Use forkJoin to wait for all uploads to complete
+        forkJoin(uploadObservables).subscribe({
+          next: (results) => {
+            this.uploadProgress.emit(100); // Complete
+            
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: 'Success', 
+              detail: `${results.length} files uploaded successfully` 
+            });
+            
+            this.uploadComplete.emit(uploadedFileKeys);
+            
+            // Also emit the standard upload event for backward compatibility
+            this.fileUploaded.emit(results);
+          },
+          error: (error) => {
+            this.uploadProgress.emit(0);
+            
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Error', 
+              detail: 'File upload failed: ' + (error.message || 'Unknown error') 
+            });
+            
+            console.error('File upload failed:', error);
+          }
+        });
+      },
+      error: (error) => {
+        this.uploadProgress.emit(0);
+        
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to get upload URLs: ' + (error.message || 'Unknown error') 
+        });
+        
+        console.error('Failed to get upload URLs:', error);
+      }
+    });
   }
   
   onTemplatedUpload(): void {

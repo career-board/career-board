@@ -16,6 +16,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { InputGroupModule } from 'primeng/inputgroup';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -37,6 +38,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   hidePassword = true;
+  isLoading = true;
 
   constructor(
     private fb: FormBuilder,
@@ -51,8 +53,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.isAuthenticated$.subscribe({
+    this.authService.isAuthenticated$.pipe(take(1)).subscribe({
       next: (isAuthenticated) => {
+        this.isLoading = false;
         if (isAuthenticated) {
           if (this.authService.getUserRole() == 'ADMIN') {
             this.router.navigate(['/dashboard/admin']);

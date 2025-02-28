@@ -3,4 +3,5 @@
 </ng-container>
 <div class="content-container" [class.with-nav]="isLoggedIn$ | async">
   <router-outlet></router-outlet>
+  <p-toast position="top-right"></p-toast>
 </div>

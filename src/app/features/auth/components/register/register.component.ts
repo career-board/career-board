@@ -125,8 +125,9 @@ export class RegisterComponent {
           }
         },
         error: (error) => {
+          console.log(error.error);
           const errorMessage = formatErrorMessage(
-            error.message || 'Registration failed. Please try again.'
+            error.error?.message || 'Registration failed. Please try again.'
           );
           this.notificationService.showError(errorMessage);
         },

@@ -19,7 +19,6 @@
           <label for="password">Password</label>
           <p-inputGroup>
             <input id="password" [type]="hidePassword ? 'password' : 'text'" pInputText formControlName="password" />
-            <button type="button" pButton [icon]="hidePassword ? 'pi pi-eye' : 'pi pi-eye-slash'" (click)="hidePassword = !hidePassword"></button>
           </p-inputGroup>
           <div class="error-container">
             @if (isPasswordValid) {

@@ -24,7 +24,7 @@
       border-radius: 0 !important;
       margin-top: 1rem !important;
       margin-bottom: 2rem !important;
-      
+
       .p-card-body {
         padding: 1rem !important;
       }
@@ -46,6 +46,8 @@
 }
 
 .register-form {
+  width: 100%;
+  
   h2 {
     color: #333;
     margin-bottom: 1.5rem;
@@ -55,13 +57,15 @@
   }
 
   .form-content {
+    width: 100%;
     max-width: 320px;
     margin: 0 auto;
   }
 
   .form-field {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.2rem;
     position: relative;
+    width: 100%;
 
     label {
       display: block;
@@ -75,7 +79,7 @@
       padding: 0.5rem;
       border: 1px solid #ddd;
       border-radius: 4px;
-      
+
       &:focus {
         outline: none;
         border-color: #2196F3;
@@ -85,11 +89,18 @@
     .error-container {
       min-height: 20px;
       margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
     }
 
     .error-message {
       color: #f44336;
       font-size: 0.75rem;
+      line-height: 1.2;
+      display: block;
+      width: 100%;
     }
 
     ::ng-deep .p-inputgroup {
@@ -97,7 +108,7 @@
     }
 
     &:last-of-type {
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
   }
 

@@ -21,10 +21,8 @@
             <input id="email" type="email" pInputText formControlName="email" />
           </p-inputGroup>
           <div class="error-container">
-            @if (isEmailInValid) {
-              <small class="error-message">
-                {{ registerForm.get('email')?.errors?.['required'] ? 'Email is required' : 'Please enter a valid email' }}
-              </small>
+            @if (isFieldInvalid('email')) {
+              <small class="error-message">{{ emailErrorMessage }}</small>
             }
           </div>
         </div>
@@ -55,9 +53,8 @@
             <div class="error-container">
               @if (isPasswordInValid) {
                 <small class="error-message">Password is required</small>
-              }
-              @if (isPasswordLengthInValid) {
-                <small class="error-message">Password must be at least 8 characters and at most 64 characters</small>
+              } @else if (isPasswordLengthInValid) {
+                <small class="error-message">Password length must be 8-64 characters</small>
               }
             </div>
           </div>
@@ -75,11 +72,9 @@
             <div class="error-container">
               @if (isConfirmPasswordInValid) {
                 <small class="error-message">Password is required</small>
-              }
-              @if (isConfirmPasswordLengthInValid) {
-                <small class="error-message">Password must be at least 8 characters and at most 64 characters</small>
-              }
-              @if (isPasswordsMatch) {
+              } @else if (isConfirmPasswordLengthInValid) {
+                <small class="error-message">Password length must be 8-64 characters</small>
+              } @else if (isPasswordsMatch) {
                 <small class="error-message">Passwords do not match</small>
               }
             </div>

@@ -19,7 +19,7 @@ import { User } from '../../models/user.model';
 })
 export class UserListComponent implements OnInit {
 
-  userId = input.required<string>();
+  // userId = input.required<string>();
 
   private userService = inject(UserService);
   users: User[] = [];

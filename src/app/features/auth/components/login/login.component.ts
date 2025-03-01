@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,7 +16,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { InputGroupModule } from 'primeng/inputgroup';
-import { take } from 'rxjs/operators';
+import { take, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -53,40 +53,44 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.isAuthenticated$.pipe(take(1)).subscribe({
-      next: (isAuthenticated) => {
-        this.isLoading = false;
-        if (isAuthenticated) {
-          if (this.authService.getUserRole() == 'ADMIN') {
-            this.router.navigate(['/dashboard/admin']);
-          } else {
-            this.router.navigate(['/dashboard']);
-          }
-        }
-      },
+    // Check initial auth state
+    this.authService.isAuthenticated$.pipe(
+      take(1),
+      filter(isAuthenticated => isAuthenticated)
+    ).subscribe(() => {
+      this.navigateAfterLogin();
     });
+
+    // Set loading to false after a short delay if not authenticated
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 100);
+  }
+
+  private navigateAfterLogin(): void {
+    const role = this.authService.getUserRole();
+    const route = role === 'ADMIN' ? '/dashboard/admin' : '/dashboard';
+    this.router.navigate([route], { replaceUrl: true });
   }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
+      this.isLoading = true;
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           if (response.success) {
             const successMessage = 'Login successful';
             this.notificationService.showSuccess(successMessage);
-            if (this.authService.getUserRole() == 'ADMIN') {
-              this.router.navigate(['/dashboard/admin']);
-            } else {
-              this.router.navigate(['/dashboard']);
-            }
+            this.navigateAfterLogin();
           } else {
+            this.isLoading = false;
             const errorMessage = formatErrorMessage(
               response.message || 'LOGIN_FAILED'
             );
-            // this.notificationService.showError(errorMessage);
           }
         },
         error: (error) => {
+          this.isLoading = false;
           const errorMessage =
             formatErrorMessage(error.error?.message) ||
             'Login failed. Please try again.';
@@ -104,9 +108,8 @@ export class LoginComponent implements OnInit {
     return this.isFieldValid('password');
   }
 
-  isFieldValid(field: string) {
-    return (
-      this.loginForm.get(field)?.invalid && this.loginForm.get(field)?.touched
-    );
+  private isFieldValid(field: string): boolean {
+    const formControl = this.loginForm.get(field);
+    return formControl ? formControl.invalid && formControl.touched : false;
   }
 }

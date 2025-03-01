@@ -30,15 +30,16 @@
         </div>
 
         @if (post.images && post.images.length > 0) {
-          <div class="section">
+          <div class="section image-carousel-section">
             <p-carousel
               [value]="post.images"
-              [numVisible]="4"
+              [numVisible]="6"
               [numScroll]="1"
               [circular]="false"
               [responsiveOptions]="carouselResponsiveOptions"
-              [showNavigators]="post.images.length > 4"
-              [showIndicators]="post.images.length > 4"
+              [showNavigators]="post.images.length > 6"
+              [showIndicators]="false"
+              styleClass="custom-carousel"
             >
               <ng-template let-image pTemplate="item">
                 <div class="carousel-item">
@@ -62,7 +63,8 @@
             icon="pi pi-check"
             label="Done"
             (onClick)="onDoneClick()"
-            severity="success"
+            severity="secondary"
+            styleClass="p-button-outlined"
           ></p-button>
         </div>
 

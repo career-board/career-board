@@ -1,0 +1,147 @@
+::ng-deep {
+  .p-fileupload {
+    .p-fileupload-content {
+      padding: 2rem;
+    }
+    
+    .p-progressbar {
+      height: 0.5rem;
+    }
+    
+    .rounded-border {
+      border-radius: 0.5rem;
+    }
+    
+    .max-w-60 {
+      max-width: 15rem;
+    }
+    
+    .text-muted-color {
+      color: var(--text-color-secondary);
+    }
+  }
+  
+  .border-surface {
+    border-color: var(--surface-border);
+  }
+  
+  .card {
+    background-color: var(--surface-card);
+    border-radius: 0.5rem;
+    padding: 1.5rem 0;
+  }
+}
+
+.w-full {
+  width: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-8 {
+  gap: 2rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+.m-0 {
+  margin: 0;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.px-12 {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+  .md\\:w-20rem {
+    width: 20rem;
+  }
+  
+  .md\\:ml-auto {
+    margin-left: auto;
+  }
+}
+
+/* Custom styling for the file upload component */
+:host ::ng-deep {
+  /* Hide the automatically generated file list */
+  .custom-file-upload {
+    .p-fileupload-content {
+      .p-fileupload-file-list {
+        display: none !important;
+      }
+
+      /* Ensure padding at the bottom even when file list is hidden */
+      padding-bottom: 1rem;
+    }
+
+    /* Add some style improvements */
+    .p-button {
+      transition: all 0.2s ease;
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+}

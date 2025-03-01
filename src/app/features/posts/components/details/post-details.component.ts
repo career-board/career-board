@@ -43,18 +43,28 @@ export class PostDetailsComponent implements OnInit {
   };
   carouselResponsiveOptions = [
     {
+      breakpoint: '1400px',
+      numVisible: 6,
+      numScroll: 1
+    },
+    {
       breakpoint: '1024px',
-      numVisible: 3,
+      numVisible: 5,
       numScroll: 1
     },
     {
       breakpoint: '768px',
-      numVisible: 2,
+      numVisible: 4,
       numScroll: 1
     },
     {
       breakpoint: '560px',
-      numVisible: 1,
+      numVisible: 3,
+      numScroll: 1
+    },
+    {
+      breakpoint: '375px',
+      numVisible: 2,
       numScroll: 1
     }
   ];

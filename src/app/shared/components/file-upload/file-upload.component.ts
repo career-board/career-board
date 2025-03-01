@@ -17,6 +17,7 @@ import { ImageService } from '../../../features/posts/services/image.service';
 import { Observable, forkJoin } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { PresignImageResponse } from '../../../features/posts/models/presign-image-response.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -51,6 +52,7 @@ export class FileUploadComponent {
 
   private imageService = inject(ImageService);
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
   constructor(private messageService: MessageService) {
     // Initialize the uploadedFiles Set
@@ -58,27 +60,47 @@ export class FileUploadComponent {
   }
 
   onSelectedFiles(event: any): void {
-    // The event.files property might contain a FileList instead of an Array
-    // Convert to array if needed
-    const filesArray = event.files
-      ? Array.isArray(event.files)
-        ? event.files
-        : Array.from(event.files)
-      : [];
+    try {
+      // The event.files property might contain a FileList instead of an Array
+      // Convert to array if needed
+      const originalFilesArray = event.files
+        ? Array.isArray(event.files)
+          ? event.files
+          : Array.from(event.files)
+        : [];
 
-    // Store selected files for later upload
-    this.selectedFiles = filesArray;
+      // Create new files with user ID prefix in the name
+      const filesWithUserIdPrefix = originalFilesArray.map((file: File, index: number) => 
+        this.createFileWithUserIdPrefix(file, index)
+      );
+      
+      // Store selected files for later upload
+      this.selectedFiles = filesWithUserIdPrefix;
 
-    // Only set upload state to idle if there are new files that haven't been uploaded yet
-    const hasNewFiles = filesArray.some(
-      (file: File) => !this.uploadedFiles.has(file.name)
-    );
-    if (hasNewFiles) {
-      this.uploadState = 'idle';
+      // Only set upload state to idle if there are new files that haven't been uploaded yet
+      const hasNewFiles = filesWithUserIdPrefix.some(
+        (file: File) => !this.uploadedFiles.has(file.name)
+      );
+      if (hasNewFiles) {
+        this.uploadState = 'idle';
+      }
+
+      this.calculateTotalSize(filesWithUserIdPrefix);
+      
+      // Update the file upload component's files with the prefixed names
+      if (this.fileUploadComponent) {
+        this.fileUploadComponent.files = filesWithUserIdPrefix;
+      }
+      
+      this.filesSelected.emit(filesWithUserIdPrefix);
+    } catch (error) {
+      console.error('Error processing selected files:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error processing selected files'
+      });
     }
-
-    this.calculateTotalSize(filesArray);
-    this.filesSelected.emit(filesArray);
   }
 
   /**
@@ -315,5 +337,25 @@ export class FileUploadComponent {
     if (this.useCustomUpload && this.selectedFiles.length > 0) {
       this.uploadSelectedFiles(this.selectedFiles);
     }
+  }
+
+  /**
+   * Creates a unique file name with user ID prefix
+   * @param file The original file
+   * @param index Index of the file in the batch to ensure uniqueness
+   * @returns A new File object with a prefixed name
+   */
+  private createFileWithUserIdPrefix(file: File, index: number): File {
+    const fileExtension = file.name.split('.').pop() || '';
+    const timestamp = new Date().getTime();
+    const userId = this.authService.getUserId();
+    // Generate a random string for additional uniqueness
+    const randomString = Math.random().toString(36).substring(2, 8);
+    
+    // Format: userId/timestamp_index_randomString.extension to ensure uniqueness
+    const newFileName = `${userId}/${timestamp}_${index}_${randomString}.${fileExtension}`;
+    
+    // Create a new File object with the modified name
+    return new File([file], newFileName, { type: file.type });
   }
 }

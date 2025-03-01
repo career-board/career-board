@@ -191,16 +191,30 @@ export class FileUploadComponent {
   }
 
   onRemoveTemplatingFile(event: Event, file: any, removeFileCallback: Function, index: number): void {
+    // Prevent the default behavior
+    event.preventDefault();
+    event.stopPropagation();
+    
     // Remove from uploaded files tracking
     if (file && file.name) {
       this.uploadedFiles.delete(file.name);
     }
     
+    // Call the PrimeNG callback to remove the file
     if (typeof removeFileCallback === 'function') {
-      removeFileCallback(index);
-      this.recalculateTotalSize(removeFileCallback);
+      // Pass the event as the first parameter, followed by the index
+      removeFileCallback(event, index);
     }
-    event.stopPropagation();
+    
+    // Update the selectedFiles array to remove the file
+    if (this.selectedFiles.length > index) {
+      this.selectedFiles.splice(index, 1);
+    }
+    
+    // Recalculate total size after file removal
+    if (this.fileUploadComponent && this.fileUploadComponent.files) {
+      this.calculateTotalSize(this.fileUploadComponent.files as File[]);
+    }
   }
 
   calculateTotalSize(files: File[]): void {

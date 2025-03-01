@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FileUploadModule } from 'primeng/fileupload';
+import { FileUploadModule, FileUpload } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -36,6 +36,11 @@ export class FileUploadComponent {
   
   totalSize: string = '0';
   totalSizePercent: number = 0;
+  selectedFiles: File[] = []; // Store selected files
+  uploadState: 'idle' | 'uploading' | 'completed' | 'error' = 'idle';
+  
+  @ViewChild('fileUpload') fileUploadComponent!: FileUpload;
+  
   private imageService = inject(ImageService);
   private http = inject(HttpClient);
   
@@ -45,13 +50,15 @@ export class FileUploadComponent {
     // The event.files property might contain a FileList instead of an Array
     // Convert to array if needed
     const filesArray = event.files ? (Array.isArray(event.files) ? event.files : Array.from(event.files)) : [];
+    
+    // Store selected files for later upload
+    this.selectedFiles = filesArray;
+    
+    // Reset upload state to idle when new files are selected
+    this.uploadState = 'idle';
+    
     this.calculateTotalSize(filesArray);
     this.filesSelected.emit(filesArray);
-
-    if (this.useCustomUpload) {
-      // Use custom upload method instead of PrimeNG's built-in upload
-      this.uploadSelectedFiles(filesArray);
-    }
   }
   
   /**
@@ -60,6 +67,9 @@ export class FileUploadComponent {
    */
   uploadSelectedFiles(files: File[]): void {
     if (!files || files.length === 0) return;
+    
+    // Set upload state to uploading
+    this.uploadState = 'uploading';
 
     const nameList = files.map((file: File) => file.name);
     this.uploadProgress.emit(10); // Start progress
@@ -89,6 +99,7 @@ export class FileUploadComponent {
             detail: 'No files to upload' 
           });
           this.uploadProgress.emit(0);
+          this.uploadState = 'error';
           return;
         }
         
@@ -96,6 +107,7 @@ export class FileUploadComponent {
         forkJoin(uploadObservables).subscribe({
           next: (results) => {
             this.uploadProgress.emit(100); // Complete
+            this.uploadState = 'completed';
             
             this.messageService.add({ 
               severity: 'success', 
@@ -110,6 +122,7 @@ export class FileUploadComponent {
           },
           error: (error) => {
             this.uploadProgress.emit(0);
+            this.uploadState = 'error';
             
             this.messageService.add({ 
               severity: 'error', 
@@ -123,6 +136,7 @@ export class FileUploadComponent {
       },
       error: (error) => {
         this.uploadProgress.emit(0);
+        this.uploadState = 'error';
         
         this.messageService.add({ 
           severity: 'error', 
@@ -188,6 +202,11 @@ export class FileUploadComponent {
   uploadEvent(uploadCallback: Function): void {
     if (typeof uploadCallback === 'function') {
       uploadCallback();
+    }
+    
+    // Handle custom upload on upload button click
+    if (this.useCustomUpload && this.selectedFiles.length > 0) {
+      this.uploadSelectedFiles(this.selectedFiles);
     }
   }
 }

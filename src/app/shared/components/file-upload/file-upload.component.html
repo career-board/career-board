@@ -25,14 +25,23 @@
             <div *ngIf="files?.length > 0">
                 <h5>Pending</h5>
                 <div class="flex flex-wrap gap-4">
-                    <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                    <div *ngFor="let file of files; let i = index"
+                        class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
                         <div>
                             <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
                         </div>
-                        <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                        <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{
+                            file.name }}</span>
                         <div>{{ formatSize(file.size) }}</div>
-                        <p-badge value="Pending" severity="warn"></p-badge>
-                        <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, i)" [outlined]="true" [rounded]="true" severity="danger"></p-button>
+                        <ng-container [ngSwitch]="uploadState">
+                            <p-badge *ngSwitchCase="'idle'" value="Pending" severity="warn"></p-badge>
+                            <p-badge *ngSwitchCase="'uploading'" value="Uploading..." severity="info"></p-badge>
+                            <p-badge *ngSwitchCase="'completed'" value="Completed" severity="success"></p-badge>
+                            <p-badge *ngSwitchCase="'error'" value="Failed" severity="danger"></p-badge>
+                        </ng-container>
+                        <p-button icon="pi pi-times"
+                            (click)="onRemoveTemplatingFile($event, file, removeFileCallback, i)" [outlined]="true"
+                            [rounded]="true" severity="danger"></p-button>
                     </div>
                 </div>
             </div>

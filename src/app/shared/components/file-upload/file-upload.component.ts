@@ -38,13 +38,17 @@ export class FileUploadComponent {
   totalSizePercent: number = 0;
   selectedFiles: File[] = []; // Store selected files
   uploadState: 'idle' | 'uploading' | 'completed' | 'error' = 'idle';
+  uploadedFiles: Set<string> = new Set(); // Track files that have been uploaded
   
   @ViewChild('fileUpload') fileUploadComponent!: FileUpload;
   
   private imageService = inject(ImageService);
   private http = inject(HttpClient);
   
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService) {
+    // Initialize the uploadedFiles Set
+    this.uploadedFiles = new Set<string>();
+  }
 
   onSelectedFiles(event: any): void {
     // The event.files property might contain a FileList instead of an Array
@@ -54,8 +58,11 @@ export class FileUploadComponent {
     // Store selected files for later upload
     this.selectedFiles = filesArray;
     
-    // Reset upload state to idle when new files are selected
-    this.uploadState = 'idle';
+    // Only set upload state to idle if there are new files that haven't been uploaded yet
+    const hasNewFiles = filesArray.some((file: File) => !this.uploadedFiles.has(file.name));
+    if (hasNewFiles) {
+      this.uploadState = 'idle';
+    }
     
     this.calculateTotalSize(filesArray);
     this.filesSelected.emit(filesArray);
@@ -68,10 +75,22 @@ export class FileUploadComponent {
   uploadSelectedFiles(files: File[]): void {
     if (!files || files.length === 0) return;
     
+    // Filter out files that have already been uploaded
+    const filesToUpload = files.filter((file: File) => !this.uploadedFiles.has(file.name));
+    
+    if (filesToUpload.length === 0) {
+      this.messageService.add({ 
+        severity: 'info', 
+        summary: 'Info', 
+        detail: 'All files have already been uploaded' 
+      });
+      return;
+    }
+    
     // Set upload state to uploading
     this.uploadState = 'uploading';
 
-    const nameList = files.map((file: File) => file.name);
+    const nameList = filesToUpload.map((file: File) => file.name);
     this.uploadProgress.emit(10); // Start progress
     
     this.imageService.getPresignedUploadUrl(nameList).subscribe({
@@ -82,7 +101,7 @@ export class FileUploadComponent {
         const uploadObservables: Observable<any>[] = [];
         const uploadedFileKeys: string[] = [];
         
-        files.forEach((file: File) => {
+        filesToUpload.forEach((file: File) => {
           const presignedUrl = response.find((res: PresignImageResponse) => res.key === file.name);
           
           if (presignedUrl) {
@@ -108,6 +127,11 @@ export class FileUploadComponent {
           next: (results) => {
             this.uploadProgress.emit(100); // Complete
             this.uploadState = 'completed';
+            
+            // Mark files as uploaded
+            filesToUpload.forEach((file: File) => {
+              this.uploadedFiles.add(file.name);
+            });
             
             this.messageService.add({ 
               severity: 'success', 
@@ -151,11 +175,27 @@ export class FileUploadComponent {
   
   onTemplatedUpload(): void {
     console.log('Files uploaded successfully');
+    
+    // Mark all current files as uploaded
+    if (this.fileUploadComponent && this.fileUploadComponent.files) {
+      this.fileUploadComponent.files.forEach((file: any) => {
+        if (file.name) {
+          this.uploadedFiles.add(file.name);
+        }
+      });
+    }
+    
+    this.uploadState = 'completed';
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Files uploaded successfully' });
     this.fileUploaded.emit();
   }
 
   onRemoveTemplatingFile(event: Event, file: any, removeFileCallback: Function, index: number): void {
+    // Remove from uploaded files tracking
+    if (file && file.name) {
+      this.uploadedFiles.delete(file.name);
+    }
+    
     if (typeof removeFileCallback === 'function') {
       removeFileCallback(index);
       this.recalculateTotalSize(removeFileCallback);
@@ -163,10 +203,10 @@ export class FileUploadComponent {
     event.stopPropagation();
   }
 
-  calculateTotalSize(files: any[]): void {
+  calculateTotalSize(files: File[]): void {
     let totalBytes = 0;
     if (files && Array.isArray(files)) {
-      files.forEach(file => {
+      files.forEach((file: File) => {
         totalBytes += file.size || 0;
       });
     }
@@ -179,7 +219,7 @@ export class FileUploadComponent {
     if (typeof getFiles === 'function') {
       const files = getFiles();
       const filesArray = files ? (Array.isArray(files) ? files : Array.from(files)) : [];
-      this.calculateTotalSize(filesArray);
+      this.calculateTotalSize(filesArray as File[]);
     }
   }
 
@@ -191,6 +231,23 @@ export class FileUploadComponent {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+  
+  /**
+   * Helper method to check if a file has been uploaded
+   * This is used in the template to avoid calling Set.has directly
+   */
+  isFileUploaded(fileName: string): boolean {
+    return this.uploadedFiles.has(fileName);
+  }
+  
+  /**
+   * Clears the uploaded files tracking state
+   * This can be called to reset the component state if needed
+   */
+  clearUploadedFiles(): void {
+    this.uploadedFiles.clear();
+    this.uploadState = 'idle';
   }
   
   choose(event: Event, chooseCallback: Function): void {

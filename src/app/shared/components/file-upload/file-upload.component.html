@@ -33,12 +33,17 @@
                         <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{
                             file.name }}</span>
                         <div>{{ formatSize(file.size) }}</div>
-                        <ng-container [ngSwitch]="uploadState">
-                            <p-badge *ngSwitchCase="'idle'" value="Pending" severity="warn"></p-badge>
-                            <p-badge *ngSwitchCase="'uploading'" value="Uploading..." severity="info"></p-badge>
-                            <p-badge *ngSwitchCase="'completed'" value="Completed" severity="success"></p-badge>
-                            <p-badge *ngSwitchCase="'error'" value="Failed" severity="danger"></p-badge>
+                        <ng-container *ngIf="isFileUploaded(file.name); else pendingFile">
+                            <p-badge value="Uploaded" severity="success"></p-badge>
                         </ng-container>
+                        <ng-template #pendingFile>
+                            <ng-container [ngSwitch]="uploadState">
+                                <p-badge *ngSwitchCase="'idle'" value="Pending" severity="warn"></p-badge>
+                                <p-badge *ngSwitchCase="'uploading'" value="Uploading..." severity="info"></p-badge>
+                                <p-badge *ngSwitchCase="'completed'" value="Completed" severity="success"></p-badge>
+                                <p-badge *ngSwitchCase="'error'" value="Failed" severity="danger"></p-badge>
+                            </ng-container>
+                        </ng-template>
                         <p-button icon="pi pi-times"
                             (click)="onRemoveTemplatingFile($event, file, removeFileCallback, i)" [outlined]="true"
                             [rounded]="true" severity="danger"></p-button>

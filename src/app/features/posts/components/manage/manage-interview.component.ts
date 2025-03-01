@@ -34,6 +34,7 @@ import { UpdateInterviewRequest } from '../../models/update-post-request.model';
 import { ImageService } from '../../services/image.service';
 import { PostService } from '../../services/post.service';
 import { TabviewEditorComponent } from '../tabview-editor/tabview-editor.component';
+import { FileUploadComponent } from '../../../../shared/components/file-upload/file-upload.component';
 
 interface ImagePreview {
   file: File;
@@ -62,6 +63,7 @@ interface ImagePreview {
     TabviewEditorComponent,
     ButtonModule,
     SkeletonModule,
+    FileUploadComponent,
   ],
 })
 export class ManageInterviewComponent implements OnInit {
@@ -130,7 +132,9 @@ export class ManageInterviewComponent implements OnInit {
       // Check if user has permission to edit
       const userId = this.authService.getUserId();
       if (state.post.userId.toString() != userId && !this.canModerate) {
-        this.notificationService.showError('You do not have permission to edit this post');
+        this.notificationService.showError(
+          'You do not have permission to edit this post'
+        );
         this.router.navigate(['/dashboard']);
         return;
       }
@@ -183,7 +187,9 @@ export class ManageInterviewComponent implements OnInit {
               // Check if user has permission to edit
               const userId = this.authService.getUserId();
               if (post.userId.toString() != userId && !this.canModerate) {
-                this.notificationService.showError('You do not have permission to edit this post');
+                this.notificationService.showError(
+                  'You do not have permission to edit this post'
+                );
                 this.router.navigate(['/dashboard']);
                 return;
               }
@@ -219,7 +225,9 @@ export class ManageInterviewComponent implements OnInit {
             }
           },
           error: (error) => {
-            this.notificationService.showError('Error loading post: ' + error.message);
+            this.notificationService.showError(
+              'Error loading post: ' + error.message
+            );
             this.loading = false;
           },
         });
@@ -316,14 +324,14 @@ export class ManageInterviewComponent implements OnInit {
   }
 
   mergeImageLists(
-    uploadedImages: string[],
+    uploadedImageNames: string[],
     imageList: postImage[]
   ): postImage[] {
     const imageMap = new Map(
       imageList.map((image) => [image.imageName, image.imageId])
     );
 
-    return uploadedImages.map((imageName) => ({
+    return uploadedImageNames.map((imageName) => ({
       imageId: imageMap.get(imageName) ?? 0,
       imageName,
     }));
@@ -372,7 +380,9 @@ export class ManageInterviewComponent implements OnInit {
           this.createInterview(status);
         }
       } catch (error: any) {
-        this.notificationService.showError('Error uploading images: ' + error.message);
+        this.notificationService.showError(
+          'Error uploading images: ' + error.message
+        );
       } finally {
         this.isUploading = false;
         this.uploadProgress = 0;
@@ -387,11 +397,13 @@ export class ManageInterviewComponent implements OnInit {
     console.log(postData);
     this.postService.createPost(postData).subscribe({
       next: (response) => {
-          this.notificationService.showSuccess('Interview created successfully!');
-          this.router.navigate(['/dashboard/my-posts']);
+        this.notificationService.showSuccess('Interview created successfully!');
+        this.router.navigate(['/dashboard/my-posts']);
       },
       error: (error) => {
-        this.notificationService.showError('Error creating post: ' + error.message);
+        this.notificationService.showError(
+          'Error creating post: ' + error.message
+        );
       },
     });
   }
@@ -454,8 +466,57 @@ export class ManageInterviewComponent implements OnInit {
         this.router.navigate(['/dashboard/my-posts']);
       },
       error: (error) => {
-        this.notificationService.showError('Error updating post: ' + error.message);
+        this.notificationService.showError(
+          'Error updating post: ' + error.message
+        );
       },
     });
+  }
+
+  onUploadComplete(uploadedFileKeys: string[]) {
+    console.log('Files uploaded:', uploadedFileKeys);
+    
+    // Handle the uploaded images
+    /* if (uploadedFileKeys && uploadedFileKeys.length > 0) {
+      if (!this.currentPost) {
+        // Initialize currentPost if it doesn't exist
+        this.currentPost = {
+          images: this.createImagesFromUploaded(uploadedFileKeys)
+        } as Post;
+      } else if (this.currentPost.images) {
+        // If we already have images, merge with uploaded ones
+        const mergedImages = this.mergeImageLists(uploadedFileKeys, this.currentPost.images);
+        this.currentPost.images = mergedImages;
+      } else {
+        // Otherwise create fresh images array
+        this.currentPost.images = this.createImagesFromUploaded(uploadedFileKeys);
+      }
+    } */
+  }
+
+  onFilesSelected(files: File[]) {
+    console.log('Files selected:', files);
+    this.selectedFiles = files;
+
+    // Generate previews for each new file
+    /* files.forEach((file: File) => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.imagePreviews.push({
+            file: file,
+            url: e.target.result,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }); */
+  }
+
+  private createImagesFromUploaded(uploadedFileKeys: string[]): postImage[] {
+    return uploadedFileKeys.map((imageName) => ({
+      imageId: 0,
+      imageName,
+    }));
   }
 }

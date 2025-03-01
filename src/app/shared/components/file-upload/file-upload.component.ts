@@ -150,6 +150,7 @@ export class FileUploadComponent {
   }
   
   onTemplatedUpload(): void {
+    console.log('Files uploaded successfully');
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Files uploaded successfully' });
     this.fileUploaded.emit();
   }
@@ -200,10 +201,11 @@ export class FileUploadComponent {
   }
   
   uploadEvent(uploadCallback: Function): void {
+    console.log('upload');
     if (typeof uploadCallback === 'function') {
       uploadCallback();
     }
-    
+    console.log('upload', this.selectedFiles);
     // Handle custom upload on upload button click
     if (this.useCustomUpload && this.selectedFiles.length > 0) {
       this.uploadSelectedFiles(this.selectedFiles);

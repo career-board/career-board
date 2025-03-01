@@ -123,6 +123,14 @@
           ></app-tabview-editor>
         </div>
 
+        <app-file-upload 
+          [maxSize]="5000000" 
+          [useCustomUpload]="true" 
+          (filesSelected)="onFilesSelected($event)"
+          (uploadComplete)="onUploadComplete($event)"
+        >
+        </app-file-upload>
+
         <div class="image-upload-section">
           <input
             type="file"

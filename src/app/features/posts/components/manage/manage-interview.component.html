@@ -123,61 +123,18 @@
           ></app-tabview-editor>
         </div>
 
-        <app-file-upload 
-          [maxSize]="5000000" 
-          [useCustomUpload]="true" 
-          (filesSelected)="onFilesSelected($event)"
-          (uploadComplete)="onUploadComplete($event)"
-        >
-        </app-file-upload>
-
-        <div class="image-upload-section">
-          <input
-            type="file"
-            #fileInput
-            (change)="onFileSelected($event)"
-            multiple
-            accept="image/*"
-            style="display: none"
-          />
-          <button
-            mat-raised-button
-            color="primary"
-            type="button"
-            (click)="fileInput.click()"
-            class="upload-button mat-elevation-z2"
+        <div class="full-width">
+          <h3>Upload Interview Images</h3>
+          <p *ngIf="existingImages && existingImages.length > 0">
+            <strong>{{ existingImages.length }} existing image(s)</strong> will be preserved when you save.
+          </p>
+          <app-file-upload 
+            [maxSize]="5000000" 
+            [useCustomUpload]="true"
+            (filesSelected)="onFilesSelected($event)"
+            (uploadComplete)="onUploadComplete($event)"
           >
-            <mat-icon>add_photo_alternate</mat-icon>
-            Select Images
-          </button>
-          <span class="selected-files" *ngIf="selectedFiles.length > 0">
-            {{ selectedFiles.length }} image(s) selected
-          </span>
-        </div>
-
-        <div class="image-previews" *ngIf="imagePreviews.length > 0">
-          <div
-            class="preview-item"
-            *ngFor="let preview of imagePreviews; let i = index"
-          >
-            <div class="preview-image-container">
-              <img
-                [src]="preview.url"
-                [alt]="preview.file.name"
-                class="preview-image"
-              />
-              <button
-                mat-icon-button
-                color="warn"
-                class="remove-button mat-elevation-z2"
-                type="button"
-                (click)="removeImage(i)"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
-            <span class="image-name">{{ preview.file.name }}</span>
-          </div>
+          </app-file-upload>
         </div>
 
         <mat-progress-bar

@@ -71,13 +71,12 @@ export class ManageInterviewComponent implements OnInit {
   selectedFiles: File[] = [];
   uploadProgress: number = 0;
   isUploading: boolean = false;
-  imagePreviews: ImagePreview[] = [];
+  existingImages: postImage[] = [];
   isEditMode: boolean = false;
   postId: string | null = null;
   currentPost: Post | null = null;
   canModerate: boolean = false;
   interviewTypes: any[] = [];
-  existingImages: postImage[] = [];
   text: string = '';
   loading: boolean = false;
 
@@ -156,13 +155,7 @@ export class ManageInterviewComponent implements OnInit {
       // Load existing images
       if (state.post.images) {
         this.existingImages = state.post.images;
-        state.post.images.forEach((image) => {
-          this.imagePreviews.push({
-            file: new File([], image.imageName),
-            url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
-          });
-        });
-        this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
+        this.prepareExistingFilesForUpload(state.post.images);
       }
       this.loading = false;
     } else {
@@ -211,15 +204,7 @@ export class ManageInterviewComponent implements OnInit {
               // Load existing images
               if (post.images) {
                 this.existingImages = post.images;
-                post.images.forEach((image) => {
-                  this.imagePreviews.push({
-                    file: new File([], image.imageName),
-                    url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
-                  });
-                });
-                this.selectedFiles = this.imagePreviews.map(
-                  (preview) => preview.file
-                );
+                this.prepareExistingFilesForUpload(post.images);
               }
               this.loading = false;
             }
@@ -257,84 +242,96 @@ export class ManageInterviewComponent implements OnInit {
       });
   }
 
-  onFileSelected(event: any) {
-    const files: FileList | null = event.target.files;
-    if (files) {
-      console.log('Selected files:', files);
+  /**
+   * Called when files are selected using the file upload component
+   */
+  onFilesSelected(files: File[]) {
+    console.log('Files selected:', files);
+    this.selectedFiles = files;
+  }
 
-      let newFiles: File[] = Array.from(files).map(
-        (file: File, index: number) => {
-          console.log(file.name.split('.').pop());
-          const timestamp = Date.now() + '_' + index;
-          const newName = timestamp + '.' + file.name.split('.').pop();
-          Object.defineProperty(file, 'name', {
-            writable: true,
-            value: `${this.authService.getUserId()}/${newName}`,
-          });
-          return file;
-        }
+  /**
+   * Called when file upload completes
+   */
+  onUploadComplete(uploadedFileKeys: string[]) {
+    console.log('Files uploaded:', uploadedFileKeys);
+    
+    // Update our local tracking of files
+    this.isUploading = false;
+    
+    // Create image objects from the uploaded file keys
+    const newImages = this.createImagesFromUploaded(uploadedFileKeys);
+    
+    // Store the images based on whether we're editing or creating a new post
+    if (this.isEditMode && this.currentPost && this.currentPost.images) {
+      // If we're editing, merge with existing images
+      this.existingImages = this.mergeImageLists(
+        uploadedFileKeys, 
+        this.currentPost.images
       );
-      const nameList = newFiles.map((file: File) => file.name);
-      console.log(nameList);
-      this.imageService.getPresignedUploadUrl(nameList).subscribe({
-        next: (response) => {
-          newFiles.forEach((file: File) => {
-            console.log(response);
-            const presignedUrl = response.find((res: PresignImageResponse) => {
-              const isMatching = res.key === file.name;
-              console.log(res.key);
-              console.log(file.name);
-              console.log(isMatching);
-              return isMatching;
-            });
-            // file['name'] = presignedUrl!.key;
-            this.imageService.uploadFile(file, presignedUrl!.url).subscribe({
-              next: (response) => {
-                console.log('File uploaded successfully:', response);
-              },
-              error: (error) => {
-                console.error('File upload failed:', error);
-              },
-            });
-          });
-        },
-      });
-
-      this.selectedFiles = [...this.selectedFiles, ...newFiles];
-
-      // Generate previews for each new file
-      newFiles.forEach((file: File) => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e: any) => {
-            this.imagePreviews.push({
-              file: file,
-              url: e.target.result,
-            });
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+    } else {
+      // For new posts, just use the uploaded images
+      this.existingImages = newImages;
     }
+    
+    // Show notification of successful upload
+    this.notificationService.showSuccess(`Successfully uploaded ${uploadedFileKeys.length} image(s)`);
   }
 
-  removeImage(index: number) {
-    this.imagePreviews.splice(index, 1);
-    this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
-  }
-
-  mergeImageLists(
-    uploadedImageNames: string[],
-    imageList: postImage[]
-  ): postImage[] {
-    const imageMap = new Map(
-      imageList.map((image) => [image.imageName, image.imageId])
-    );
-
-    return uploadedImageNames.map((imageName) => ({
-      imageId: imageMap.get(imageName) ?? 0,
+  /**
+   * Creates image objects from uploaded file keys
+   */
+  private createImagesFromUploaded(uploadedFileKeys: string[]): postImage[] {
+    return uploadedFileKeys.map((imageName) => ({
+      imageId: 0,
       imageName,
     }));
+  }
+
+  /**
+   * Merges newly uploaded image names with existing images
+   * @param uploadedImageNames Array of image names from the uploaded files
+   * @param existingImages Array of existing postImage objects
+   * @returns Array of postImage objects
+   */
+  mergeImageLists(
+    uploadedImageNames: string[],
+    existingImages: postImage[]
+  ): postImage[] {
+    // Get the existing image names
+    const existingImageNames = existingImages.map((img) => img.imageName);
+    
+    // Create new postImage objects for any newly uploaded images
+    const newImages = uploadedImageNames
+      .filter((name) => !existingImageNames.includes(name))
+      .map((name) => ({
+        imageId: 0, // New images have an ID of 0
+        imageName: name,
+      }));
+    
+    // Combine existing images with new ones
+    return [...existingImages, ...newImages];
+  }
+
+  /**
+   * Prepares existing images as File objects for the file upload component
+   */
+  private prepareExistingFilesForUpload(images: postImage[]): void {
+    // For existing images, we need to create File objects that the file upload component can use
+    // Since we can't easily reconstruct the original files, we'll create placeholders
+    // that represent the existing images
+    
+    // First, clear any previously selected files
+    this.selectedFiles = [];
+    
+    // Show a notification to the user that existing images are being loaded
+    if (images.length > 0) {
+      this.notificationService.showSuccess(`Loading ${images.length} existing image(s)`);
+    }
+
+    // Note: We're not setting the selectedFiles here because the FileUploadComponent
+    // doesn't have an input to accept already uploaded files
+    // The existing images will be saved from this.existingImages when the form is submitted
   }
 
   isInterviewDateInvalid(): boolean {
@@ -409,14 +406,15 @@ export class ManageInterviewComponent implements OnInit {
   }
 
   private mapToCreateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
+    // For new posts, get the file names from selectedFiles (newly uploaded)
     const uploadedImages = this.selectedFiles.map((file) => file.name);
-    console.log(uploadedImages);
+    console.log('Create with uploaded images:', uploadedImages);
+    
     let editorial = '';
     if (this.canModerate) {
       editorial =
         this.postForm.get('editorContent')?.get('editorial')?.value || '';
     }
-    console.log(editorial);
 
     const postData: CreateInterviewRequest = {
       description: this.postForm.get('description')?.value,
@@ -433,8 +431,15 @@ export class ManageInterviewComponent implements OnInit {
   }
 
   private mapToUpdateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
-    const uploadedImages = this.selectedFiles.map((file) => file.name);
-    console.log(uploadedImages);
+    // When updating, combine both newly uploaded and existing images
+    const uploadedImageNames = this.selectedFiles.map((file) => file.name);
+    const existingImageNames = this.existingImages.map(img => img.imageName);
+    
+    // Combine both sets of images, eliminating duplicates
+    const allImageNames = [...new Set([...uploadedImageNames, ...existingImageNames])];
+    
+    console.log('Update with images:', allImageNames);
+    
     let editorial = '';
     if (this.canModerate) {
       editorial =
@@ -445,7 +450,7 @@ export class ManageInterviewComponent implements OnInit {
       interviewId: Number(this.postId),
       userId: this.currentPost!.userId,
       description: this.postForm!.get('description')!.value,
-      images: this.mergeImageLists(uploadedImages, this.existingImages),
+      images: this.mergeImageLists(allImageNames, this.existingImages),
       status: status,
       details: this.postForm.get('editorContent')?.get('details')?.value || '',
       editorial: editorial,
@@ -471,52 +476,5 @@ export class ManageInterviewComponent implements OnInit {
         );
       },
     });
-  }
-
-  onUploadComplete(uploadedFileKeys: string[]) {
-    console.log('Files uploaded:', uploadedFileKeys);
-    
-    // Handle the uploaded images
-    /* if (uploadedFileKeys && uploadedFileKeys.length > 0) {
-      if (!this.currentPost) {
-        // Initialize currentPost if it doesn't exist
-        this.currentPost = {
-          images: this.createImagesFromUploaded(uploadedFileKeys)
-        } as Post;
-      } else if (this.currentPost.images) {
-        // If we already have images, merge with uploaded ones
-        const mergedImages = this.mergeImageLists(uploadedFileKeys, this.currentPost.images);
-        this.currentPost.images = mergedImages;
-      } else {
-        // Otherwise create fresh images array
-        this.currentPost.images = this.createImagesFromUploaded(uploadedFileKeys);
-      }
-    } */
-  }
-
-  onFilesSelected(files: File[]) {
-    console.log('Files selected:', files);
-    this.selectedFiles = files;
-
-    // Generate previews for each new file
-    /* files.forEach((file: File) => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.imagePreviews.push({
-            file: file,
-            url: e.target.result,
-          });
-        };
-        reader.readAsDataURL(file);
-      }
-    }); */
-  }
-
-  private createImagesFromUploaded(uploadedFileKeys: string[]): postImage[] {
-    return uploadedFileKeys.map((imageName) => ({
-      imageId: 0,
-      imageName,
-    }));
   }
 }

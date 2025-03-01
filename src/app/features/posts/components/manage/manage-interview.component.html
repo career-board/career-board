@@ -180,6 +180,7 @@
               [label]="isEditMode ? 'Update & Publish' : 'Create & Publish'"
               [disabled]="!postForm.valid || isUploading"
               (onClick)="onSubmit('PUBLISHED')"
+              severity="primary"
             ></p-button>
           </div>
         </div>

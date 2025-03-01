@@ -1,0 +1,25 @@
+/* Global color variables for consistent theming */
+
+// Primary colors
+$primary-color: #2196F3;      // Blue - for primary actions
+$secondary-color: #757575;    // Gray - for secondary actions
+
+// Status colors
+$success-color: #4CAF50;      // Green - for success, confirmation actions
+$danger-color: #F44336;       // Red - for danger, delete actions
+$warning-color: #FF9800;      // Orange - for warnings
+$info-color: #03A9F4;         // Light blue - for information
+
+// Background colors
+$bg-light: #FFFFFF;
+$bg-medium: #F5F5F5;
+$bg-dark: #333333;
+
+// Text colors
+$text-primary: #333333;
+$text-secondary: #666666;
+$text-light: #FFFFFF;
+
+// Button specific colors
+$button-primary: $primary-color;
+$button-secondary: $secondary-color;

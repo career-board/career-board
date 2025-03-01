@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import './app/core/styles/variables.scss';
 
 * {
   margin: 0;
@@ -242,6 +243,104 @@ select,
   
   .ql-picker {
     color: #333 !important;
+  }
+}
+
+/* Button styles with globally defined colors */
+.p-button {
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s !important;
+  
+  /* Default button (primary) */
+  &.p-button-primary,
+  &:not([class*="p-button-"]):not(.p-button-secondary):not(.p-button-success):not(.p-button-info):not(.p-button-warning):not(.p-button-danger):not(.p-button-help) {
+    background: $button-primary !important;
+    border-color: $button-primary !important;
+    color: $text-light !important;
+    
+    &:enabled:hover {
+      background: darken($button-primary, 10%) !important;
+      border-color: darken($button-primary, 10%) !important;
+    }
+    
+    &.p-button-outlined {
+      background: transparent !important;
+      color: $button-primary !important;
+      border-color: $button-primary !important;
+      
+      &:enabled:hover {
+        background: rgba($button-primary, 0.05) !important;
+      }
+    }
+  }
+  
+  /* Secondary button */
+  &.p-button-secondary {
+    background: $button-secondary !important;
+    border-color: $button-secondary !important;
+    color: $text-light !important;
+    
+    &:enabled:hover {
+      background: darken($button-secondary, 10%) !important;
+      border-color: darken($button-secondary, 10%) !important;
+    }
+    
+    &.p-button-outlined {
+      background: transparent !important;
+      color: $button-secondary !important;
+      border-color: $button-secondary !important;
+      
+      &:enabled:hover {
+        background: rgba($button-secondary, 0.05) !important;
+      }
+    }
+  }
+  
+  /* Success button */
+  &.p-button-success {
+    background: $success-color !important;
+    border-color: $success-color !important;
+    
+    &:enabled:hover {
+      background: darken($success-color, 10%) !important;
+      border-color: darken($success-color, 10%) !important;
+    }
+    
+    &.p-button-outlined {
+      background: transparent !important;
+      color: $success-color !important;
+      border-color: $success-color !important;
+      
+      &:enabled:hover {
+        background: rgba($success-color, 0.05) !important;
+      }
+    }
+  }
+  
+  /* Danger button */
+  &.p-button-danger {
+    background: $danger-color !important;
+    border-color: $danger-color !important;
+    
+    &:enabled:hover {
+      background: darken($danger-color, 10%) !important;
+      border-color: darken($danger-color, 10%) !important;
+    }
+    
+    &.p-button-outlined {
+      background: transparent !important;
+      color: $danger-color !important;
+      border-color: $danger-color !important;
+      
+      &:enabled:hover {
+        background: rgba($danger-color, 0.05) !important;
+      }
+    }
+  }
+  
+  /* Disabled button */
+  &:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
   }
 }
 

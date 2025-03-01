@@ -122,3 +122,26 @@
     margin-left: auto;
   }
 }
+
+/* Custom styling for the file upload component */
+:host ::ng-deep {
+  /* Hide the automatically generated file list */
+  .custom-file-upload {
+    .p-fileupload-content {
+      .p-fileupload-file-list {
+        display: none !important;
+      }
+
+      /* Ensure padding at the bottom even when file list is hidden */
+      padding-bottom: 1rem;
+    }
+
+    /* Add some style improvements */
+    .p-button {
+      transition: all 0.2s ease;
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+}

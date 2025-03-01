@@ -79,6 +79,7 @@ export class ManageInterviewComponent implements OnInit {
   interviewTypes: any[] = [];
   text: string = '';
   loading: boolean = false;
+  newlyUploadedImages: string[] = [];
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
@@ -155,6 +156,12 @@ export class ManageInterviewComponent implements OnInit {
       // Load existing images
       if (state.post.images) {
         this.existingImages = state.post.images;
+        console.log('Loaded existing images from state:', JSON.stringify(this.existingImages));
+        // Log individual image details
+        this.existingImages.forEach((img, index) => {
+          console.log(`Image ${index} details:`, img);
+          console.log(`Image ${index} URL:`, this.getImageUrl(img.imageName));
+        });
         this.prepareExistingFilesForUpload(state.post.images);
       }
       this.loading = false;
@@ -204,6 +211,12 @@ export class ManageInterviewComponent implements OnInit {
               // Load existing images
               if (post.images) {
                 this.existingImages = post.images;
+                console.log('Loaded existing images from API:', JSON.stringify(this.existingImages));
+                // Log individual image details
+                this.existingImages.forEach((img, index) => {
+                  console.log(`Image ${index} details:`, img);
+                  console.log(`Image ${index} URL:`, this.getImageUrl(img.imageName));
+                });
                 this.prepareExistingFilesForUpload(post.images);
               }
               this.loading = false;
@@ -259,20 +272,11 @@ export class ManageInterviewComponent implements OnInit {
     // Update our local tracking of files
     this.isUploading = false;
     
-    // Create image objects from the uploaded file keys
-    const newImages = this.createImagesFromUploaded(uploadedFileKeys);
+    // Store the newly uploaded file keys
+    this.newlyUploadedImages = [...this.newlyUploadedImages, ...uploadedFileKeys];
     
-    // Store the images based on whether we're editing or creating a new post
-    if (this.isEditMode && this.currentPost && this.currentPost.images) {
-      // If we're editing, merge with existing images
-      this.existingImages = this.mergeImageLists(
-        uploadedFileKeys, 
-        this.currentPost.images
-      );
-    } else {
-      // For new posts, just use the uploaded images
-      this.existingImages = newImages;
-    }
+    // When updating a post, the existingImages are only those from the backend
+    // We don't modify existingImages here, they will be merged during form submission
     
     // Show notification of successful upload
     this.notificationService.showSuccess(`Successfully uploaded ${uploadedFileKeys.length} image(s)`);
@@ -362,7 +366,17 @@ export class ManageInterviewComponent implements OnInit {
     );
   }
 
+  /**
+   * Resets the image tracking state
+   */
+  resetImageState(): void {
+    this.newlyUploadedImages = [];
+    this.selectedFiles = [];
+    // We don't reset existingImages as those come from the backend
+  }
+
   onCancel(): void {
+    this.resetImageState();
     this.router.navigate(['/dashboard']);
   }
 
@@ -395,6 +409,7 @@ export class ManageInterviewComponent implements OnInit {
     this.postService.createPost(postData).subscribe({
       next: (response) => {
         this.notificationService.showSuccess('Interview created successfully!');
+        this.resetImageState();
         this.router.navigate(['/dashboard/my-posts']);
       },
       error: (error) => {
@@ -406,9 +421,8 @@ export class ManageInterviewComponent implements OnInit {
   }
 
   private mapToCreateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
-    // For new posts, get the file names from selectedFiles (newly uploaded)
-    const uploadedImages = this.selectedFiles.map((file) => file.name);
-    console.log('Create with uploaded images:', uploadedImages);
+    // For new posts, get the file names from newlyUploadedImages
+    console.log('Create with uploaded images:', this.newlyUploadedImages);
     
     let editorial = '';
     if (this.canModerate) {
@@ -418,7 +432,7 @@ export class ManageInterviewComponent implements OnInit {
 
     const postData: CreateInterviewRequest = {
       description: this.postForm.get('description')?.value,
-      imageNames: uploadedImages,
+      imageNames: this.newlyUploadedImages,
       status: status,
       userId: Number(this.authService.getUserId()),
       details: this.postForm.get('editorContent')?.get('details')?.value || '',
@@ -431,12 +445,11 @@ export class ManageInterviewComponent implements OnInit {
   }
 
   private mapToUpdateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
-    // When updating, combine both newly uploaded and existing images
-    const uploadedImageNames = this.selectedFiles.map((file) => file.name);
+    // When updating, we need to combine backend images with newly uploaded images
     const existingImageNames = this.existingImages.map(img => img.imageName);
     
     // Combine both sets of images, eliminating duplicates
-    const allImageNames = [...new Set([...uploadedImageNames, ...existingImageNames])];
+    const allImageNames = [...new Set([...this.newlyUploadedImages, ...existingImageNames])];
     
     console.log('Update with images:', allImageNames);
     
@@ -468,6 +481,7 @@ export class ManageInterviewComponent implements OnInit {
     this.postService.updatePost(interviewData).subscribe({
       next: (response) => {
         this.notificationService.showSuccess('Interview updated successfully!');
+        this.resetImageState();
         this.router.navigate(['/dashboard/my-posts']);
       },
       error: (error) => {
@@ -476,5 +490,80 @@ export class ManageInterviewComponent implements OnInit {
         );
       },
     });
+  }
+
+  /**
+   * Gets a display name for an image (removes userId/ prefix)
+   * @param imageName Full image name/path
+   * @returns Simplified name for display
+   */
+  getDisplayName(imageName: string): string {
+    // Extract the filename from the path (remove userId/ prefix if present)
+    let displayName = imageName;
+    
+    // If the name contains a slash, extract just the filename part
+    if (displayName.includes('/')) {
+      displayName = displayName.split('/').pop() || displayName;
+    }
+    
+    // Limit the length for display
+    if (displayName.length > 20) {
+      displayName = displayName.substring(0, 17) + '...';
+    }
+    
+    return displayName;
+  }
+
+  /**
+   * Gets the image URL for display
+   * @param imageName Name of the image
+   * @returns Complete URL for the image
+   */
+  getImageUrl(imageName: string): string {
+    const imageUrl = 'https://supun-init.s3.amazonaws.com/' + imageName;
+    // console.log('Constructed image URL:', imageUrl);
+    return imageUrl;
+  }
+
+  /**
+   * Removes an existing image
+   * @param index Index of the image to remove
+   */
+  removeExistingImage(index: number): void {
+    if (index >= 0 && index < this.existingImages.length) {
+      // Store the name of the removed image for logging
+      const removedImageName = this.existingImages[index].imageName;
+      
+      // Remove the image from the existing images array
+      this.existingImages.splice(index, 1);
+      
+      // Show a notification
+      this.notificationService.showSuccess(`Removed image ${this.getDisplayName(removedImageName)}`);
+    }
+  }
+
+  /**
+   * Handles image loading errors
+   * @param event The error event
+   */
+  onImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    const originalSrc = imgElement.src;
+    console.error('Failed to load image:', originalSrc);
+    
+    // Extract the image name from the URL for better debugging
+    let imageName = originalSrc.split('/').pop() || 'unknown';
+    console.error(`Image "${imageName}" failed to load from URL: ${originalSrc}`);
+    
+    // Instead of using a placeholder image, use a data URI for a simple placeholder
+    // This is a small gray square with an "X" in it
+    imgElement.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%3E%3Crect%20fill%3D%22%23ddd%22%20width%3D%22100%22%20height%3D%22100%22%2F%3E%3Ctext%20fill%3D%22%23666%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3EX%3C%2Ftext%3E%3C%2Fsvg%3E';
+    imgElement.alt = 'Image not available';
+    
+    // Add a title for tooltip on hover with the original image name
+    imgElement.title = `Failed to load: ${imageName}`;
+    
+    // Show a notification with more specific information
+    this.notificationService.showError(`Failed to load image: ${imageName}. The image may be unavailable or deleted.`);
   }
 }

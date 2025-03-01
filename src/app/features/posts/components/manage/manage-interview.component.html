@@ -124,10 +124,23 @@
         </div>
 
         <div class="full-width">
-          <h3>Upload Interview Images</h3>
-          <p *ngIf="existingImages && existingImages.length > 0">
-            <strong>{{ existingImages.length }} existing image(s)</strong> will be preserved when you save.
-          </p>
+          <div *ngIf="isEditMode && existingImages && existingImages.length > 0" class="existing-images-container" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+            <!-- <h5>Existing Images</h5> -->
+            <div *ngFor="let image of existingImages; let i = index" class="existing-image-item" style="border: 1px solid #ddd; padding: 0.5rem; border-radius: 4px; width: 150px;">
+              <div class="image-preview" style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
+                <img [src]="getImageUrl(image.imageName)" 
+                     alt="Existing image" 
+                     style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                     (error)="onImageError($event)">
+              </div>
+              <div class="image-name" style="font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.5rem;">
+                {{ getDisplayName(image.imageName) }}
+              </div>
+              <button type="button" class="btn btn-danger btn-sm" (click)="removeExistingImage(i)" style="width: 100%; background-color: #dc3545; color: white; border: none; padding: 0.25rem; border-radius: 4px;">
+                <i class="pi pi-trash"></i> Remove
+              </button>
+            </div>
+          </div>
           <app-file-upload 
             [maxSize]="5000000" 
             [useCustomUpload]="true"

@@ -41,7 +41,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'my-posts',
+        path: 'my-interviews',
         loadComponent: () =>
           import(
             './features/posts/components/user-post-list/user-post-list.component'
@@ -66,14 +66,14 @@ export const routes: Routes = [
           ).then((m) => m.PostTimelineComponent),
       },
       {
-        path: 'post/:id',
+        path: 'interview/:id',
         loadComponent: () =>
           import(
             './features/posts/components/details/post-details.component'
           ).then((m) => m.PostDetailsComponent),
       },
       {
-        path: 'post/edit/:id',
+        path: 'interview/edit/:id',
         loadComponent: () =>
           import(
             './features/posts/components/manage/manage-interview.component'
@@ -92,7 +92,7 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'manage-post',
+        path: 'manage-interview',
         loadComponent: () =>
           import(
             './features/posts/components/manage/manage-interview.component'

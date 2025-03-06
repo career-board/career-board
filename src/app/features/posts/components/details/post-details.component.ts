@@ -81,7 +81,7 @@ export class PostDetailsComponent implements OnInit {
   ngOnInit(): void {
     // Get postId from route params or dialog config
     const postId = this.config?.data?.postId || this.route.snapshot.params['id'];
-    
+
     if (postId) {
       this.loadPost(postId);
     }
@@ -107,12 +107,12 @@ export class PostDetailsComponent implements OnInit {
 
   private checkEditPermission(): void {
     if (!this.post) return;
-    
+
     const userId = this.authService.getUserId();
     const userRole = this.authService.getUserRole();
 
     // User can edit if they are the author or if they are a moderator/admin
-    this.canEdit = 
+    this.canEdit =
       this.post.userId?.toString() == userId ||
       userRole === 'MODERATOR' ||
       userRole === 'ADMIN';
@@ -120,7 +120,7 @@ export class PostDetailsComponent implements OnInit {
 
   onEditClick(): void {
     if (this.post) {
-      this.router.navigate(['/dashboard/post/edit', this.post.interviewId], {
+      this.router.navigate(['/dashboard/interview/edit', this.post.interviewId], {
         state: { post: this.post }
       });
       if (this.dialogRef) {

@@ -268,16 +268,16 @@ export class ManageInterviewComponent implements OnInit {
    */
   onUploadComplete(uploadedFileKeys: string[]) {
     console.log('Files uploaded:', uploadedFileKeys);
-    
+
     // Update our local tracking of files
     this.isUploading = false;
-    
+
     // Store the newly uploaded file keys
     this.newlyUploadedImages = [...this.newlyUploadedImages, ...uploadedFileKeys];
-    
+
     // When updating a post, the existingImages are only those from the backend
     // We don't modify existingImages here, they will be merged during form submission
-    
+
     // Show notification of successful upload
     this.notificationService.showSuccess(`Successfully uploaded ${uploadedFileKeys.length} image(s)`);
   }
@@ -304,7 +304,7 @@ export class ManageInterviewComponent implements OnInit {
   ): postImage[] {
     // Get the existing image names
     const existingImageNames = existingImages.map((img) => img.imageName);
-    
+
     // Create new postImage objects for any newly uploaded images
     const newImages = uploadedImageNames
       .filter((name) => !existingImageNames.includes(name))
@@ -312,7 +312,7 @@ export class ManageInterviewComponent implements OnInit {
         imageId: 0, // New images have an ID of 0
         imageName: name,
       }));
-    
+
     // Combine existing images with new ones
     return [...existingImages, ...newImages];
   }
@@ -324,10 +324,10 @@ export class ManageInterviewComponent implements OnInit {
     // For existing images, we need to create File objects that the file upload component can use
     // Since we can't easily reconstruct the original files, we'll create placeholders
     // that represent the existing images
-    
+
     // First, clear any previously selected files
     this.selectedFiles = [];
-    
+
     // Show a notification to the user that existing images are being loaded
     if (images.length > 0) {
       this.notificationService.showSuccess(`Loading ${images.length} existing image(s)`);
@@ -410,7 +410,7 @@ export class ManageInterviewComponent implements OnInit {
       next: (response) => {
         this.notificationService.showSuccess('Interview created successfully!');
         this.resetImageState();
-        this.router.navigate(['/dashboard/my-posts']);
+        this.router.navigate(['/dashboard/my-interviews']);
       },
       error: (error) => {
         this.notificationService.showError(
@@ -423,7 +423,7 @@ export class ManageInterviewComponent implements OnInit {
   private mapToCreateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
     // For new posts, get the file names from newlyUploadedImages
     console.log('Create with uploaded images:', this.newlyUploadedImages);
-    
+
     let editorial = '';
     if (this.canModerate) {
       editorial =
@@ -447,12 +447,12 @@ export class ManageInterviewComponent implements OnInit {
   private mapToUpdateInterviewRequest(status: 'DRAFT' | 'PUBLISHED') {
     // When updating, we need to combine backend images with newly uploaded images
     const existingImageNames = this.existingImages.map(img => img.imageName);
-    
+
     // Combine both sets of images, eliminating duplicates
     const allImageNames = [...new Set([...this.newlyUploadedImages, ...existingImageNames])];
-    
+
     console.log('Update with images:', allImageNames);
-    
+
     let editorial = '';
     if (this.canModerate) {
       editorial =
@@ -482,7 +482,7 @@ export class ManageInterviewComponent implements OnInit {
       next: (response) => {
         this.notificationService.showSuccess('Interview updated successfully!');
         this.resetImageState();
-        this.router.navigate(['/dashboard/my-posts']);
+        this.router.navigate(['/dashboard/my-interviews']);
       },
       error: (error) => {
         this.notificationService.showError(
@@ -500,17 +500,17 @@ export class ManageInterviewComponent implements OnInit {
   getDisplayName(imageName: string): string {
     // Extract the filename from the path (remove userId/ prefix if present)
     let displayName = imageName;
-    
+
     // If the name contains a slash, extract just the filename part
     if (displayName.includes('/')) {
       displayName = displayName.split('/').pop() || displayName;
     }
-    
+
     // Limit the length for display
     if (displayName.length > 20) {
       displayName = displayName.substring(0, 17) + '...';
     }
-    
+
     return displayName;
   }
 
@@ -533,10 +533,10 @@ export class ManageInterviewComponent implements OnInit {
     if (index >= 0 && index < this.existingImages.length) {
       // Store the name of the removed image for logging
       const removedImageName = this.existingImages[index].imageName;
-      
+
       // Remove the image from the existing images array
       this.existingImages.splice(index, 1);
-      
+
       // Show a notification
       this.notificationService.showSuccess(`Removed image ${this.getDisplayName(removedImageName)}`);
     }
@@ -550,19 +550,19 @@ export class ManageInterviewComponent implements OnInit {
     const imgElement = event.target as HTMLImageElement;
     const originalSrc = imgElement.src;
     console.error('Failed to load image:', originalSrc);
-    
+
     // Extract the image name from the URL for better debugging
     let imageName = originalSrc.split('/').pop() || 'unknown';
     console.error(`Image "${imageName}" failed to load from URL: ${originalSrc}`);
-    
+
     // Instead of using a placeholder image, use a data URI for a simple placeholder
     // This is a small gray square with an "X" in it
     imgElement.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%3E%3Crect%20fill%3D%22%23ddd%22%20width%3D%22100%22%20height%3D%22100%22%2F%3E%3Ctext%20fill%3D%22%23666%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3EX%3C%2Ftext%3E%3C%2Fsvg%3E';
     imgElement.alt = 'Image not available';
-    
+
     // Add a title for tooltip on hover with the original image name
     imgElement.title = `Failed to load: ${imageName}`;
-    
+
     // Show a notification with more specific information
     this.notificationService.showError(`Failed to load image: ${imageName}. The image may be unavailable or deleted.`);
   }

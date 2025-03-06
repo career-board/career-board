@@ -2,7 +2,7 @@
   <p-menubar styleClass="nav-menubar">
     <ng-template pTemplate="start">
       <span class="brand">Career Board</span>
-      
+
       <!-- Desktop menu -->
       <div class="desktop-menu">
         <a pButton
@@ -15,7 +15,7 @@
         </a>
 
         <a pButton
-          routerLink="/dashboard/manage-post"
+          routerLink="/dashboard/manage-interview"
           routerLinkActive="active"
           icon="pi pi-plus-circle"
           label="Create Interview"
@@ -23,7 +23,7 @@
         </a>
 
         <a pButton
-          routerLink="/dashboard/my-posts"
+          routerLink="/dashboard/my-interviews"
           routerLinkActive="active"
           icon="pi pi-user"
           label="My Profile"
@@ -76,7 +76,7 @@
   </a>
 
   <a pButton
-    routerLink="/dashboard/manage-post"
+    routerLink="/dashboard/manage-interview"
     routerLinkActive="active"
     (click)="closeMobileMenu()"
     icon="pi pi-plus-circle"
@@ -85,7 +85,7 @@
   </a>
 
   <a pButton
-    routerLink="/dashboard/my-posts"
+    routerLink="/dashboard/my-interviews"
     routerLinkActive="active"
     (click)="closeMobileMenu()"
     icon="pi pi-user"

@@ -31,7 +31,7 @@ export class AllPostsComponent implements OnInit {
     this.loading = true;
     this.postService.getAllPosts(this.pageIndex, this.pageSize).subscribe({
       next: (response) => {
-        setTimeout(() => {  
+        setTimeout(() => {
           this.posts = response.content;
           this.totalPosts = response.totalElements;
           this.loading = false;
@@ -49,13 +49,13 @@ export class AllPostsComponent implements OnInit {
     if (this.pageIndex === event.page && this.pageSize === event.rows) {
       return;
     }
-    
+
     this.pageIndex = event.page;
     this.pageSize = event.rows;
     this.loadPosts();
   }
 
   onPostClick(postId: number) {
-    this.router.navigate(['/dashboard/post', postId]);
+    this.router.navigate(['/dashboard/interview', postId]);
   }
 }

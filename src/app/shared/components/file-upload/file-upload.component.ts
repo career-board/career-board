@@ -70,10 +70,10 @@ export class FileUploadComponent {
         : [];
 
       // Create new files with user ID prefix in the name
-      const filesWithUserIdPrefix = originalFilesArray.map((file: File, index: number) => 
+      const filesWithUserIdPrefix = originalFilesArray.map((file: File, index: number) =>
         this.createFileWithUserIdPrefix(file, index)
       );
-      
+
       // Store selected files for later upload
       this.selectedFiles = filesWithUserIdPrefix;
 
@@ -86,12 +86,12 @@ export class FileUploadComponent {
       }
 
       this.calculateTotalSize(filesWithUserIdPrefix);
-      
+
       // Update the file upload component's files with the prefixed names
       if (this.fileUploadComponent) {
         this.fileUploadComponent.files = filesWithUserIdPrefix;
       }
-      
+
       this.filesSelected.emit(filesWithUserIdPrefix);
     } catch (error) {
       console.error('Error processing selected files:', error);
@@ -174,11 +174,11 @@ export class FileUploadComponent {
               this.uploadedFiles.add(file.name);
             });
 
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: `${results.length} files uploaded successfully`,
-            });
+            // this.messageService.add({
+            //   severity: 'success',
+            //   summary: 'Success',
+            //   detail: `${results.length} files uploaded successfully`,
+            // });
 
             this.uploadComplete.emit(uploadedFileKeys);
 
@@ -351,10 +351,10 @@ export class FileUploadComponent {
     const userId = this.authService.getUserId();
     // Generate a random string for additional uniqueness
     const randomString = Math.random().toString(36).substring(2, 8);
-    
+
     // Format: userId/timestamp_index_randomString.extension to ensure uniqueness
     const newFileName = `${userId}/${timestamp}_${index}_${randomString}.${fileExtension}`;
-    
+
     // Create a new File object with the modified name
     return new File([file], newFileName, { type: file.type });
   }

@@ -20,29 +20,29 @@ export interface PostResponse {
 })
 export class PostService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}/api`;
+  private baseUrl = `${environment.apiUrl}/api/interviews`;
 
   getUserPosts(userId: string, page: number, size: number): Observable<PostResponse> {
-    return this.http.get<PostResponse>(`${this.baseUrl}/post/user/${userId}`, {
+    return this.http.get<PostResponse>(`${this.baseUrl}/user/${userId}`, {
       params: { page: page.toString(), size: size.toString() }
     });
   }
 
   getAllPosts(page: number, size: number): Observable<PostResponse> {
-    return this.http.get<PostResponse>(`${this.baseUrl}/post`, {
+    return this.http.get<PostResponse>(`${this.baseUrl}`, {
       params: { page: page.toString(), size: size.toString() }
     });
   }
 
   createPost(postData: CreateInterviewRequest): Observable<CreatePostResponse> {
-    return this.http.post<CreatePostResponse>(`${this.baseUrl}/post`, postData);
+    return this.http.post<CreatePostResponse>(`${this.baseUrl}`, postData);
   }
 
   getPost(postId: string): Observable<Post> {
-    return this.http.get<Post>(`${this.baseUrl}/post/${postId}`);
+    return this.http.get<Post>(`${this.baseUrl}/${postId}`);
   }
 
   updatePost(postData: UpdateInterviewRequest): Observable<Post> {
-    return this.http.put<Post>(`${this.baseUrl}/post`, postData);
+    return this.http.put<Post>(`${this.baseUrl}`, postData);
   }
 }
